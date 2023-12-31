@@ -1,0 +1,24 @@
+configs:
+  messages: messages.yml
+  locations: data/locations.yml
+  homes: data/homes.yml
+  warps: data/warps.yml
+  shops: data/invoices.yml
+  invoices: data/invoices.yml
+
+invoices:
+  teleport_to_home:
+    price: 2
+    increase: false
+  create_warp:
+    price: 5
+    increase: true
+  teleport_to_warp:
+    price: 3
+    increase: false
+  teleport_to_player:
+    price: 2
+    increase: true
+  teleport_to_spawn:
+    price: 1
+    increase: false

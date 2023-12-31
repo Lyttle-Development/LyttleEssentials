@@ -1,0 +1,54 @@
+name: LyttleEssentials
+version: '${project.version}'
+main: net.maplemc.lyttleessentials.LyttleEssentials
+api-version: '1.20'
+authors:
+    - ThatsATim
+    - Stualyttle
+description: play.maplemc.net | Survival plugin
+depend:
+  - Vault
+  - MapleEconomy
+
+commands:
+  atp:
+    description: teleport for staff free of charge!
+
+  tp:
+    description: Allows players to teleport using their tokens.
+
+  tpaccept:
+    description: Accept an incomming reqeusts
+
+  tpdeny:
+    description: Deny an incomming reqeusts
+
+  lyttleessentials:
+    description: Admin command, mainly reload the config without the rest of the server
+
+  spawn:
+    description: Teleport to spawn
+
+  setspawn:
+    description: Set spawn
+
+  delspawn:
+    description: Delete spawn
+
+  home:
+    description: Teleport to a home
+
+  sethome:
+    description: Set a home
+
+  delhome:
+    description: Delete a home
+
+  warp:
+    description: Teleport to a warp
+
+  setwarp:
+    description: Set a warp
+
+  delwarp:
+    description: Delete a warp
