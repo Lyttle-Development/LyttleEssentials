@@ -1,10 +1,10 @@
-package net.maplemc.lyttleessentials.commands;
+package com.lyttledev.lyttleessentials.commands;
 
-import net.maplemc.lyttleessentials.LyttleEssentials;
-import net.maplemc.lyttleessentials.types.Bill;
-import net.maplemc.lyttleessentials.types.Warp;
-import net.maplemc.lyttleessentials.utils.Message;
-import net.maplemc.lyttleessentials.utils.MessageCleaner;
+import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleessentials.types.Bill;
+import com.lyttledev.lyttleessentials.types.Warp;
+import com.lyttledev.lyttleessentials.utils.Message;
+import com.lyttledev.lyttleessentials.utils.MessageCleaner;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -13,7 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;

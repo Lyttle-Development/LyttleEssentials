@@ -1,6 +1,6 @@
-package net.maplemc.lyttleessentials.utils;
+package com.lyttledev.lyttleessentials.utils;
 
-import net.maplemc.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleessentials.LyttleEssentials;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;

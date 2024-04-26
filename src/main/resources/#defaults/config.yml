@@ -14,3 +14,5 @@ invoices:
   teleport_to_spawn:
     price: 1
     increase: false
+
+config_version: 1

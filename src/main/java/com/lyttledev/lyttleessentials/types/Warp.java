@@ -1,4 +1,4 @@
-package net.maplemc.lyttleessentials.types;
+package com.lyttledev.lyttleessentials.types;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;

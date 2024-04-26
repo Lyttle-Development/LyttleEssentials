@@ -1,4 +1,4 @@
-package net.maplemc.lyttleessentials.types;
+package com.lyttledev.lyttleessentials.types;
 
 /*
 *  Credit for this code belongs to: TheDutchMC

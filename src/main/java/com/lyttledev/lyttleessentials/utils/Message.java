@@ -1,6 +1,6 @@
-package net.maplemc.lyttleessentials.utils;
+package com.lyttledev.lyttleessentials.utils;
 
-import net.maplemc.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleessentials.LyttleEssentials;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -62,6 +62,14 @@ public class Message {
     public static void sendChat(String message, String[][] replacements) {
         String msg = replaceMessageStrings(getConfigMessage(message), replacements);
         Bukkit.broadcastMessage(getMessage(getPrefix() + msg));
+    }
+    public static void sendChat(String message, String[][] replacements, boolean prefix) {
+        String msg = replaceMessageStrings(getConfigMessage(message), replacements);
+        if (prefix) {
+            Bukkit.broadcastMessage(getMessage(getPrefix() + msg));
+            return;
+        }
+        Bukkit.broadcastMessage(getMessage(msg));
     }
 
     public static void sendChatRaw(String message, boolean prefix) {

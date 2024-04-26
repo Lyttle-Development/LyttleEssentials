@@ -1,6 +1,6 @@
-package net.maplemc.lyttleessentials.types;
+package com.lyttledev.lyttleessentials.types;
 
-import net.maplemc.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleessentials.LyttleEssentials;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;

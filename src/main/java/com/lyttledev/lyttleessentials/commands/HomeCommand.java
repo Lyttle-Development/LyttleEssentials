@@ -1,8 +1,8 @@
-package net.maplemc.lyttleessentials.commands;
+package com.lyttledev.lyttleessentials.commands;
 
-import net.maplemc.lyttleessentials.LyttleEssentials;
-import net.maplemc.lyttleessentials.types.Bill;
-import net.maplemc.lyttleessentials.utils.Message;
+import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleessentials.types.Bill;
+import com.lyttledev.lyttleessentials.utils.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;

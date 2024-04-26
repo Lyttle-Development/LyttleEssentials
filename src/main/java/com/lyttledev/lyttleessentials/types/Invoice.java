@@ -1,6 +1,6 @@
-package net.maplemc.lyttleessentials.types;
+package com.lyttledev.lyttleessentials.types;
 
-import net.maplemc.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleessentials.LyttleEssentials;
 import org.bukkit.entity.Player;
 
 public class Invoice {

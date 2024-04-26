@@ -1,4 +1,4 @@
-package net.maplemc.lyttleessentials.utils;
+package com.lyttledev.lyttleessentials.utils;
 
 public class MessageCleaner {
     public static String cleanMessage(String message) {

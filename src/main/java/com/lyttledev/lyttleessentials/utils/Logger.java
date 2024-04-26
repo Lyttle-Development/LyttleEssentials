@@ -1,4 +1,4 @@
-package net.maplemc.lyttleessentials.utils;
+package com.lyttledev.lyttleessentials.utils;
 
 import org.bukkit.Bukkit;
 
