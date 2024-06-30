@@ -72,10 +72,6 @@ val changelogContent: String = latestCommitMessage()
 println("Version: $versionString")
 println("Channel: $envChannel")
 
-// Log if hangarPublish is enabled, has publishPluginPublicationToHangar in build command
-val publicationToHangar = project.hasProperty("publishPluginPublicationToHangar")
-println("Hangar Publish: $publicationToHangar")
-
 hangarPublish {
     publications.register("plugin") {
         version.set(versionString)

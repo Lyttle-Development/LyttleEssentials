@@ -23,6 +23,6 @@ jobs:
           check-latest: true
       - name: Publish
         env:
-          HANGAR_TOKEN: ${{ secrets.HANGAR_API_TOKEN }}
+          HANGAR_API_TOKEN: ${{ secrets.HANGAR_API_TOKEN }}
           CHANNEL: 'Alpha'
         run: ./gradlew build publishPluginPublicationToHangar --stacktrace
