@@ -60,7 +60,16 @@ fun latestCommitMessage(): String {
     return executeGitCommand("log", "-1", "--pretty=%B")
 }
 
-val versionString: String = version as String
+// Add -SNAPSHOT to the version if the channel is not Release
+val versionString: String =  if (System.getenv("CHANNEL") == "Release") {
+    version.toString()
+} else {
+    if (System.getenv("GITHUB_RUN_NUMBER") != null) {
+        "${version}-SNAPSHOT+${System.getenv("GITHUB_RUN_NUMBER")}"
+    } else {
+        "$version-SNAPSHOT"
+    }
+}
 
 // Get the channel from the environment variable or default to Alpha
 val envChannel = System.getenv("CHANNEL") ?: "Alpha"
