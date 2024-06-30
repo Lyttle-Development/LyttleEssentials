@@ -30,3 +30,8 @@ cache
 lib
 logs
 target
+
+# Gradle files
+.gradle/
+gradle/
+build/
