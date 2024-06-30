@@ -3,7 +3,7 @@
 
 [versions]
 com-github-milkbowl-vaultapi = "1.7"
-io-papermc-paper-paper-api = "1.20.2-R0.1-SNAPSHOT"
+io-papermc-paper-paper-api = "1.20.4-R0.1-SNAPSHOT"
 net-luckperms-api = "5.4"
 
 [libraries]
