@@ -1,7 +1,7 @@
 name: LyttleEssentials
 version: '${projectVersion}'
 main: com.lyttledev.lyttleessentials.LyttleEssentials
-api-version: '1.20.4'
+api-version: '1.20'
 authors:
     - ThatsATim
     - Stualyttle
