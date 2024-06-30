@@ -24,7 +24,7 @@ dependencies {
 group = "com.lyttledev"
 version = "2.3.0"
 description = "LyttleEssentials"
-java.sourceCompatibility = JavaVersion.VERSION_11
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 publishing {
     publications.create<MavenPublication>("maven") {
