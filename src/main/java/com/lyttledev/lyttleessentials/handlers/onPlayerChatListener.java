@@ -66,7 +66,7 @@ public class onPlayerChatListener implements Listener {
             {"<MESSAGE>", filterMessage(message)}
         };
 
-        Message.sendChat("chat_format", replacements, false);
+        Message.sendBroadcast("chat_format", replacements, false);
     }
 
     private String filterMessage(String message) {
