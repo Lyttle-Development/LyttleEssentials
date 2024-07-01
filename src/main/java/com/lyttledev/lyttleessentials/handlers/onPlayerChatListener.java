@@ -21,6 +21,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.regex.*;
 
+import static com.lyttledev.lyttleessentials.utils.Message.*;
+
 public class onPlayerChatListener implements Listener {
     private final LyttleEssentials plugin;
 
@@ -37,25 +39,28 @@ public class onPlayerChatListener implements Listener {
         // Get the player's message
         Player player = event.getPlayer();
         String message = event.getMessage();
-        String roleDisplayname = "&8&lUser &7&l";
+        String roleDisplayname = getConfigMessage("chat_default_role");
 
-        // Initialize LuckPerms API (Make sure you have the LuckPerms API library in your project)
-        LuckPerms luckPerms = LuckPermsProvider.get();
+        // check if luckperms is installed
+        if (Bukkit.getPluginManager().getPlugin("LuckPerms") != null) {
+            // Initialize LuckPerms API (Make sure you have the LuckPerms API library in your project)
+            LuckPerms luckPerms = LuckPermsProvider.get();
 
-        // Get the user object
-        UserManager userManager = luckPerms.getUserManager();
-        User user = userManager.getUser(player.getUniqueId());
+            // Get the user object
+            UserManager userManager = luckPerms.getUserManager();
+            User user = userManager.getUser(player.getUniqueId());
 
-        if (user != null) {
-            // Get the user's primary group
-            String primaryGroup = user.getPrimaryGroup();
+            if (user != null) {
+                // Get the user's primary group
+                String primaryGroup = user.getPrimaryGroup();
 
-            // Get the group's display name
-            Group group = luckPerms.getGroupManager().getGroup(primaryGroup);
-            if (group != null) {
-                @Nullable String displayName =  group.getDisplayName();
-                if (displayName != null) {
-                    roleDisplayname = displayName;
+                // Get the group's display name
+                Group group = luckPerms.getGroupManager().getGroup(primaryGroup);
+                if (group != null) {
+                    @Nullable String displayName =  group.getDisplayName();
+                    if (displayName != null) {
+                        roleDisplayname = displayName;
+                    }
                 }
             }
         }
