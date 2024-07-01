@@ -92,3 +92,8 @@ heal_self: You healed yourself!
 heal_other_sender: You healed <PLAYER>.
 heal_other_player: <PLAYER> healed you.
 heal_console: The console has healed you.
+
+# Join and Leave messages
+first_join_message: "&a<PLAYER> joined for the very first time!"
+join_message: "&a[+] <PLAYER>"
+leave_message: "&c[-] <PLAYER>"

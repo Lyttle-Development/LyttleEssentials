@@ -47,6 +47,8 @@ public final class LyttleEssentials extends JavaPlugin {
 
         // Listeners
         new onPlayerChatListener(this);
+        new onPlayerJoinListener(this);
+        new onPlayerLeaveListener(this);
     }
 
     private boolean setupEconomy() {
