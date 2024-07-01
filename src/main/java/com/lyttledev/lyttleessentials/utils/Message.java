@@ -16,11 +16,11 @@ public class Message {
 
     public static String[][] noReplacements = {};
 
-    private static String getPrefix() {
-        return getConfigMessage("prefix");
+    private static String _getPrefix() {
+        return _getConfigMessage("prefix");
     }
 
-    private static String getConfigMessage(String messageKey) {
+    private static String _getConfigMessage(String messageKey) {
         @Nullable String message = (String) plugin.config.messages.get(messageKey);
         if (message == null) {
             Console.log("Message key " + messageKey + " not found in messages.yml");
@@ -35,7 +35,11 @@ public class Message {
         return message;
     }
 
-    private static String replaceMessageStrings(String message, String[][] replacements) {
+    public static String getConfigMessage(String messageKey) {
+        return _getConfigMessage(messageKey);
+    }
+
+    private static String _replaceMessageStrings(String message, String[][] replacements) {
         for (String[] replacement : replacements) {
             message = message.replace(replacement[0], replacement[1]);
         }
@@ -43,51 +47,55 @@ public class Message {
     }
 
     public static void sendPlayer(Player player, String message, @Nullable String[][] replacements) {
-        String msg = replaceMessageStrings(getConfigMessage(message), replacements);
-        player.sendMessage(getMessage(getPrefix() + msg));
+        String msg = _replaceMessageStrings(_getConfigMessage(message), replacements);
+        player.sendMessage(_getMessage(_getPrefix() + msg));
     }
 
     public static void sendPlayerRaw(Player player, String message) {
-        player.sendMessage(getMessage(getPrefix() + message));
+        player.sendMessage(_getMessage(_getPrefix() + message));
     }
 
     public static void sendConsole(String message, String[][] replacements) {
-        Console.log(getMessage(replaceMessageStrings(getConfigMessage(message), replacements)));
+        Console.log(_getMessage(_replaceMessageStrings(_getConfigMessage(message), replacements)));
     }
 
     public static void sendConsole(String message) {
         Console.log(message);
     }
-    
+
     public static void sendConsoleRaw(String message) {
-        Console.log(getMessage(message));
+        Console.log(_getMessage(message));
     }
 
     public static void sendBroadcast(String message, String[][] replacements) {
-        String msg = replaceMessageStrings(getConfigMessage(message), replacements);
-        Bukkit.broadcastMessage(getMessage(msg));
+        String msg = _replaceMessageStrings(_getConfigMessage(message), replacements);
+        Bukkit.broadcastMessage(_getMessage(msg));
     }
 
     public static void sendBroadcast(String message, String[][] replacements, boolean prefix) {
-        String msg = replaceMessageStrings(getConfigMessage(message), replacements);
+        String msg = _replaceMessageStrings(_getConfigMessage(message), replacements);
         if (prefix) {
-            Bukkit.broadcastMessage(getMessage(getPrefix() + msg));
+            Bukkit.broadcastMessage(_getMessage(_getPrefix() + msg));
             return;
         }
-        Bukkit.broadcastMessage(getMessage(msg));
+        Bukkit.broadcastMessage(_getMessage(msg));
     }
 
     public static void sendBroadcastRaw(String message, boolean prefix) {
         if (prefix) {
-            Bukkit.broadcastMessage(getMessage(getPrefix() + message));
+            Bukkit.broadcastMessage(_getMessage(_getPrefix() + message));
             return;
         }
-        Bukkit.broadcastMessage(getMessage(message));
+        Bukkit.broadcastMessage(_getMessage(message));
     }
 
-    private static String getMessage(String message) {
+    private static String _getMessage(String message) {
         // Replace all \n with real newlines
         message = message.replace("\\n", "\n");
         return ChatColor.translateAlternateColorCodes('&', message + "&r");
+    }
+
+    public static String getMessage(String message, String[][] replacements) {
+        return _getMessage(_replaceMessageStrings(_getConfigMessage(message), replacements));
     }
 }
