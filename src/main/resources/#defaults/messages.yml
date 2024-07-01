@@ -1,9 +1,12 @@
-prefix: '&6&lMaple&e&lMC &8- &7'
+prefix: '&3&lLyttle&b&lEssentials &8- &7'
 no_permission: '&cYou do not have permission to do that!'
 player_not_found: '&4Player not found'
 must_be_player: '&cYou must be a player to use this command!'
 message_not_found: '&cOh... I can''t react to that. (Contact the Administrators)'
+
+# Chat messages
 chat_format: '&r<ROLE><PLAYER>&r &8&l-&r &7&o<MESSAGE>&r'
+chat_default_role: '&8&lUser &7&l'
 
 # Token messages
 tokens_missing: '&cYou do not have enough tokens!'
@@ -71,3 +74,21 @@ delwarp_not_owner: You are not the owner of this warp!
 warp_no_name: Please use /warp <name>
 warp_success: You have succesfully teleported to <NAME>! That costed <PRICE> tokens...
 warp_doesnt_exist: This warp doesn't exist!
+
+# Fly messages
+fly_usage: Please use /fly <PLAYERNAME>
+fly_activate: You enabled flight on yourself.
+fly_deactivate: You deactivated flight on yourself.
+fly_activate_other_sender: You enabled flight on <PLAYER>.
+fly_deactivate_other_sender: You deactivated flight on <PLAYER>.
+fly_activate_other_target: <PLAYER> enabled flight on you.
+fly_deactivate_other_target: <PLAYER> deactivated flight on you.
+fly_activate_console: The console enabled flight on you.
+fly_deactivate_console: The console deactivated flight on you.
+
+# Heal messages
+heal_usage: Please use /heal <PLAYERNAME>
+heal_self: You healed yourself!
+heal_other_sender: You healed <PLAYER>.
+heal_other_player: <PLAYER> healed you.
+heal_console: The console has healed you.

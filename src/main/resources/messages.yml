@@ -3,7 +3,10 @@ no_permission: '&cYou do not have permission to do that!'
 player_not_found: '&4Player not found'
 must_be_player: '&cYou must be a player to use this command!'
 message_not_found: '&cOh... I can''t react to that. (Contact the Administrators)'
+
+# Chat messages
 chat_format: '&r<ROLE><PLAYER>&r &8&l-&r &7&o<MESSAGE>&r'
+chat_default_role: '&8&lUser &7&l'
 
 # Token messages
 tokens_missing: '&cYou do not have enough tokens!'
@@ -82,3 +85,10 @@ fly_activate_other_target: <PLAYER> enabled flight on you.
 fly_deactivate_other_target: <PLAYER> deactivated flight on you.
 fly_activate_console: The console enabled flight on you.
 fly_deactivate_console: The console deactivated flight on you.
+
+# Heal messages
+heal_usage: Please use /heal <PLAYERNAME>
+heal_self: You healed yourself!
+heal_other_sender: You healed <PLAYER>.
+heal_other_player: <PLAYER> healed you.
+heal_console: The console has healed you.

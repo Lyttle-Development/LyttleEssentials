@@ -141,6 +141,30 @@ public final class LyttleEssentials extends JavaPlugin {
                 // Recheck if the config is fully migrated.
                 migrateConfig();
                 break;
+            case "2":
+                // Migrate config entries.
+                config.messages.set("fly_usage", config.defaultMessages.get("fly_usage"));
+                config.messages.set("fly_activate", config.defaultMessages.get("fly_activate"));
+                config.messages.set("fly_deactivate", config.defaultMessages.get("fly_deactivate"));
+                config.messages.set("fly_activate_other_sender", config.defaultMessages.get("fly_activate_other_sender"));
+                config.messages.set("fly_deactivate_other_sender", config.defaultMessages.get("fly_deactivate_other_sender"));
+                config.messages.set("fly_activate_other_target", config.defaultMessages.get("fly_activate_other_target"));
+                config.messages.set("fly_deactivate_other_target", config.defaultMessages.get("fly_deactivate_other_target"));
+                config.messages.set("fly_activate_console", config.defaultMessages.get("fly_activate_console"));
+                config.messages.set("fly_deactivate_console", config.defaultMessages.get("fly_deactivate_console"));
+                config.messages.set("chat_default_role", config.defaultMessages.get("chat_default_role"));
+                config.messages.set("heal_usage", config.defaultMessages.get("heal_usage"));
+                config.messages.set("heal_self", config.defaultMessages.get("heal_self"));
+                config.messages.set("heal_other_sender", config.defaultMessages.get("heal_other_sender"));
+                config.messages.set("heal_other_player", config.defaultMessages.get("heal_other_player"));
+                config.messages.set("heal_console", config.defaultMessages.get("heal_console"));
+
+                // Update config version.
+                config.general.set("config_version", 3);
+
+                // Recheck if the config is fully migrated.
+                migrateConfig();
+                break;
             default:
                 break;
         }
