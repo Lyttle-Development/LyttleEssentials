@@ -68,3 +68,7 @@ commands:
   top:
     description: Teleport to the top block at a location
     permission: lyttleessentials.top
+
+  repair:
+    description: repairs items
+    permission: lyttleessentials.repair

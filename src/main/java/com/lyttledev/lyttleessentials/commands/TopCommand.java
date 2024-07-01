@@ -20,11 +20,7 @@ public class TopCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender.hasPermission("lyttleessentials.top"))) {
-            if (sender instanceof Player) {
-                Message.sendPlayer((Player) sender, "no_permission");
-                return true;
-            }
-            Message.sendConsole("no_permission");
+            Message.sendPlayer((Player) sender, "no_permission");
             return true;
         }
 

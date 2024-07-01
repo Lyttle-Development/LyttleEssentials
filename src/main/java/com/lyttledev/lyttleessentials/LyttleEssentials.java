@@ -45,6 +45,7 @@ public final class LyttleEssentials extends JavaPlugin {
         new FlyCommand(this);
         new HealCommand(this);
         new TopCommand(this);
+        new RepairCommand(this);
 
         // Listeners
         new onPlayerChatListener(this);
