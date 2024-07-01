@@ -46,6 +46,11 @@ public class Message {
         return message;
     }
 
+    public static void sendPlayer(Player player, String message) {
+        String msg = _getConfigMessage(message);
+        player.sendMessage(_getMessage(_getPrefix() + msg));
+    }
+
     public static void sendPlayer(Player player, String message, @Nullable String[][] replacements) {
         String msg = _replaceMessageStrings(_getConfigMessage(message), replacements);
         player.sendMessage(_getMessage(_getPrefix() + msg));
@@ -60,7 +65,7 @@ public class Message {
     }
 
     public static void sendConsole(String message) {
-        Console.log(message);
+        Console.log(_getConfigMessage(message));
     }
 
     public static void sendConsoleRaw(String message) {

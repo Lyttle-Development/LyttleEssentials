@@ -28,7 +28,7 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            Message.sendConsole("must_be_player", Message.noReplacements);
+            Message.sendConsole("must_be_player");
             return true;
         }
 
@@ -38,13 +38,13 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
             if (args.length == 0) {
                 Location location = player.getLocation();
                 plugin.config.homes.set(player.getUniqueId().toString(), location);
-                Message.sendPlayer(player, "sethome_success", Message.noReplacements);
+                Message.sendPlayer(player, "sethome_success");
                 return true;
             }
 
             if (args.length == 1) {
                 if (!player.hasPermission("lyttleessentials.sethome.other")) {
-                    Message.sendPlayer(player, "no_permission", Message.noReplacements);
+                    Message.sendPlayer(player, "no_permission");
                     return true;
                 }
 
@@ -64,27 +64,27 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            Message.sendPlayer(player, "sethome_usage", Message.noReplacements);
+            Message.sendPlayer(player, "sethome_usage");
             return true;
         }
 
         if (Objects.equals(label, "delhome")) {
             if (args.length == 0) {
                 plugin.config.homes.set(player.getUniqueId().toString(), null);
-                Message.sendPlayer(player, "delhome_success", Message.noReplacements);
+                Message.sendPlayer(player, "delhome_success");
                 return true;
             }
 
             if (args.length == 1) {
                 if (!player.hasPermission("lyttleessentials.delhome.other")) {
-                    Message.sendPlayer(player, "no_permission", Message.noReplacements);
+                    Message.sendPlayer(player, "no_permission");
                     return true;
                 }
 
                 Player target = Bukkit.getPlayer(args[0]);
 
                 if (target == null) {
-                    Message.sendPlayer(player, "player_not_found", Message.noReplacements);
+                    Message.sendPlayer(player, "player_not_found");
                     return true;
                 }
 
@@ -95,7 +95,7 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            Message.sendPlayer(player, "delhome_usage", Message.noReplacements);
+            Message.sendPlayer(player, "delhome_usage");
             return true;
         }
 
@@ -103,14 +103,14 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
             if (args.length == 0) {
                 Location location = (Location) plugin.config.homes.get(player.getUniqueId().toString());
                 if (location == null) {
-                    Message.sendPlayer(player, "home_not_set", Message.noReplacements);
+                    Message.sendPlayer(player, "home_not_set");
                     return true;
                 }
 
 
                 Bill bill = this.plugin.invoice.teleportToHome(player);
                 if (bill.total == -1) {
-                    Message.sendPlayer(player, "tokens_missing", Message.noReplacements);
+                    Message.sendPlayer(player, "tokens_missing");
                     return true;
                 }
 
@@ -120,7 +120,7 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            Message.sendPlayer(player, "home_usage", Message.noReplacements);
+            Message.sendPlayer(player, "home_usage");
             return true;
         }
 
