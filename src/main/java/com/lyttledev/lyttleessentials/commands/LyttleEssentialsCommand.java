@@ -23,7 +23,7 @@ public class LyttleEssentialsCommand implements CommandExecutor, TabCompleter {
 
         // Check for permission
         if (!(sender.hasPermission("lyttleessentials.lyttleessentials") || sender.hasPermission("mc.admin"))) {
-            Message.sendPlayer((Player) sender, "no_permission", Message.noReplacements);
+            Message.sendPlayer((Player) sender, "no_permission");
             return true;
         }
 

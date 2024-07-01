@@ -43,6 +43,7 @@ public final class LyttleEssentials extends JavaPlugin {
         new TeleportCommand(this);
         new WarpCommand(this);
         new FlyCommand(this);
+        new HealCommand(this);
 
         // Listeners
         new onPlayerChatListener(this);

@@ -29,7 +29,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
 
         Player player = (Player) sender;
 
-        if (!player.hasPermission("mapleadmin.staff")) {
+        if (!player.hasPermission("lyttleessentials.staff")) {
             Message.sendPlayer((Player) sender, "no_permission", Message.noReplacements);
             return true;
         }
