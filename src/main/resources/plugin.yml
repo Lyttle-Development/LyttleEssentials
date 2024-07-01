@@ -3,33 +3,37 @@ version: '${projectVersion}'
 main: com.lyttledev.lyttleessentials.LyttleEssentials
 api-version: '1.20.4'
 authors:
-    - ThatsATim
     - Stualyttle
-description: play.maplemc.net | Survival plugin
+    - ThatsATim
+description: Lightweight Essentials plugin.
 depend:
   - Vault
 
 commands:
   atp:
     description: teleport for staff free of charge!
+    permission: fly_activate_other_sender
 
   tp:
     description: Allows players to teleport using their tokens.
+    permission: lyttleessentials.tp.others
 
   tpaccept:
-    description: Accept an incomming reqeusts
+    description: Accept incoming requests
 
   tpdeny:
-    description: Deny an incomming reqeusts
+    description: Deny incoming requests
 
   lyttleessentials:
     description: Admin command, mainly reload the config without the rest of the server
+    permission: lyttleessentials.lyttleessentials
 
   spawn:
     description: Teleport to spawn
 
   setspawn:
     description: Set spawn
+    permission: lyttleessentials.spawn.set
 
   delspawn:
     description: Delete spawn
@@ -39,6 +43,7 @@ commands:
 
   sethome:
     description: Set a home
+    permission: lyttleessentials.home.set
 
   delhome:
     description: Delete a home
@@ -51,3 +56,6 @@ commands:
 
   delwarp:
     description: Delete a warp
+
+  fly:
+    description: Toggle fly
