@@ -97,3 +97,10 @@ heal_console: The console has healed you.
 first_join_message: "&a<PLAYER> joined for the very first time!"
 join_message: "&a[+] <PLAYER>"
 leave_message: "&c[-] <PLAYER>"
+
+# Top messages
+top_usage: Please use /top <PLAYERNAME>
+top_self: You teleported yourself to the top.
+top_other_sender: You teleported <PLAYER> to the top.
+top_other_player: <PLAYER> teleported you to the top.
+top_console: The console teleported you to the top.
