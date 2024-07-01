@@ -86,6 +86,41 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
             Message.sendPlayer(player, "gamemode_console", replacementsConsole);
             return true;
         }
+
+        if (args.length > 1) {
+            if (sender instanceof Player) {
+                Message.sendPlayer((Player) sender, "gmx_usage");
+                return true;
+            }
+            Message.sendConsole("gmx_usage");
+            return true;
+        }
+
+        if (args.length == 0) {
+            if (!(sender instanceof Player)) {
+                Message.sendConsole("gmx_usage");
+                return true;
+            }
+            String mode = _gamemode((Player) sender, label);
+            String[][] replacements = {{"<MODE>", mode}};
+            Message.sendPlayer((Player) sender, "", replacements);
+            return true;
+        }
+
+        Player player = Bukkit.getPlayerExact(args[0]);
+
+        String mode = _gamemode(player, label);
+        if (sender instanceof Player) {
+            String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", String.valueOf(player.displayName())}};
+            Message.sendPlayer((Player) sender, "gamemode_other_sender", replacementsSender);
+            String[][] replacementsPlayer = {{"<MODE>", mode}, {"<PLAYER>", String.valueOf(((Player) sender).displayName())}};
+            Message.sendPlayer(player, "gamemode_other_target", replacementsPlayer);
+            return true;
+        }
+        String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", String.valueOf(player.displayName())}};
+        Message.sendConsole("gamemode_other_sender", replacementsSender);
+        String[][] replacementsConsole = {{"<MODE>", mode}};
+        Message.sendPlayer(player, "gamemode_console", replacementsConsole);
         return true;
     }
 
