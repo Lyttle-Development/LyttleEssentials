@@ -37,6 +37,7 @@ commands:
 
   delspawn:
     description: Delete spawn
+    permission: lyttleessentials.delspawn
 
   home:
     description: Teleport to a home
@@ -53,9 +54,11 @@ commands:
 
   setwarp:
     description: Set a warp
+    permission: lyttleessentials.setwarp
 
   delwarp:
     description: Delete a warp
+    permission: lyttleessentials.delwarp
 
   fly:
     description: Toggle fly
