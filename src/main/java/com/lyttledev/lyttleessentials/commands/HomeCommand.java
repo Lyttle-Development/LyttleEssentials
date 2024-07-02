@@ -32,9 +32,19 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (!(sender.hasPermission("lyttleessentials.home"))) {
+            Message.sendPlayer((Player) sender, "no_permission");
+            return true;
+        }
+
         Player player = (Player) sender;
 
         if (Objects.equals(label, "sethome")) {
+            if (!(sender.hasPermission("lyttleessentials.home.set"))) {
+                Message.sendPlayer((Player) sender, "no_permission");
+                return true;
+            }
+
             if (args.length == 0) {
                 Location location = player.getLocation();
                 plugin.config.homes.set(player.getUniqueId().toString(), location);
@@ -69,6 +79,11 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
         }
 
         if (Objects.equals(label, "delhome")) {
+            if (!(sender.hasPermission("lyttleessentials.home.del"))) {
+                Message.sendPlayer((Player) sender, "no_permission");
+                return true;
+            }
+
             if (args.length == 0) {
                 plugin.config.homes.set(player.getUniqueId().toString(), null);
                 Message.sendPlayer(player, "delhome_success");

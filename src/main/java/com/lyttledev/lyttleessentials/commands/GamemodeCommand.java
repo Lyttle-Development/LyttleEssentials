@@ -24,6 +24,7 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+
         if (!(sender.hasPermission("lyttleessentials.gamemode"))) {
             Message.sendPlayer((Player) sender, "no_permission");
             return true;
@@ -36,6 +37,12 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
             }
 
             if (args.length == 1) {
+
+                if (!(sender.hasPermission("lyttleessentials.gamemode.self"))) {
+                    Message.sendPlayer((Player) sender, "no_permission");
+                    return true;
+                }
+
                 if (!(sender instanceof Player)) {
                     Message.sendPlayer((Player) sender, "gamemode_usage");
                     return true;
@@ -49,6 +56,11 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
 
                 String[][] replacements = {{"<MODE>", mode}};
                 Message.sendPlayer((Player) sender, "gamemode_self", replacements);
+                return true;
+            }
+
+            if (!(sender.hasPermission("lyttleessentials.gamemode.other"))) {
+                Message.sendPlayer((Player) sender, "no_permission");
                 return true;
             }
 
@@ -97,6 +109,12 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 0) {
+
+            if (!(sender.hasPermission("lyttleessentials.gamemode.self"))) {
+                Message.sendPlayer((Player) sender, "no_permission");
+                return true;
+            }
+
             if (!(sender instanceof Player)) {
                 Message.sendConsole("gmx_usage");
                 return true;
@@ -112,6 +130,11 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
 
             String[][] replacements = {{"<MODE>", mode}};
             Message.sendPlayer((Player) sender, "gamemode_self", replacements);
+            return true;
+        }
+
+        if (!(sender.hasPermission("lyttleessentials.gamemode.other"))) {
+            Message.sendPlayer((Player) sender, "no_permission");
             return true;
         }
 

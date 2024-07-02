@@ -52,6 +52,11 @@ public class HealCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (!(sender.hasPermission("lyttleessentials.heal.other"))) {
+            Message.sendPlayer((Player) sender, "no_permission");
+            return true;
+        }
+
         if ((Bukkit.getPlayerExact(args[0]) == null)) {
             if (sender instanceof Player) {
                 Message.sendPlayer((Player) sender, "player_not_found");

@@ -41,6 +41,12 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 1) {
+
+            if (!(sender.hasPermission("lyttleessentials.repair.self"))) {
+                Message.sendPlayer((Player) sender, "no_permission");
+                return true;
+            }
+
             if (!(sender instanceof Player)) {
                 Message.sendConsole("repair_usage");
                 return true;
@@ -53,6 +59,11 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
             }
             _repairInventory(player.getInventory());
             Message.sendPlayer(player, "repair_all_self");
+            return true;
+        }
+
+        if (!(sender.hasPermission("lyttleessentials.repair.other"))) {
+            Message.sendPlayer((Player) sender, "no_permission");
             return true;
         }
 
@@ -105,11 +116,7 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
         for (ItemStack item : inventory) {
             if (item == null) continue;
             if (!item.hasItemMeta()) continue;
-            ItemMeta itemMeta = item.getItemMeta();
-            if (itemMeta instanceof Damageable) {
-                ((Damageable) itemMeta).setDamage(0);
-                item.setItemMeta(itemMeta);
-            }
+            _repairItem(item);
         }
     }
 
