@@ -23,12 +23,12 @@ public class LyttleEssentialsCommand implements CommandExecutor, TabCompleter {
 
         // Check for permission
         if (!(sender.hasPermission("lyttleessentials.lyttleessentials") || sender.hasPermission("mc.admin"))) {
-            Message.sendPlayer((Player) sender, "no_permission", Message.noReplacements);
+            Message.sendPlayer((Player) sender, "no_permission");
             return true;
         }
 
         if (args.length == 0) {
-            sender.sendMessage("plugin version: 2.0.0");
+            sender.sendMessage("plugin version: 2.3.1");
         }
 
         if (args.length == 1) {

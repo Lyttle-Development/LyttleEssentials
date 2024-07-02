@@ -15,26 +15,49 @@ LyttleEssentials is a Minecraft plugin that provides essential commands and feat
 ## Commands
 
 - `/lyttleessentials`: Displays the plugin version and provides a command to reload the configuration.
-- `/setwarp <warpName> [player]`: Sets a warp at the player's current location. If a player name is provided, sets the warp for that player.
-- `/delwarp <warpName> [player]`: Deletes a warp. If a player name is provided, deletes the warp for that player.
-- `/warp <warpName>`: Teleports the player to a warp.
+- `/admintp <playerName>`: Immediately teleports the player to another player without requiring acceptance.
+- `/fly <playerName>`: Toggles flight mode for the player.
+- `/gamemode <playerName> <gamemode>`: Changes the gamemode of the player.
+- `/gm<c / s / a / sp>`: Shortcut commands for changing the player's gamemode.
+- `/heal <playerName>`: Heals the player.
+- `/home`: Teleports the player to their home location.
+- `/sethome`: Sets the player's home location to their current location.
+- `/repair <playerName>`: Repairs the item in the player's hand.
+- `/spawn`: Teleports the player to the spawn location.
+- `/setspawn`: Sets the spawn location to the player's current location.
 - `/tp <playerName>`: Sends a teleport request to another player.
 - `/tpaccept`: Accepts a teleport request from another player.
 - `/tpdeny`: Denies a teleport request from another player.
-- `/setspawn`: Sets the spawn location to the player's current location.
-- `/spawn`: Teleports the player to the spawn location.
-- `/sethome`: Sets the player's home location to their current location.
-- `/home`: Teleports the player to their home location.
-- `/admintp <playerName>`: Immediately teleports the player to another player without requiring acceptance.
+- `/top`: Teleports the player to the highest block at their current location.
+- `/warp <warpName>`: Teleports the player to a warp.
+- `/setwarp <warpName> [player]`: Sets a warp at the player's current location. If a player name is provided, sets the warp for that player.
+- `/delwarp <warpName> [player]`: Deletes a warp. If a player name is provided, deletes the warp for that player.
 
 ## Permissions
 
-- `lyttleessentials.warp.others`: Allows setting and deleting warps for other players.
-- `lyttleessentials.tp.others`: Allows sending teleport requests to other players.
-- `lyttleessentials.spawn.set`: Allows setting the spawn location.
-- `lyttleessentials.home.set`: Allows setting the home location.
-- `lyttleessentials.admintp`: Allows immediate teleportation to other players.
 - `lyttleessentials.lyttleessentials`: Allows access to the base command of the plugin.
+- `lyttleessentials.admintp`: Allows immediate teleportation to other players.
+- `lyttleessentials.fly`: Allows toggling flight mode for the player.
+- `lyttleessentials.fly.self`: Allows toggling flight mode for oneself.
+- `lyttleessentials.fly.other`: Allows toggling flight mode for other players
+- `lyttleessentials.gamemode`: Allows changing the gamemode of the player.
+- `lyttleessentials.gamemode.self`: Allows changing the gamemode for oneself.
+- `lyttleessentials.gamemode.other`: Allows changing the gamemode for other players.
+- `lyttleessentials.heal`: Allows healing the player.
+- `lyttleessentials.heal.self`: Allows healing oneself.
+- `lyttleessentials.heal.other`: Allows healing other players.
+- `lyttleessentials.home`: Allows setting the home location for other players.
+- `lyttleessentials.home.set`: Allows setting the home location for other players.
+- `lyttleessentials.home.set.other`: Allows setting the home location for other players.
+- `lyttleessentials.home.del`: Allows deleting the home location for other players.
+- `lyttleessentials.home.del.other`: Allows deleting the home location for other players.
+- `lyttleessentials.repair`: Allows repairing the item in the player's hand.
+- `lyttleessentials.repair.self`: Allows repairing the item in one's hand.
+- `lyttleessentials.repair.other`: Allows repairing the item in other players' hands.
+- `lyttleessentials.spawn.set`: Allows setting the spawn location.
+- `lyttleessentials.tp.others`: Allows sending teleport requests to other players.
+- `lyttleessentials.top`: Allows teleporting to the highest block at the player's current location.
+- `lyttleessentials.warp.others`: Allows setting and deleting warps for other players.
 
 ## Installation
 
