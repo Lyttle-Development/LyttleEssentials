@@ -70,8 +70,9 @@ public final class LyttleEssentials extends JavaPlugin {
 
     @Override
     public void saveDefaultConfig() {
-        if (!new File(getDataFolder(), "config.yml").exists())
-            saveResource("config.yml", false);
+        String configPath = "config.yml";
+        if (!new File(getDataFolder(), configPath).exists())
+            saveResource(configPath, false);
 
         String messagesPath = "messages.yml";
         if (!new File(getDataFolder(), messagesPath).exists())
@@ -99,6 +100,9 @@ public final class LyttleEssentials extends JavaPlugin {
 
         // Defaults:
         String defaultPath = "#defaults/";
+        String defaultGeneralPath =  defaultPath + configPath;
+        saveResource(defaultGeneralPath, true);
+
         String defaultMessagesPath =  defaultPath + messagesPath;
         saveResource(defaultMessagesPath, true);
 
