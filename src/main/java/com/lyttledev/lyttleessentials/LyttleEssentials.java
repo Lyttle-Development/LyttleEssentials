@@ -42,9 +42,16 @@ public final class LyttleEssentials extends JavaPlugin {
         new SpawnCommand(this);
         new TeleportCommand(this);
         new WarpCommand(this);
+        new FlyCommand(this);
+        new HealCommand(this);
+        new TopCommand(this);
+        new RepairCommand(this);
+        new GamemodeCommand(this);
 
         // Listeners
         new onPlayerChatListener(this);
+        new onPlayerJoinListener(this);
+        new onPlayerLeaveListener(this);
     }
 
     private boolean setupEconomy() {
@@ -63,8 +70,9 @@ public final class LyttleEssentials extends JavaPlugin {
 
     @Override
     public void saveDefaultConfig() {
-        if (!new File(getDataFolder(), "config.yml").exists())
-            saveResource("config.yml", false);
+        String configPath = "config.yml";
+        if (!new File(getDataFolder(), configPath).exists())
+            saveResource(configPath, false);
 
         String messagesPath = "messages.yml";
         if (!new File(getDataFolder(), messagesPath).exists())
@@ -92,6 +100,9 @@ public final class LyttleEssentials extends JavaPlugin {
 
         // Defaults:
         String defaultPath = "#defaults/";
+        String defaultGeneralPath =  defaultPath + configPath;
+        saveResource(defaultGeneralPath, true);
+
         String defaultMessagesPath =  defaultPath + messagesPath;
         saveResource(defaultMessagesPath, true);
 
@@ -136,6 +147,53 @@ public final class LyttleEssentials extends JavaPlugin {
 
                 // Update config version.
                 config.general.set("config_version", 2);
+
+                // Recheck if the config is fully migrated.
+                migrateConfig();
+                break;
+            case "2":
+                // Migrate config entries.
+                config.messages.set("fly_usage", config.defaultMessages.get("fly_usage"));
+                config.messages.set("fly_activate", config.defaultMessages.get("fly_activate"));
+                config.messages.set("fly_deactivate", config.defaultMessages.get("fly_deactivate"));
+                config.messages.set("fly_activate_other_sender", config.defaultMessages.get("fly_activate_other_sender"));
+                config.messages.set("fly_deactivate_other_sender", config.defaultMessages.get("fly_deactivate_other_sender"));
+                config.messages.set("fly_activate_other_target", config.defaultMessages.get("fly_activate_other_target"));
+                config.messages.set("fly_deactivate_other_target", config.defaultMessages.get("fly_deactivate_other_target"));
+                config.messages.set("fly_activate_console", config.defaultMessages.get("fly_activate_console"));
+                config.messages.set("fly_deactivate_console", config.defaultMessages.get("fly_deactivate_console"));
+                config.messages.set("chat_default_role", config.defaultMessages.get("chat_default_role"));
+                config.messages.set("heal_usage", config.defaultMessages.get("heal_usage"));
+                config.messages.set("heal_self", config.defaultMessages.get("heal_self"));
+                config.messages.set("heal_other_sender", config.defaultMessages.get("heal_other_sender"));
+                config.messages.set("heal_other_player", config.defaultMessages.get("heal_other_player"));
+                config.messages.set("heal_console", config.defaultMessages.get("heal_console"));
+                config.messages.set("first_join_message", config.defaultMessages.get("first_join_message"));
+                config.messages.set("join_message", config.defaultMessages.get("join_message"));
+                config.messages.set("leave_message", config.defaultMessages.get("leave_message"));
+                config.messages.set("top_usage", config.defaultMessages.get("top_usage"));
+                config.messages.set("top_self", config.defaultMessages.get("top_self"));
+                config.messages.set("top_other_sender", config.defaultMessages.get("top_other_sender"));
+                config.messages.set("top_other_player", config.defaultMessages.get("top_other_player"));
+                config.messages.set("top_console", config.defaultMessages.get("top_console"));
+                config.messages.set("repair_usage", config.defaultMessages.get("repair_usage"));
+                config.messages.set("repair_helditem_self", config.defaultMessages.get("repair_helditem_self"));
+                config.messages.set("repair_all_self", config.defaultMessages.get("repair_all_self"));
+                config.messages.set("repair_helditem_other_sender", config.defaultMessages.get("repair_helditem_other_sender"));
+                config.messages.set("repair_helditem_other_player", config.defaultMessages.get("repair_helditem_other_player"));
+                config.messages.set("repair_helditem_other_console", config.defaultMessages.get("repair_helditem_other_console"));
+                config.messages.set("repair_all_other_sender", config.defaultMessages.get("repair_all_other_sender"));
+                config.messages.set("repair_all_other_player", config.defaultMessages.get("repair_all_other_player"));
+                config.messages.set("repair_all_other_console", config.defaultMessages.get("repair_all_other_console"));
+                config.messages.set("gamemode_usage", config.defaultMessages.get("gamemode_usage"));
+                config.messages.set("gamemode_self", config.defaultMessages.get("gamemode_self"));
+                config.messages.set("gamemode_other_sender", config.defaultMessages.get("gamemode_other_sender"));
+                config.messages.set("gamemode_other_target", config.defaultMessages.get("gamemode_other_target"));
+                config.messages.set("gamemode_console", config.defaultMessages.get("gamemode_console"));
+                config.messages.set("gmx_usage", config.defaultMessages.get("gmx_usage"));
+
+                // Update config version.
+                config.general.set("config_version", 3);
 
                 // Recheck if the config is fully migrated.
                 migrateConfig();
