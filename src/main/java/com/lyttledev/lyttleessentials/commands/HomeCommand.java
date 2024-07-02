@@ -43,7 +43,7 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
             }
 
             if (args.length == 1) {
-                if (!player.hasPermission("lyttleessentials.sethome.other")) {
+                if (!player.hasPermission("lyttleessentials.home.set.other")) {
                     Message.sendPlayer(player, "no_permission");
                     return true;
                 }
@@ -76,7 +76,7 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
             }
 
             if (args.length == 1) {
-                if (!player.hasPermission("lyttleessentials.delhome.other")) {
+                if (!player.hasPermission("lyttleessentials.home.del.other")) {
                     Message.sendPlayer(player, "no_permission");
                     return true;
                 }
