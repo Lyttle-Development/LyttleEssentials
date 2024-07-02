@@ -64,7 +64,7 @@ public class TopCommand implements CommandExecutor, TabCompleter {
         }
 
         if (sender instanceof Player) {
-            String[][] replacementsPlayer = {{"<PLAYER>", String.valueOf(((Player) sender).displayName())}};
+            String[][] replacementsPlayer = {{"<PLAYER>", ((Player) sender).getDisplayName()}};
             Message.sendPlayer((Player) sender, "top_other_sender", replacementsSender);
             Message.sendPlayer(player, "top_other_player", replacementsPlayer);
             return true;

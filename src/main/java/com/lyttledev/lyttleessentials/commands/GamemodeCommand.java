@@ -42,7 +42,7 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
                 }
                 String mode = _gamemode((Player) sender, args[0]);
 
-                if (mode.equalsIgnoreCase("wrongArgs")) {
+                if (mode.equalsIgnoreCase("ERROR-GAMEMODE-METHOD")) {
                     Message.sendPlayer((Player) sender, "gamemode_usage");
                     return true;
                 }
@@ -64,7 +64,7 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
             Player player = Bukkit.getPlayerExact(args[1]);
             String mode = _gamemode(player, args[0]);
 
-            if (mode.equalsIgnoreCase("wrongArgs")) {
+            if (mode.equals("ERROR-GAMEMODE-METHOD")) {
                 if (sender instanceof Player) {
                     Message.sendPlayer((Player) sender, "gamemode_usage");
                     return true;
@@ -101,23 +101,52 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
                 Message.sendConsole("gmx_usage");
                 return true;
             }
-            String mode = _gamemode((Player) sender, label);
+
+            Player player = (Player) sender;
+            String mode = _gamemode(player, label);
+
+            if (mode.equals("ERROR-GAMEMODE-METHOD")) {
+                Message.sendPlayer(player, "gmx_usage");
+                return true;
+            }
+
             String[][] replacements = {{"<MODE>", mode}};
-            Message.sendPlayer((Player) sender, "", replacements);
+            Message.sendPlayer((Player) sender, "gamemode_self", replacements);
+            return true;
+        }
+
+        if ((Bukkit.getPlayerExact(args[0]) == null)) {
+            if (sender instanceof Player) {
+                Message.sendPlayer((Player) sender, "player_not_found");
+                return true;
+            }
+            Message.sendConsole("player_not_found");
             return true;
         }
 
         Player player = Bukkit.getPlayerExact(args[0]);
-
         String mode = _gamemode(player, label);
+
         if (sender instanceof Player) {
-            String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", String.valueOf(player.displayName())}};
+
+            if (mode.equals("ERROR-GAMEMODE-METHOD")) {
+                Message.sendPlayer((Player) sender, "gmx_usage");
+                return true;
+            }
+
+            String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", player.getDisplayName()}};
             Message.sendPlayer((Player) sender, "gamemode_other_sender", replacementsSender);
-            String[][] replacementsPlayer = {{"<MODE>", mode}, {"<PLAYER>", String.valueOf(((Player) sender).displayName())}};
+            String[][] replacementsPlayer = {{"<MODE>", mode}, {"<PLAYER>", ((Player) sender).getDisplayName()}};
             Message.sendPlayer(player, "gamemode_other_target", replacementsPlayer);
             return true;
         }
-        String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", String.valueOf(player.displayName())}};
+
+        if (mode.equals("ERROR-GAMEMODE-METHOD")) {
+            Message.sendPlayer((Player) sender, "gmx_usage");
+            return true;
+        }
+
+        String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", player.getDisplayName()}};
         Message.sendConsole("gamemode_other_sender", replacementsSender);
         String[][] replacementsConsole = {{"<MODE>", mode}};
         Message.sendPlayer(player, "gamemode_console", replacementsConsole);

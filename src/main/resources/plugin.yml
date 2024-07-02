@@ -72,3 +72,23 @@ commands:
   repair:
     description: repairs items
     permission: lyttleessentials.repair
+
+  gamemode:
+    description: Change player gamemode
+    permission: lyttleessentials.gamemode
+
+  gmc:
+    description: Shor command for gamemode creative
+    permission: lyttleessentials.gamemode
+
+  gma:
+    description: Shor command for gamemode adventure
+    permission: lyttleessentials.gamemode
+
+  gms:
+    description: Shor command for gamemode survival
+    permission: lyttleessentials.gamemode
+
+  gmsp:
+    description: Shor command for gamemode spectator
+    permission: lyttleessentials.gamemode

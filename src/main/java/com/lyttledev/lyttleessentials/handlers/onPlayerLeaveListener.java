@@ -2,7 +2,6 @@ package com.lyttledev.lyttleessentials.handlers;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleessentials.utils.Message;
-import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,6 +21,6 @@ public class onPlayerLeaveListener implements Listener {
         Player player = event.getPlayer();
         event.quitMessage(null);
         String[][] replacements = {{"<PLAYER>", player.getDisplayName()}};
-        Message.sendBroadcast("leave_message", replacements, true);
+        Message.sendBroadcast("leave_message", replacements);
     }
 }

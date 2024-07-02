@@ -21,7 +21,7 @@ import java.util.List;
 public class RepairCommand implements CommandExecutor, TabCompleter {
 
     public RepairCommand(LyttleEssentials plugin) {
-        plugin.getCommand("top").setExecutor(this);
+        plugin.getCommand("repair").setExecutor(this);
     }
 
     @Override
@@ -56,14 +56,23 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (Bukkit.getPlayerExact(args[1]) == null) {
+            if (sender instanceof Player) {
+                Message.sendPlayer((Player) sender, "player_not_found");
+                return true;
+            }
+            Message.sendConsole("player_not_found");
+            return true;
+        }
+
         Player player = Bukkit.getPlayerExact(args[1]);
 
         String[][] replacementsSender = {{"<PLAYER>", player.getDisplayName()}};
-        String[][] replacementsPlayer = {{"<PLAYER>", ((Player) sender).getDisplayName()}};
 
         if (args[0].equalsIgnoreCase("HeldItem")) {
             _repairItem(player.getInventory().getItemInMainHand());
             if (sender instanceof Player) {
+                String[][] replacementsPlayer = {{"<PLAYER>", ((Player) sender).getDisplayName()}};
                 Message.sendPlayer(player, "repair_helditem_other_player", replacementsPlayer);
                 Message.sendPlayer((Player) sender, "repair_helditem_other_sender", replacementsSender);
                 return true;
@@ -74,6 +83,7 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
         }
         _repairInventory(player.getInventory());
         if (sender instanceof Player) {
+            String[][] replacementsPlayer = {{"<PLAYER>", ((Player) sender).getDisplayName()}};
             Message.sendPlayer(player, "repair_all_other_player", replacementsPlayer);
             Message.sendPlayer((Player) sender, "repair_all_other_sender", replacementsSender);
             return true;
