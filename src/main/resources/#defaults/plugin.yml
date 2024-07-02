@@ -1,7 +1,7 @@
 name: LyttleEssentials
 version: '${projectVersion}'
 main: com.lyttledev.lyttleessentials.LyttleEssentials
-api-version: '1.20.4'
+api-version: '1.20.6'
 authors:
     - Stualyttle
     - ThatsATim
@@ -12,7 +12,7 @@ depend:
 commands:
   atp:
     description: teleport for staff free of charge!
-    permission: fly_activate_other_sender
+    permission: lyttleessentials.adminteleport
 
   tp:
     description: Allows players to teleport using their tokens.
@@ -64,3 +64,31 @@ commands:
   heal:
     description: Heal someone
     permission: lyttleessentials.heal
+
+  top:
+    description: Teleport to the top block at a location
+    permission: lyttleessentials.top
+
+  repair:
+    description: repairs items
+    permission: lyttleessentials.repair
+
+  gamemode:
+    description: Change player gamemode
+    permission: lyttleessentials.gamemode
+
+  gmc:
+    description: Shor command for gamemode creative
+    permission: lyttleessentials.gamemode
+
+  gma:
+    description: Shor command for gamemode adventure
+    permission: lyttleessentials.gamemode
+
+  gms:
+    description: Shor command for gamemode survival
+    permission: lyttleessentials.gamemode
+
+  gmsp:
+    description: Shor command for gamemode spectator
+    permission: lyttleessentials.gamemode

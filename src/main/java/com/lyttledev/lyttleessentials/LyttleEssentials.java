@@ -44,9 +44,14 @@ public final class LyttleEssentials extends JavaPlugin {
         new WarpCommand(this);
         new FlyCommand(this);
         new HealCommand(this);
+        new TopCommand(this);
+        new RepairCommand(this);
+        new GamemodeCommand(this);
 
         // Listeners
         new onPlayerChatListener(this);
+        new onPlayerJoinListener(this);
+        new onPlayerLeaveListener(this);
     }
 
     private boolean setupEconomy() {
@@ -159,6 +164,29 @@ public final class LyttleEssentials extends JavaPlugin {
                 config.messages.set("heal_other_sender", config.defaultMessages.get("heal_other_sender"));
                 config.messages.set("heal_other_player", config.defaultMessages.get("heal_other_player"));
                 config.messages.set("heal_console", config.defaultMessages.get("heal_console"));
+                config.messages.set("first_join_message", config.defaultMessages.get("first_join_message"));
+                config.messages.set("join_message", config.defaultMessages.get("join_message"));
+                config.messages.set("leave_message", config.defaultMessages.get("leave_message"));
+                config.messages.set("top_usage", config.defaultMessages.get("top_usage"));
+                config.messages.set("top_self", config.defaultMessages.get("top_self"));
+                config.messages.set("top_other_sender", config.defaultMessages.get("top_other_sender"));
+                config.messages.set("top_other_player", config.defaultMessages.get("top_other_player"));
+                config.messages.set("top_console", config.defaultMessages.get("top_console"));
+                config.messages.set("repair_usage", config.defaultMessages.get("repair_usage"));
+                config.messages.set("repair_helditem_self", config.defaultMessages.get("repair_helditem_self"));
+                config.messages.set("repair_all_self", config.defaultMessages.get("repair_all_self"));
+                config.messages.set("repair_helditem_other_sender", config.defaultMessages.get("repair_helditem_other_sender"));
+                config.messages.set("repair_helditem_other_player", config.defaultMessages.get("repair_helditem_other_player"));
+                config.messages.set("repair_helditem_other_console", config.defaultMessages.get("repair_helditem_other_console"));
+                config.messages.set("repair_all_other_sender", config.defaultMessages.get("repair_all_other_sender"));
+                config.messages.set("repair_all_other_player", config.defaultMessages.get("repair_all_other_player"));
+                config.messages.set("repair_all_other_console", config.defaultMessages.get("repair_all_other_console"));
+                config.messages.set("gamemode_usage", config.defaultMessages.get("gamemode_usage"));
+                config.messages.set("gamemode_self", config.defaultMessages.get("gamemode_self"));
+                config.messages.set("gamemode_other_sender", config.defaultMessages.get("gamemode_other_sender"));
+                config.messages.set("gamemode_other_target", config.defaultMessages.get("gamemode_other_target"));
+                config.messages.set("gamemode_console", config.defaultMessages.get("gamemode_console"));
+                config.messages.set("gmx_usage", config.defaultMessages.get("gmx_usage"));
 
                 // Update config version.
                 config.general.set("config_version", 3);

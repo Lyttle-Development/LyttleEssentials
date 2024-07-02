@@ -14,8 +14,6 @@ public class Message {
         Message.plugin = plugin;
     }
 
-    public static String[][] noReplacements = {};
-
     private static String _getPrefix() {
         return _getConfigMessage("prefix");
     }
