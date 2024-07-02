@@ -1,9 +1,12 @@
-prefix: '&6&lMaple&e&lMC &8- &7'
+prefix: '&3&lLyttle&b&lEssentials &8- &7'
 no_permission: '&cYou do not have permission to do that!'
 player_not_found: '&4Player not found'
 must_be_player: '&cYou must be a player to use this command!'
 message_not_found: '&cOh... I can''t react to that. (Contact the Administrators)'
+
+# Chat messages
 chat_format: '&r<ROLE><PLAYER>&r &8&l-&r &7&o<MESSAGE>&r'
+chat_default_role: '&8&lUser &7&l'
 
 # Token messages
 tokens_missing: '&cYou do not have enough tokens!'
@@ -50,7 +53,7 @@ delhome_other_success: You have succesfully deleted <PLAYER>'s home!
 delhome_usage: Please use /delhome
 home_success: You have succesfully teleported to your home! That costed <PRICE> tokens...
 home_other_success:
-  You have succesfully teleported to <PLAYER>'s home! That costed
+  You have successfully teleported to <PLAYER>'s home! That costed
   <PRICE> tokens...
 home_not_set: You have not set your home yet!
 home_other_not_set: <PLAYER> has not set their home yet!
@@ -71,3 +74,52 @@ delwarp_not_owner: You are not the owner of this warp!
 warp_no_name: Please use /warp <name>
 warp_success: You have succesfully teleported to <NAME>! That costed <PRICE> tokens...
 warp_doesnt_exist: This warp doesn't exist!
+
+# Fly messages
+fly_usage: Please use /fly <playername>
+fly_activate: You enabled flight on yourself.
+fly_deactivate: You deactivated flight on yourself.
+fly_activate_other_sender: You enabled flight on <PLAYER>.
+fly_deactivate_other_sender: You deactivated flight on <PLAYER>.
+fly_activate_other_target: <PLAYER> enabled flight on you.
+fly_deactivate_other_target: <PLAYER> deactivated flight on you.
+fly_activate_console: The console enabled flight on you.
+fly_deactivate_console: The console deactivated flight on you.
+
+# Heal messages
+heal_usage: Please use /heal <playername>
+heal_self: You healed yourself!
+heal_other_sender: You healed <PLAYER>.
+heal_other_player: <PLAYER> healed you.
+heal_console: The console has healed you.
+
+# Join and Leave messages
+first_join_message: "&a<PLAYER> joined for the very first time!"
+join_message: "&a[+] <PLAYER>"
+leave_message: "&c[-] <PLAYER>"
+
+# Top messages
+top_usage: Please use /top <playername>
+top_self: You teleported yourself to the top.
+top_other_sender: You teleported <PLAYER> to the top.
+top_other_player: <PLAYER> teleported you to the top.
+top_console: The console teleported you to the top.
+
+# Repair messages
+repair_usage: Please use /repair <HeldItem / all> <playername>
+repair_helditem_self: You repaired the item in your hand.
+repair_all_self: You repaired all the items in your inventory.
+repair_helditem_other_sender: You have repaired the item in the hand of <PLAYER>.
+repair_helditem_other_player: <PLAYER> has repaired the item in your hand.
+repair_helditem_other_console: The console has repaired the item in your hand.
+repair_all_other_sender: You have repaired all items in the inventory of <PLAYER>.
+repair_all_other_player: <PLAYER> has repaired all the items in your inventory.
+repair_all_other_console: The console has repaired all the items in your inventory.
+
+# Gamemode messages
+gamemode_usage: Please use /gamemode <creative / survival / adventure / spectator> [playername]
+gamemode_self: You set your own gamemode to <MODE>.
+gamemode_other_sender: You set <PLAYER> in <MODE>.
+gamemode_other_target: <PLAYER> set you in <MODE>.
+gamemode_console: The console set you in <MODE>.
+gmx_usage: Wrong arguments => /gm<c / s / a / sp> [playername]

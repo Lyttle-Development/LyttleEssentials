@@ -1,3 +1,7 @@
+# Do not change the config_version, it is used to update the configuration file.
+config_version: 3
+
+# Invoice settings
 invoices:
   teleport_to_home:
     price: 2
@@ -14,5 +18,3 @@ invoices:
   teleport_to_spawn:
     price: 1
     increase: false
-
-config_version: 1

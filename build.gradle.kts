@@ -1,5 +1,7 @@
 import io.papermc.hangarpublishplugin.model.Platforms
 import java.io.ByteArrayOutputStream
+import org.gradle.api.tasks.Delete
+import org.gradle.api.tasks.Copy
 
 plugins {
     `java-library`
@@ -22,7 +24,7 @@ dependencies {
 }
 
 group = "com.lyttledev"
-version = "2.3.0"
+version = "2.4.0"
 description = "LyttleEssentials"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
@@ -40,10 +42,48 @@ tasks.withType<Javadoc> {
     options.encoding = "UTF-8"
 }
 
-tasks.named<ProcessResources>("processResources") {
-    filesMatching("plugin.yml") {
-        expand("projectVersion" to project.version)
+// Define the folders using project.file to ensure paths are resolved correctly
+val folderToDelete = project.file("src/main/resources/#defaults")
+val sourceFolder = project.file("src/main/resources")
+val destinationFolder = project.file("src/main/resources/#defaults")
+
+// Task to delete the folder
+val deleteFolder by tasks.registering(Delete::class) {
+    delete(folderToDelete)
+    doLast {
+        println("Deleted folder: $folderToDelete")
     }
+}
+
+// Task to copy the contents of sourceFolder into destinationFolder
+val copyContents by tasks.registering(Copy::class) {
+    dependsOn(deleteFolder)
+
+    // Create the destination folder if it doesn't exist
+    doFirst {
+        println("Creating destination folder: $destinationFolder")
+        destinationFolder.mkdirs()
+    }
+
+    from(sourceFolder) {
+        // Exclude the destination folder itself to avoid copying it into itself
+        exclude("_defaults/**")
+    }
+    into(destinationFolder)
+
+    doLast {
+        println("Copied contents from $sourceFolder to $destinationFolder")
+    }
+}
+
+// Ensure that processResources depends on copyContents
+tasks.named("processResources") {
+    dependsOn(copyContents)
+}
+
+// Define the build task to depend on copyContents
+tasks.named("build") {
+    dependsOn(copyContents)
 }
 
 // Helper methods
@@ -64,10 +104,22 @@ fun latestCommitMessage(): String {
 val versionString: String =  if (System.getenv("CHANNEL") == "Release") {
     version.toString()
 } else {
-    if (System.getenv("GITHUB_RUN_NUMBER") != null) {
-        "${version}-SNAPSHOT+${System.getenv("GITHUB_RUN_NUMBER")}"
+    val versionPrefix = if (System.getenv("CHANNEL") == "Snapshot") {
+        "SNAPSHOT"
     } else {
-        "$version-SNAPSHOT"
+        "ALPHA"
+    }
+
+    if (System.getenv("GITHUB_RUN_NUMBER") != null) {
+        "${version}-${versionPrefix}+${System.getenv("GITHUB_RUN_NUMBER")}"
+    } else {
+        "$version-${versionPrefix}"
+    }
+}
+
+tasks.named<ProcessResources>("processResources") {
+    filesMatching("plugin.yml") {
+        expand("projectVersion" to versionString)
     }
 }
 

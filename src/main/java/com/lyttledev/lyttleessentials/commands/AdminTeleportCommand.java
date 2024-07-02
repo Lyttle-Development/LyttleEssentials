@@ -23,14 +23,14 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            Message.sendConsole("must_be_player", Message.noReplacements);
+            Message.sendConsole("must_be_player");
             return true;
         }
 
         Player player = (Player) sender;
 
-        if (!player.hasPermission("mapleadmin.staff")) {
-            Message.sendPlayer((Player) sender, "no_permission", Message.noReplacements);
+        if (!player.hasPermission("lyttleessentials.staff")) {
+            Message.sendPlayer((Player) sender, "no_permission");
             return true;
         }
 
@@ -38,7 +38,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
             Player target = plugin.getServer().getPlayer(args[0]);
 
             if (target == null) {
-                Message.sendPlayer(player, "player_not_found", Message.noReplacements);
+                Message.sendPlayer(player, "player_not_found");
                 return true;
             }
 
@@ -57,7 +57,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
             Player target = plugin.getServer().getPlayer(args[1]);
 
             if (user == null || target == null) {
-                Message.sendPlayer(player, "player_not_found", Message.noReplacements);
+                Message.sendPlayer(player, "player_not_found");
                 return true;
             }
 
@@ -85,7 +85,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
             Player user = plugin.getServer().getPlayer(args[0]);
 
             if (user == null) {
-                Message.sendPlayer(player, "player_not_found", Message.noReplacements);
+                Message.sendPlayer(player, "player_not_found");
                 return true;
             }
 
@@ -99,7 +99,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        Message.sendPlayer(player, "atp_usage", Message.noReplacements);
+        Message.sendPlayer(player, "atp_usage");
 
         return true;
     }

@@ -27,7 +27,7 @@ public class SpawnCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            Message.sendConsole("must_be_player", Message.noReplacements);
+            Message.sendConsole("must_be_player");
             return true;
         }
 
@@ -37,24 +37,24 @@ public class SpawnCommand implements CommandExecutor, TabCompleter {
                 Location spawn = player.getLocation();
                 plugin.config.locations.set("spawn", spawn);
                 Console.playerCommand(player, "setworldspawn");
-                Message.sendPlayer(player, "spawn_set", Message.noReplacements);
+                Message.sendPlayer(player, "spawn_set");
                 return true;
             }
             if (label.equalsIgnoreCase("delspawn")) {
                 plugin.config.locations.set("spawn", null);
-                Message.sendPlayer(player, "spawn_deleted", Message.noReplacements);
+                Message.sendPlayer(player, "spawn_deleted");
                 return true;
             }
         }
 
         if (plugin.config.locations.get("spawn") == null) {
-            Message.sendPlayer(player, "spawn_not_set", Message.noReplacements);
+            Message.sendPlayer(player, "spawn_not_set");
             return true;
         }
 
         Bill bill = plugin.invoice.teleportToSpawn(player);
         if (bill.total < 0) {
-            Message.sendPlayer(player, "tokens_missing", Message.noReplacements);
+            Message.sendPlayer(player, "tokens_missing");
             return true;
         }
 
