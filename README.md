@@ -41,19 +41,19 @@ LyttleEssentials is a Minecraft plugin that provides essential commands and feat
 - `lyttleessentials.fly.self`: Allows toggling flight mode for oneself.
 - `lyttleessentials.fly.other`: Allows toggling flight mode for other players
 - `lyttleessentials.gamemode`: Allows changing the gamemode of the player.
-[//]: # (- `lyttleessentials.gamemode.self`: Allows changing the gamemode for oneself.)
-[//]: # (- `lyttleessentials.gamemode.other`: Allows changing the gamemode for other players.)
+- `lyttleessentials.gamemode.self`: Allows changing the gamemode for oneself.
+- `lyttleessentials.gamemode.other`: Allows changing the gamemode for other players.
 - `lyttleessentials.heal`: Allows healing the player.
 - `lyttleessentials.heal.self`: Allows healing oneself.
-[//]: # (- `lyttleessentials.heal.other`: Allows healing other players.)
-[//]: # (- `lyttleessentials.home`: Allows setting the home location for other players.)
-[//]: # (- `lyttleessentials.home.set`: Allows setting the home location for other players.)
+- `lyttleessentials.heal.other`: Allows healing other players.
+- `lyttleessentials.home`: Allows setting the home location for other players.
+- `lyttleessentials.home.set`: Allows setting the home location for other players.
 - `lyttleessentials.home.set.other`: Allows setting the home location for other players.
-[//]: # (- `lyttleessentials.home.del`: Allows deleting the home location for other players.)
+- `lyttleessentials.home.del`: Allows deleting the home location for other players.
 - `lyttleessentials.home.del.other`: Allows deleting the home location for other players.
 - `lyttleessentials.repair`: Allows repairing the item in the player's hand.
-[//]: # (- `lyttleessentials.repair.self`: Allows repairing the item in one's hand.)
-[//]: # (- `lyttleessentials.repair.other`: Allows repairing the item in other players' hands.)
+- `lyttleessentials.repair.self`: Allows repairing the item in one's hand.
+- `lyttleessentials.repair.other`: Allows repairing the item in other players' hands.
 - `lyttleessentials.spawn.set`: Allows setting the spawn location.
 - `lyttleessentials.tp.others`: Allows sending teleport requests to other players.
 - `lyttleessentials.top`: Allows teleporting to the highest block at the player's current location.
