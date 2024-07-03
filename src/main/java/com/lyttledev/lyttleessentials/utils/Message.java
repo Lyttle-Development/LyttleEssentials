@@ -3,6 +3,7 @@ package com.lyttledev.lyttleessentials.utils;
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
@@ -44,30 +45,34 @@ public class Message {
         return message;
     }
 
-    public static void sendPlayer(Player player, String message) {
-        String msg = _getConfigMessage(message);
-        player.sendMessage(_getMessage(_getPrefix() + msg));
+    public static void sendMessage(Object target, String message) {
+        String msg = _getMessage(_getPrefix() + _getConfigMessage(message));
+        if (target instanceof Player) {
+            ((Player) target).sendMessage(msg);
+        }
+        if (target instanceof ConsoleCommandSender) {
+            ((ConsoleCommandSender) target).sendMessage(msg);
+        }
     }
 
-    public static void sendPlayer(Player player, String message, @Nullable String[][] replacements) {
-        String msg = _replaceMessageStrings(_getConfigMessage(message), replacements);
-        player.sendMessage(_getMessage(_getPrefix() + msg));
+    public static void sendMessage(Object target, String message, @Nullable String[][] replacements) {
+        String msg = _getMessage(_getPrefix() + _replaceMessageStrings(_getConfigMessage(message), replacements));
+        if (target instanceof Player) {
+            ((Player) target).sendMessage(msg);
+        }
+        if (target instanceof ConsoleCommandSender) {
+            ((ConsoleCommandSender) target).sendMessage(msg);
+        }
     }
 
-    public static void sendPlayerRaw(Player player, String message) {
-        player.sendMessage(_getMessage(_getPrefix() + message));
-    }
-
-    public static void sendConsole(String message, String[][] replacements) {
-        Console.log(_getMessage(_replaceMessageStrings(_getConfigMessage(message), replacements)));
-    }
-
-    public static void sendConsole(String message) {
-        Console.log(_getConfigMessage(message));
-    }
-
-    public static void sendConsoleRaw(String message) {
-        Console.log(_getMessage(message));
+    public static void sendMessageRaw(Object target, String message) {
+        String msg = _getMessage(_getPrefix() + message);
+        if (target instanceof Player) {
+            ((Player) target).sendMessage(msg);
+        }
+        if (target instanceof ConsoleCommandSender) {
+            ((ConsoleCommandSender) target).sendMessage(msg);
+        }
     }
 
     public static void sendBroadcast(String message, String[][] replacements) {
