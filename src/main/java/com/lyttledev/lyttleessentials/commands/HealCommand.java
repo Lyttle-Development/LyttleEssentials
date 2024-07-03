@@ -11,7 +11,6 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class HealCommand implements CommandExecutor, TabCompleter {
