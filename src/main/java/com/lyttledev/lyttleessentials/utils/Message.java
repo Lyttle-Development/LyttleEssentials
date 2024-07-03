@@ -47,31 +47,25 @@ public class Message {
 
     public static void sendMessage(Object target, String message) {
         String msg = _getMessage(_getPrefix() + _getConfigMessage(message));
-        if (target instanceof Player) {
-            ((Player) target).sendMessage(msg);
-        }
-        if (target instanceof ConsoleCommandSender) {
-            ((ConsoleCommandSender) target).sendMessage(msg);
-        }
+        _actuallySend(target, msg);
     }
 
     public static void sendMessage(Object target, String message, @Nullable String[][] replacements) {
         String msg = _getMessage(_getPrefix() + _replaceMessageStrings(_getConfigMessage(message), replacements));
-        if (target instanceof Player) {
-            ((Player) target).sendMessage(msg);
-        }
-        if (target instanceof ConsoleCommandSender) {
-            ((ConsoleCommandSender) target).sendMessage(msg);
-        }
+        _actuallySend(target, msg);
     }
 
     public static void sendMessageRaw(Object target, String message) {
         String msg = _getMessage(_getPrefix() + message);
+        _actuallySend(target, msg);
+    }
+
+    private static void _actuallySend(Object target, String message) {
         if (target instanceof Player) {
-            ((Player) target).sendMessage(msg);
+            ((Player) target).sendMessage(message);
         }
         if (target instanceof ConsoleCommandSender) {
-            ((ConsoleCommandSender) target).sendMessage(msg);
+            ((ConsoleCommandSender) target).sendMessage(message);
         }
     }
 
