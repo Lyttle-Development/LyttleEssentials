@@ -201,7 +201,5 @@ public final class LyttleEssentials extends JavaPlugin {
             default:
                 break;
         }
-
-
     }
 }
