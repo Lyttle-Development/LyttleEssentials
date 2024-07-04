@@ -3,7 +3,6 @@ package com.lyttledev.lyttleessentials.utils;
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -49,20 +48,20 @@ public class Message {
 
     public static void sendMessage(Object target, String message) {
         Component msg = _getMessage(_getPrefix() + _getConfigMessage(message));
-        _actuallySend(target, msg);
+        _sendMessage(target, msg);
     }
 
-    public static void sendMessage(Object target, String message, @Nullable String[][] replacements) {
+    public static void sendMessage(Object target, String message, String[][] replacements) {
         Component msg = _getMessage(_getPrefix() + _replaceMessageStrings(_getConfigMessage(message), replacements));
-        _actuallySend(target, msg);
+        _sendMessage(target, msg);
     }
 
     public static void sendMessageRaw(Object target, String message) {
         Component msg = _getMessage(_getPrefix() + message);
-        _actuallySend(target, msg);
+        _sendMessage(target, msg);
     }
 
-    private static void _actuallySend(Object target, Component message) {
+    private static void _sendMessage(Object target, Component message) {
         if (target instanceof Player) {
             ((Player) target).sendMessage(message);
         }

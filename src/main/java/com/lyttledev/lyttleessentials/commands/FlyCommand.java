@@ -11,12 +11,12 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
+
 public class FlyCommand implements CommandExecutor, TabCompleter {
-    private LyttleEssentials plugin;
 
     public FlyCommand(LyttleEssentials plugin) {
         plugin.getCommand("fly").setExecutor(this);
-        this.plugin = plugin;
     }
 
     @Override
@@ -67,10 +67,10 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        String[][] replacementsSender = {{"<PLAYER>", player.getDisplayName()}};
+        String[][] replacementsSender = {{"<PLAYER>", getDisplayName(player)}};
 
         if (sender instanceof Player) {
-            String[][] replacementsPlayer = {{"<PLAYER>", ((Player) sender).getDisplayName()}};
+            String[][] replacementsPlayer = {{"<PLAYER>", getDisplayName((Player) sender)}};
             if (active) {
                 Message.sendMessage(sender, "fly_activate_other_sender", replacementsSender);
                 Message.sendMessage(player, "fly_activate_other_target", replacementsPlayer);

@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class SpawnCommand implements CommandExecutor, TabCompleter {
-    private LyttleEssentials plugin;
+    private final LyttleEssentials plugin;
 
     public SpawnCommand(LyttleEssentials plugin) {
         plugin.getCommand("spawn").setExecutor(this);

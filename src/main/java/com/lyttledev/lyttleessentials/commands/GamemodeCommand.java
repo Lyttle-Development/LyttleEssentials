@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
+
 public class GamemodeCommand implements CommandExecutor, TabCompleter {
 
     public GamemodeCommand(LyttleEssentials plugin) {
@@ -86,13 +88,13 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
             }
 
             if (sender instanceof Player) {
-                String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", player.getDisplayName()}};
+                String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", getDisplayName(player)}};
                 Message.sendMessage(sender, "gamemode_other_sender", replacementsSender);
-                String[][] replacementsPlayer = {{"<MODE>", mode}, {"<PLAYER>", ((Player) sender).getDisplayName()}};
+                String[][] replacementsPlayer = {{"<MODE>", mode}, {"<PLAYER>", getDisplayName((Player) sender)}};
                 Message.sendMessage(player, "gamemode_other_target", replacementsPlayer);
                 return true;
             }
-            String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", player.getDisplayName()}};
+            String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", getDisplayName(player)}};
             Message.sendMessage(sender,"gamemode_other_sender", replacementsSender);
             String[][] replacementsConsole = {{"<MODE>", mode}};
             Message.sendMessage(player, "gamemode_console", replacementsConsole);
@@ -157,9 +159,9 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", player.getDisplayName()}};
+            String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", getDisplayName(player)}};
             Message.sendMessage(sender, "gamemode_other_sender", replacementsSender);
-            String[][] replacementsPlayer = {{"<MODE>", mode}, {"<PLAYER>", ((Player) sender).getDisplayName()}};
+            String[][] replacementsPlayer = {{"<MODE>", mode}, {"<PLAYER>", getDisplayName((Player) sender)}};
             Message.sendMessage(player, "gamemode_other_target", replacementsPlayer);
             return true;
         }
@@ -169,7 +171,7 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", player.getDisplayName()}};
+        String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", getDisplayName(player)}};
         Message.sendMessage(sender,"gamemode_other_sender", replacementsSender);
         String[][] replacementsConsole = {{"<MODE>", mode}};
         Message.sendMessage(player, "gamemode_console", replacementsConsole);

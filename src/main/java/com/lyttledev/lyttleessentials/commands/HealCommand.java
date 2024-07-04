@@ -13,12 +13,12 @@ import org.bukkit.potion.PotionEffect;
 
 import java.util.List;
 
+import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
+
 public class HealCommand implements CommandExecutor, TabCompleter {
-    private LyttleEssentials plugin;
 
     public HealCommand(LyttleEssentials plugin) {
         plugin.getCommand("heal").setExecutor(this);
-        this.plugin = plugin;
     }
 
     @Override
@@ -75,10 +75,10 @@ public class HealCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        String[][] replacementsSender = {{"<PLAYER>", player.getDisplayName()}};
+        String[][] replacementsSender = {{"<PLAYER>", getDisplayName(player)}};
 
         if (sender instanceof Player) {
-            String[][] replacementsPlayer = {{"<PLAYER>", ((Player) sender).getDisplayName()}};
+            String[][] replacementsPlayer = {{"<PLAYER>", getDisplayName((Player) sender)}};
             Message.sendMessage(player, "heal_other_player", replacementsPlayer);
             Message.sendMessage(sender, "heal_other_sender", replacementsSender);
             return true;
