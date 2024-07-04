@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
+
 public class WarpCommand implements CommandExecutor, TabCompleter {
     private final LyttleEssentials plugin;
 
@@ -71,7 +73,7 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                     String warpName = args[0];
                     Player target = Bukkit.getPlayer(args[1]);
                     Warp warp = new Warp(target, warpName);
-                    String[][] replacements = {{"<NAME>", warpName}, {"<PLAYER>", target.getName()}};
+                    String[][] replacements = {{"<NAME>", warpName}, {"<PLAYER>", getDisplayName(target)}};
                     if (!plugin.config.warps.containsLowercase(warpName)) {
                         plugin.config.warps.set(warpName, warp);
                         Message.sendMessage(player, "setwarp_success_other", replacements);
@@ -99,7 +101,7 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                     // Name and player provided
                     String warpName = args[0];
                     Player target = Bukkit.getPlayer(args[1]);
-                    String[][] replacements = {{"<NAME>", warpName}, {"<PLAYER>", target.getName()}};
+                    String[][] replacements = {{"<NAME>", warpName}, {"<PLAYER>", getDisplayName(target)}};
                     if (plugin.config.warps.contains(warpName)) {
                         plugin.config.warps.remove(warpName);
                         Message.sendMessage(player, "delwarp_success_other", replacements);

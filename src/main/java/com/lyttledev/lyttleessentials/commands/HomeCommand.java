@@ -14,6 +14,8 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Objects;
 
+import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
+
 public class HomeCommand implements CommandExecutor, TabCompleter {
     private final LyttleEssentials plugin;
 
@@ -103,7 +105,7 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
                 }
 
                 String homeName = args[0];
-                plugin.config.homes.set(player.getName(), null);
+                plugin.config.homes.set(getDisplayName(player), null);
                 String[][] replacements = {{"<PLAYER>", homeName}};
                 Message.sendMessage(player, "delhome_other_success", replacements);
                 return true;
