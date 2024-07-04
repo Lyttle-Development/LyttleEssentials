@@ -23,16 +23,12 @@ public class HealCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission("lyttleessentials.heal")) {
+            Message.sendMessage(sender, "no_permission");
+            return true;
+        }
 
         if (args.length > 1) {
-            if (!sender.hasPermission("lyttleessentials.heal")) {
-                Message.sendMessage(sender, "no_permission");
-                return true;
-            }
-            if (sender instanceof Player) {
-                Message.sendMessage(sender, "heal_usage");
-                return true;
-            }
             Message.sendMessage(sender,"heal_usage");
             return true;
         }
@@ -57,10 +53,6 @@ public class HealCommand implements CommandExecutor, TabCompleter {
         }
 
         if ((Bukkit.getPlayerExact(args[0]) == null)) {
-            if (sender instanceof Player) {
-                Message.sendMessage(sender, "player_not_found");
-                return true;
-            }
             Message.sendMessage(sender,"player_not_found");
             return true;
         }

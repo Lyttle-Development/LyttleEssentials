@@ -27,9 +27,6 @@ public class TopCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length > 1) {
-            if (sender instanceof Player) {
-                Message.sendMessage(sender, "top_usage");
-            }
             Message.sendMessage(sender,"top_usage");
             return true;
         }
@@ -46,18 +43,12 @@ public class TopCommand implements CommandExecutor, TabCompleter {
         }
 
         if (Bukkit.getPlayerExact(args[0]) == null) {
-            if (sender instanceof Player) {
-                Message.sendMessage(sender, "player_not_found");
-                return true;
-            }
             Message.sendMessage(sender,"player_not_found");
             return true;
         }
 
         Player player = Bukkit.getPlayer(args[0]);
-
         String[][] replacementsSender = {{"<PLAYER>", getDisplayName(player)}};
-
         _teleportToTop(player);
 
         if (sender == Bukkit.getPlayerExact(args[0])) {

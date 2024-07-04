@@ -28,17 +28,13 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length > 2 || args.length == 0) {
-            if (sender instanceof Player) {
-                Message.sendMessage(sender, "repair_usage");
-                return true;
-            }
-            Message.sendMessage(sender,"repair_usage");
+        if (!(sender.hasPermission("lyttleessentials.repair"))) {
+            Message.sendMessage(sender, "no_permission");
             return true;
         }
 
-        if (!(sender.hasPermission("lyttleessentials.repair"))) {
-            Message.sendMessage(sender, "no_permission");
+        if (args.length > 2 || args.length == 0) {
+            Message.sendMessage(sender,"repair_usage");
             return true;
         }
 
@@ -53,12 +49,15 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
                 Message.sendMessage(sender,"repair_usage");
                 return true;
             }
+
             Player player = (Player) sender;
+
             if (args[0].equalsIgnoreCase("HeldItem")) {
                 _repairItem(player.getInventory().getItemInMainHand());
                 Message.sendMessage(player, "repair_helditem_self");
                 return true;
             }
+
             _repairInventory(player.getInventory());
             Message.sendMessage(player, "repair_all_self");
             return true;
@@ -70,10 +69,6 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
         }
 
         if (Bukkit.getPlayerExact(args[1]) == null) {
-            if (sender instanceof Player) {
-                Message.sendMessage(sender, "player_not_found");
-                return true;
-            }
             Message.sendMessage(sender,"player_not_found");
             return true;
         }

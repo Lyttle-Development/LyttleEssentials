@@ -123,7 +123,6 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
 
-
                 Bill bill = this.plugin.invoice.teleportToHome(player);
                 if (bill.total == -1) {
                     Message.sendMessage(player, "tokens_missing");

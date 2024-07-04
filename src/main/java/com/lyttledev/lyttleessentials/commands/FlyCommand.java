@@ -21,25 +21,22 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission("lyttleessentials.fly")) {
+            Message.sendMessage(sender, "no_permission");
+            return true;
+        }
+
         if (!(sender instanceof Player) && args.length != 1) {
             Message.sendMessage(sender, "fly_usage");
             return true;
         }
 
         if (args.length > 1) {
-            if (!sender.hasPermission("lyttleessentials.fly")) {
-                Message.sendMessage(sender, "no_permission");
-                return true;
-            }
             Message.sendMessage(sender, "fly_usage");
             return true;
         }
 
         if (args.length == 0) {
-            if (!sender.hasPermission("lyttleessentials.fly.self")) {
-                Message.sendMessage(sender, "no_permission");
-                return true;
-            }
             boolean active = toggleFly((Player) sender);
             flySelfMessage((Player) sender, active);
             return true;
@@ -51,10 +48,6 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
         }
 
         if ((Bukkit.getPlayerExact(args[0]) == null)) {
-            if (sender instanceof Player) {
-                Message.sendMessage(sender, "player_not_found");
-                return true;
-            }
             Message.sendMessage(sender, "player_not_found");
             return true;
         }
