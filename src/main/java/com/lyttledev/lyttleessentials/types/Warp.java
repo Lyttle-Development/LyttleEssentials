@@ -3,7 +3,6 @@ package com.lyttledev.lyttleessentials.types;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
 
 public class Warp {
     public String owner;

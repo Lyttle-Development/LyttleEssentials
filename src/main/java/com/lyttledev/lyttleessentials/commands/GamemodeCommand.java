@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
+
 public class GamemodeCommand implements CommandExecutor, TabCompleter {
 
     public GamemodeCommand(LyttleEssentials plugin) {
@@ -26,50 +28,50 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (!(sender.hasPermission("lyttleessentials.gamemode"))) {
-            Message.sendPlayer((Player) sender, "no_permission");
+            Message.sendMessage(sender, "no_permission");
             return true;
         }
 
         if (label.equalsIgnoreCase("gamemode")) {
             if (args.length == 0 || args.length > 2) {
-                Message.sendPlayer((Player) sender, "gamemode_usage");
+                Message.sendMessage(sender, "gamemode_usage");
                 return true;
             }
 
             if (args.length == 1) {
 
                 if (!(sender.hasPermission("lyttleessentials.gamemode.self"))) {
-                    Message.sendPlayer((Player) sender, "no_permission");
+                    Message.sendMessage(sender, "no_permission");
                     return true;
                 }
 
                 if (!(sender instanceof Player)) {
-                    Message.sendPlayer((Player) sender, "gamemode_usage");
+                    Message.sendMessage(sender, "gamemode_usage");
                     return true;
                 }
                 String mode = _gamemode((Player) sender, args[0]);
 
                 if (mode.equalsIgnoreCase("ERROR-GAMEMODE-METHOD")) {
-                    Message.sendPlayer((Player) sender, "gamemode_usage");
+                    Message.sendMessage(sender, "gamemode_usage");
                     return true;
                 }
 
                 String[][] replacements = {{"<MODE>", mode}};
-                Message.sendPlayer((Player) sender, "gamemode_self", replacements);
+                Message.sendMessage(sender, "gamemode_self", replacements);
                 return true;
             }
 
             if (!(sender.hasPermission("lyttleessentials.gamemode.other"))) {
-                Message.sendPlayer((Player) sender, "no_permission");
+                Message.sendMessage(sender, "no_permission");
                 return true;
             }
 
             if ((Bukkit.getPlayerExact(args[1]) == null)) {
                 if (sender instanceof Player) {
-                    Message.sendPlayer((Player) sender, "player_not_found");
+                    Message.sendMessage(sender, "player_not_found");
                     return true;
                 }
-                Message.sendConsole("player_not_found");
+                Message.sendMessage(sender,"player_not_found");
                 return true;
             }
 
@@ -78,45 +80,45 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
 
             if (mode.equals("ERROR-GAMEMODE-METHOD")) {
                 if (sender instanceof Player) {
-                    Message.sendPlayer((Player) sender, "gamemode_usage");
+                    Message.sendMessage(sender, "gamemode_usage");
                     return true;
                 }
-                Message.sendConsole("gamemode_usage");
+                Message.sendMessage(sender,"gamemode_usage");
                 return true;
             }
 
             if (sender instanceof Player) {
-                String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", player.getDisplayName()}};
-                Message.sendPlayer((Player) sender, "gamemode_other_sender", replacementsSender);
-                String[][] replacementsPlayer = {{"<MODE>", mode}, {"<PLAYER>", ((Player) sender).getDisplayName()}};
-                Message.sendPlayer(player, "gamemode_other_target", replacementsPlayer);
+                String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", getDisplayName(player)}};
+                Message.sendMessage(sender, "gamemode_other_sender", replacementsSender);
+                String[][] replacementsPlayer = {{"<MODE>", mode}, {"<PLAYER>", getDisplayName((Player) sender)}};
+                Message.sendMessage(player, "gamemode_other_target", replacementsPlayer);
                 return true;
             }
-            String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", player.getDisplayName()}};
-            Message.sendConsole("gamemode_other_sender", replacementsSender);
+            String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", getDisplayName(player)}};
+            Message.sendMessage(sender,"gamemode_other_sender", replacementsSender);
             String[][] replacementsConsole = {{"<MODE>", mode}};
-            Message.sendPlayer(player, "gamemode_console", replacementsConsole);
+            Message.sendMessage(player, "gamemode_console", replacementsConsole);
             return true;
         }
 
         if (args.length > 1) {
             if (sender instanceof Player) {
-                Message.sendPlayer((Player) sender, "gmx_usage");
+                Message.sendMessage(sender, "gmx_usage");
                 return true;
             }
-            Message.sendConsole("gmx_usage");
+            Message.sendMessage(sender,"gmx_usage");
             return true;
         }
 
         if (args.length == 0) {
 
             if (!(sender.hasPermission("lyttleessentials.gamemode.self"))) {
-                Message.sendPlayer((Player) sender, "no_permission");
+                Message.sendMessage(sender, "no_permission");
                 return true;
             }
 
             if (!(sender instanceof Player)) {
-                Message.sendConsole("gmx_usage");
+                Message.sendMessage(sender,"gmx_usage");
                 return true;
             }
 
@@ -124,26 +126,26 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
             String mode = _gamemode(player, label);
 
             if (mode.equals("ERROR-GAMEMODE-METHOD")) {
-                Message.sendPlayer(player, "gmx_usage");
+                Message.sendMessage(player, "gmx_usage");
                 return true;
             }
 
             String[][] replacements = {{"<MODE>", mode}};
-            Message.sendPlayer((Player) sender, "gamemode_self", replacements);
+            Message.sendMessage(sender, "gamemode_self", replacements);
             return true;
         }
 
         if (!(sender.hasPermission("lyttleessentials.gamemode.other"))) {
-            Message.sendPlayer((Player) sender, "no_permission");
+            Message.sendMessage(sender, "no_permission");
             return true;
         }
 
         if ((Bukkit.getPlayerExact(args[0]) == null)) {
             if (sender instanceof Player) {
-                Message.sendPlayer((Player) sender, "player_not_found");
+                Message.sendMessage(sender, "player_not_found");
                 return true;
             }
-            Message.sendConsole("player_not_found");
+            Message.sendMessage(sender,"player_not_found");
             return true;
         }
 
@@ -153,45 +155,49 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
         if (sender instanceof Player) {
 
             if (mode.equals("ERROR-GAMEMODE-METHOD")) {
-                Message.sendPlayer((Player) sender, "gmx_usage");
+                Message.sendMessage(sender, "gmx_usage");
                 return true;
             }
 
-            String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", player.getDisplayName()}};
-            Message.sendPlayer((Player) sender, "gamemode_other_sender", replacementsSender);
-            String[][] replacementsPlayer = {{"<MODE>", mode}, {"<PLAYER>", ((Player) sender).getDisplayName()}};
-            Message.sendPlayer(player, "gamemode_other_target", replacementsPlayer);
+            String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", getDisplayName(player)}};
+            Message.sendMessage(sender, "gamemode_other_sender", replacementsSender);
+            String[][] replacementsPlayer = {{"<MODE>", mode}, {"<PLAYER>", getDisplayName((Player) sender)}};
+            Message.sendMessage(player, "gamemode_other_target", replacementsPlayer);
             return true;
         }
 
         if (mode.equals("ERROR-GAMEMODE-METHOD")) {
-            Message.sendPlayer((Player) sender, "gmx_usage");
+            Message.sendMessage(sender, "gmx_usage");
             return true;
         }
 
-        String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", player.getDisplayName()}};
-        Message.sendConsole("gamemode_other_sender", replacementsSender);
+        String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", getDisplayName(player)}};
+        Message.sendMessage(sender,"gamemode_other_sender", replacementsSender);
         String[][] replacementsConsole = {{"<MODE>", mode}};
-        Message.sendPlayer(player, "gamemode_console", replacementsConsole);
+        Message.sendMessage(player, "gamemode_console", replacementsConsole);
         return true;
     }
 
     private String _gamemode(Player player, String mode) {
-        switch(mode) {
-            case "survival": case "0": case "s": case "gms":
+        return switch (mode) {
+            case "survival", "0", "s", "gms" -> {
                 _changeGamemode(player, "SURVIVAL");
-                return "survival";
-            case "creative": case "1": case "c": case "gmc":
+                yield "survival";
+            }
+            case "creative", "1", "c", "gmc" -> {
                 _changeGamemode(player, "CREATIVE");
-                return "creative";
-            case "adventure": case "2": case "a": case "gma":
+                yield "creative";
+            }
+            case "adventure", "2", "a", "gma" -> {
                 _changeGamemode(player, "ADVENTURE");
-                return "adventure";
-            case "spectator": case "3": case "sp": case "gmsp":
+                yield "adventure";
+            }
+            case "spectator", "3", "sp", "gmsp" -> {
                 _changeGamemode(player, "SPECTATOR");
-                return "spectator";
-        }
-        return "ERROR-GAMEMODE-METHOD";
+                yield "spectator";
+            }
+            default -> "ERROR-GAMEMODE-METHOD";
+        };
     }
 
     private static void _changeGamemode(org.bukkit.entity.Player player, String mode) {

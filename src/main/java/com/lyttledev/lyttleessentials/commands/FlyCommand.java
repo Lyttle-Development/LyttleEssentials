@@ -9,36 +9,35 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
 import java.util.List;
 
+import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
+
 public class FlyCommand implements CommandExecutor, TabCompleter {
-    private LyttleEssentials plugin;
 
     public FlyCommand(LyttleEssentials plugin) {
         plugin.getCommand("fly").setExecutor(this);
-        this.plugin = plugin;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player) && args.length != 1) {
-            Message.sendConsole("fly_usage");
+            Message.sendMessage(sender, "fly_usage");
             return true;
         }
 
         if (args.length > 1) {
             if (!sender.hasPermission("lyttleessentials.fly")) {
-                Message.sendPlayer((Player) sender, "no_permission");
+                Message.sendMessage(sender, "no_permission");
                 return true;
             }
-            Message.sendPlayer((Player) sender, "fly_usage");
+            Message.sendMessage(sender, "fly_usage");
             return true;
         }
 
         if (args.length == 0) {
             if (!sender.hasPermission("lyttleessentials.fly.self")) {
-                Message.sendPlayer((Player) sender, "no_permission");
+                Message.sendMessage(sender, "no_permission");
                 return true;
             }
             boolean active = toggleFly((Player) sender);
@@ -47,16 +46,16 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
         }
 
         if (!sender.hasPermission("lyttleessentials.fly.other")) {
-            Message.sendPlayer((Player) sender, "no_permission");
+            Message.sendMessage(sender, "no_permission");
             return true;
         }
 
         if ((Bukkit.getPlayerExact(args[0]) == null)) {
             if (sender instanceof Player) {
-                Message.sendPlayer((Player) sender, "player_not_found");
+                Message.sendMessage(sender, "player_not_found");
                 return true;
             }
-            Message.sendConsole("player_not_found");
+            Message.sendMessage(sender, "player_not_found");
             return true;
         }
 
@@ -68,27 +67,27 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        String[][] replacementsSender = {{"<PLAYER>", player.getDisplayName()}};
+        String[][] replacementsSender = {{"<PLAYER>", getDisplayName(player)}};
 
         if (sender instanceof Player) {
-            String[][] replacementsPlayer = {{"<PLAYER>", ((Player) sender).getDisplayName()}};
+            String[][] replacementsPlayer = {{"<PLAYER>", getDisplayName((Player) sender)}};
             if (active) {
-                Message.sendPlayer((Player) sender, "fly_activate_other_sender", replacementsSender);
-                Message.sendPlayer(player, "fly_activate_other_target", replacementsPlayer);
+                Message.sendMessage(sender, "fly_activate_other_sender", replacementsSender);
+                Message.sendMessage(player, "fly_activate_other_target", replacementsPlayer);
                 return true;
             }
-            Message.sendPlayer((Player) sender, "fly_deactivate_other_sender", replacementsSender);
-            Message.sendPlayer(player, "fly_deactivate_other_target", replacementsPlayer);
+            Message.sendMessage(sender, "fly_deactivate_other_sender", replacementsSender);
+            Message.sendMessage(player, "fly_deactivate_other_target", replacementsPlayer);
             return true;
         }
 
         if (active) {
-            Message.sendConsole("fly_activate_other_sender", replacementsSender);
-            Message.sendPlayer(player, "fly_activate_console");
+            Message.sendMessage(sender, "fly_activate_other_sender", replacementsSender);
+            Message.sendMessage(player, "fly_activate_console");
             return true;
         }
-        Message.sendConsole("fly_deactivate_other_sender", replacementsSender);
-        Message.sendPlayer(player, "fly_deactivate_console");
+        Message.sendMessage(sender, "fly_deactivate_other_sender", replacementsSender);
+        Message.sendMessage(player, "fly_deactivate_console");
         return true;
     }
 
@@ -103,10 +102,10 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
 
     public void flySelfMessage(Player receiver, boolean active) {
         if (active) {
-            Message.sendPlayer(receiver, "fly_activate");
+            Message.sendMessage(receiver, "fly_activate");
             return;
         }
-        Message.sendPlayer(receiver, "fly_deactivate");
+        Message.sendMessage(receiver, "fly_deactivate");
     }
 
     @Override
@@ -114,6 +113,6 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
         if (arguments.length == 1) {
             return null;
         }
-        return Arrays.asList();
+        return List.of();
     }
 }

@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
@@ -23,14 +22,14 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            Message.sendConsole("must_be_player");
+            Message.sendMessage(sender,"must_be_player");
             return true;
         }
 
         Player player = (Player) sender;
 
         if (!player.hasPermission("lyttleessentials.staff")) {
-            Message.sendPlayer((Player) sender, "no_permission");
+            Message.sendMessage((Player) sender, "no_permission");
             return true;
         }
 
@@ -38,7 +37,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
             Player target = plugin.getServer().getPlayer(args[0]);
 
             if (target == null) {
-                Message.sendPlayer(player, "player_not_found");
+                Message.sendMessage(player, "player_not_found");
                 return true;
             }
 
@@ -48,7 +47,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
                 { "<USER>", player.getName() },
                 { "<TARGET>", target.getName() }
             };
-            Message.sendPlayer(player, "atp_user", messageReplacements);
+            Message.sendMessage(player, "atp_user", messageReplacements);
             return true;
         }
 
@@ -57,7 +56,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
             Player target = plugin.getServer().getPlayer(args[1]);
 
             if (user == null || target == null) {
-                Message.sendPlayer(player, "player_not_found");
+                Message.sendMessage(player, "player_not_found");
                 return true;
             }
 
@@ -67,7 +66,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
                 { "<USER>", user.getName() },
                 { "<TARGET>", target.getName() }
             };
-            Message.sendPlayer(player, "atp_user", messageReplacements);
+            Message.sendMessage(player, "atp_user", messageReplacements);
             return true;
         }
 
@@ -85,7 +84,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
             Player user = plugin.getServer().getPlayer(args[0]);
 
             if (user == null) {
-                Message.sendPlayer(player, "player_not_found");
+                Message.sendMessage(player, "player_not_found");
                 return true;
             }
 
@@ -95,11 +94,11 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
                     { "<USER>", user.getName() },
                     { "<TARGET>", "Loc(" + args[1] + ", " + args[2] + ", " + args[3] + ")" }
             };
-            Message.sendPlayer(player, "atp_user", messageReplacements);
+            Message.sendMessage(player, "atp_user", messageReplacements);
             return true;
         }
 
-        Message.sendPlayer(player, "atp_usage");
+        Message.sendMessage(player, "atp_usage");
 
         return true;
     }
@@ -110,6 +109,6 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
             return null;
         }
 
-        return Arrays.asList();
+        return List.of();
     }
 }

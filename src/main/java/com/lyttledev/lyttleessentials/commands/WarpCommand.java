@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class WarpCommand implements CommandExecutor, TabCompleter {
-    private LyttleEssentials plugin;
+    private final LyttleEssentials plugin;
 
     public WarpCommand(LyttleEssentials plugin) {
         plugin.getCommand("warp").setExecutor(this);
@@ -31,7 +31,7 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            Message.sendConsole("must_be_player");
+            Message.sendMessage(sender,"must_be_player");
             return true;
         }
 
@@ -40,7 +40,7 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
         if (Objects.equals(label, "setwarp")) {
             if (args.length == 0) {
                 // No name provided
-                Message.sendPlayer(player, "setwarp_no_name");
+                Message.sendMessage(player, "setwarp_no_name");
                 return true;
             }
 
@@ -51,16 +51,16 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                 if (!plugin.config.warps.containsLowercase(warpName)) {
                     Bill bill = plugin.invoice.createWarp(player);
                     if (bill.total < 0) {
-                        Message.sendPlayer(player, "tokens_missing");
+                        Message.sendMessage(player, "tokens_missing");
                         return true;
                     }
 
                     plugin.config.warps.set(warpName, warp);
                     String[][] replacements = {{"<NAME>", warpName}, {"<PRICE>", String.valueOf(bill.total)}};
-                    Message.sendPlayer(player, "setwarp_success", replacements);
+                    Message.sendMessage(player, "setwarp_success", replacements);
                 } else {
                     String[][] replacements = {{"<NAME>", warpName}};
-                    Message.sendPlayer(player, "setwarp_already_exists", replacements);
+                    Message.sendMessage(player, "setwarp_already_exists", replacements);
                 }
                 return true;
             }
@@ -74,14 +74,14 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                     String[][] replacements = {{"<NAME>", warpName}, {"<PLAYER>", target.getName()}};
                     if (!plugin.config.warps.containsLowercase(warpName)) {
                         plugin.config.warps.set(warpName, warp);
-                        Message.sendPlayer(player, "setwarp_success_other", replacements);
+                        Message.sendMessage(player, "setwarp_success_other", replacements);
                     } else {
-                        Message.sendPlayer(player, "setwarp_already_exists_other", replacements);
+                        Message.sendMessage(player, "setwarp_already_exists_other", replacements);
                     }
                     return true;
                 }
 
-                Message.sendPlayer(player, "no_permission");
+                Message.sendMessage(player, "no_permission");
                 return true;
             }
         }
@@ -89,7 +89,7 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
         if (Objects.equals(label, "delwarp")) {
             if (args.length == 0) {
                 // No name provided
-                Message.sendPlayer(player, "delwarp_no_name");
+                Message.sendMessage(player, "delwarp_no_name");
                 return true;
             }
 
@@ -102,9 +102,9 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                     String[][] replacements = {{"<NAME>", warpName}, {"<PLAYER>", target.getName()}};
                     if (plugin.config.warps.contains(warpName)) {
                         plugin.config.warps.remove(warpName);
-                        Message.sendPlayer(player, "delwarp_success_other", replacements);
+                        Message.sendMessage(player, "delwarp_success_other", replacements);
                     } else {
-                        Message.sendPlayer(player, "delwarp_doesnt_exist_other", replacements);
+                        Message.sendMessage(player, "delwarp_doesnt_exist_other", replacements);
                     }
                 }
 
@@ -113,20 +113,20 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                 if (plugin.config.warps.contains(warpName)) {
                     ConfigurationSection warpSection = plugin.config.warps.getSection(warpName);
                     if (warpSection == null) {
-                        Message.sendPlayer(player, "warp_doesnt_exist");
+                        Message.sendMessage(player, "warp_doesnt_exist");
                         return true;
                     }
                     Warp warp = new Warp(warpSection);
 
                     if (!Objects.equals(warp.owner, player.getUniqueId().toString())) {
-                        Message.sendPlayer(player, "delwarp_not_owner", replacements);
+                        Message.sendMessage(player, "delwarp_not_owner", replacements);
                         return true;
                     }
                     plugin.config.warps.remove(warpName);
 
-                    Message.sendPlayer(player, "delwarp_success", replacements);
+                    Message.sendMessage(player, "delwarp_success", replacements);
                 } else {
-                    Message.sendPlayer(player, "delwarp_doesnt_exist", replacements);
+                    Message.sendMessage(player, "delwarp_doesnt_exist", replacements);
                 }
                 return true;
             }
@@ -135,7 +135,7 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
         if (Objects.equals(label, "warp")) {
             if (args.length == 0) {
                 // No name provided
-                Message.sendPlayer(player, "warp_no_name");
+                Message.sendMessage(player, "warp_no_name");
                 return true;
             }
 
@@ -145,7 +145,7 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                 if (plugin.config.warps.contains(warpName)) {
                     ConfigurationSection warpSection = plugin.config.warps.getSection(warpName);
                     if (warpSection == null) {
-                        Message.sendPlayer(player, "warp_doesnt_exist");
+                        Message.sendMessage(player, "warp_doesnt_exist");
                         return true;
                     }
                     Warp warp = new Warp(warpSection);
@@ -154,16 +154,16 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
 
                     Bill bill = plugin.invoice.teleportToWarp(player);
                     if (bill.total < 0) {
-                        Message.sendPlayer(player, "tokens_missing");
+                        Message.sendMessage(player, "tokens_missing");
                         return true;
                     }
 
                     player.teleport(location);
                     String[][] replacements = {{"<NAME>", warpName}, {"<PRICE>", String.valueOf(bill.total)}};
-                    Message.sendPlayer(player, "warp_success", replacements);
+                    Message.sendMessage(player, "warp_success", replacements);
                 } else {
                     String[][] replacements = {{"<NAME>", warpName}};
-                    Message.sendPlayer(player, "warp_doesnt_exist", replacements);
+                    Message.sendMessage(player, "warp_doesnt_exist", replacements);
                 }
                 return true;
             }
@@ -185,6 +185,6 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
             }
         }
 
-        return Arrays.asList();
+        return List.of();
     }
 }

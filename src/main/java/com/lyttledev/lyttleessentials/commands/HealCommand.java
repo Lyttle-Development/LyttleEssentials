@@ -11,15 +11,14 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
-import java.util.Arrays;
 import java.util.List;
 
+import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
+
 public class HealCommand implements CommandExecutor, TabCompleter {
-    private LyttleEssentials plugin;
 
     public HealCommand(LyttleEssentials plugin) {
         plugin.getCommand("heal").setExecutor(this);
-        this.plugin = plugin;
     }
 
     @Override
@@ -27,42 +26,42 @@ public class HealCommand implements CommandExecutor, TabCompleter {
 
         if (args.length > 1) {
             if (!sender.hasPermission("lyttleessentials.heal")) {
-                Message.sendPlayer((Player) sender, "no_permission");
+                Message.sendMessage(sender, "no_permission");
                 return true;
             }
             if (sender instanceof Player) {
-                Message.sendPlayer((Player) sender, "heal_usage");
+                Message.sendMessage(sender, "heal_usage");
                 return true;
             }
-            Message.sendConsole("heal_usage");
+            Message.sendMessage(sender,"heal_usage");
             return true;
         }
 
         if (args.length == 0) {
             if (!(sender instanceof Player)) {
-                Message.sendConsole("heal_usage");
+                Message.sendMessage(sender,"heal_usage");
                 return true;
             }
             if (!sender.hasPermission("lyttleessentials.heal.self")) {
-                Message.sendPlayer((Player) sender, "no_permission");
+                Message.sendMessage(sender, "no_permission");
                 return true;
             }
-            Message.sendPlayer((Player) sender, "heal_self");
+            Message.sendMessage(sender, "heal_self");
             heal((Player) sender);
             return true;
         }
 
         if (!(sender.hasPermission("lyttleessentials.heal.other"))) {
-            Message.sendPlayer((Player) sender, "no_permission");
+            Message.sendMessage(sender, "no_permission");
             return true;
         }
 
         if ((Bukkit.getPlayerExact(args[0]) == null)) {
             if (sender instanceof Player) {
-                Message.sendPlayer((Player) sender, "player_not_found");
+                Message.sendMessage(sender, "player_not_found");
                 return true;
             }
-            Message.sendConsole("player_not_found");
+            Message.sendMessage(sender,"player_not_found");
             return true;
         }
 
@@ -76,17 +75,17 @@ public class HealCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        String[][] replacementsSender = {{"<PLAYER>", player.getDisplayName()}};
+        String[][] replacementsSender = {{"<PLAYER>", getDisplayName(player)}};
 
         if (sender instanceof Player) {
-            String[][] replacementsPlayer = {{"<PLAYER>", ((Player) sender).getDisplayName()}};
-            Message.sendPlayer(player, "heal_other_player", replacementsPlayer);
-            Message.sendPlayer((Player) sender, "heal_other_sender", replacementsSender);
+            String[][] replacementsPlayer = {{"<PLAYER>", getDisplayName((Player) sender)}};
+            Message.sendMessage(player, "heal_other_player", replacementsPlayer);
+            Message.sendMessage(sender, "heal_other_sender", replacementsSender);
             return true;
         }
 
-        Message.sendPlayer(player, "heal_console");
-        Message.sendConsole("heal_other_sender", replacementsSender);
+        Message.sendMessage(player, "heal_console");
+        Message.sendMessage(sender,"heal_other_sender", replacementsSender);
         return true;
     }
 
@@ -98,7 +97,7 @@ public class HealCommand implements CommandExecutor, TabCompleter {
     }
 
     private void healSelfMessage(Player player) {
-        Message.sendPlayer(player, "heal_self");
+        Message.sendMessage(player, "heal_self");
     }
 
     @Override
@@ -106,6 +105,6 @@ public class HealCommand implements CommandExecutor, TabCompleter {
         if (arguments.length == 1) {
             return null;
         }
-        return Arrays.asList();
+        return List.of();
     }
 }

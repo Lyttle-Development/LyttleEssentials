@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
+
 public class RepairCommand implements CommandExecutor, TabCompleter {
 
     public RepairCommand(LyttleEssentials plugin) {
@@ -28,79 +30,79 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length > 2 || args.length == 0) {
             if (sender instanceof Player) {
-                Message.sendPlayer((Player) sender, "repair_usage");
+                Message.sendMessage(sender, "repair_usage");
                 return true;
             }
-            Message.sendConsole("repair_usage");
+            Message.sendMessage(sender,"repair_usage");
             return true;
         }
 
         if (!(sender.hasPermission("lyttleessentials.repair"))) {
-            Message.sendPlayer((Player) sender, "no_permission");
+            Message.sendMessage(sender, "no_permission");
             return true;
         }
 
         if (args.length == 1) {
 
             if (!(sender.hasPermission("lyttleessentials.repair.self"))) {
-                Message.sendPlayer((Player) sender, "no_permission");
+                Message.sendMessage(sender, "no_permission");
                 return true;
             }
 
             if (!(sender instanceof Player)) {
-                Message.sendConsole("repair_usage");
+                Message.sendMessage(sender,"repair_usage");
                 return true;
             }
             Player player = (Player) sender;
             if (args[0].equalsIgnoreCase("HeldItem")) {
                 _repairItem(player.getInventory().getItemInMainHand());
-                Message.sendPlayer(player, "repair_helditem_self");
+                Message.sendMessage(player, "repair_helditem_self");
                 return true;
             }
             _repairInventory(player.getInventory());
-            Message.sendPlayer(player, "repair_all_self");
+            Message.sendMessage(player, "repair_all_self");
             return true;
         }
 
         if (!(sender.hasPermission("lyttleessentials.repair.other"))) {
-            Message.sendPlayer((Player) sender, "no_permission");
+            Message.sendMessage(sender, "no_permission");
             return true;
         }
 
         if (Bukkit.getPlayerExact(args[1]) == null) {
             if (sender instanceof Player) {
-                Message.sendPlayer((Player) sender, "player_not_found");
+                Message.sendMessage(sender, "player_not_found");
                 return true;
             }
-            Message.sendConsole("player_not_found");
+            Message.sendMessage(sender,"player_not_found");
             return true;
         }
 
         Player player = Bukkit.getPlayerExact(args[1]);
 
-        String[][] replacementsSender = {{"<PLAYER>", player.getDisplayName()}};
+        String[][] replacementsSender = {{"<PLAYER>", getDisplayName(player)}};
 
         if (args[0].equalsIgnoreCase("HeldItem")) {
             _repairItem(player.getInventory().getItemInMainHand());
             if (sender instanceof Player) {
-                String[][] replacementsPlayer = {{"<PLAYER>", ((Player) sender).getDisplayName()}};
-                Message.sendPlayer(player, "repair_helditem_other_player", replacementsPlayer);
-                Message.sendPlayer((Player) sender, "repair_helditem_other_sender", replacementsSender);
+                String[][] replacementsPlayer = {{"<PLAYER>", getDisplayName((Player) sender)}};
+                Message.sendMessage(player, "repair_helditem_other_player", replacementsPlayer);
+                Message.sendMessage(sender, "repair_helditem_other_sender", replacementsSender);
                 return true;
             }
-            Message.sendPlayer(player, "repair_helditem_other_console");
-            Message.sendConsole("repair_helditem_other_sender", replacementsSender);
+            Message.sendMessage(player, "repair_helditem_other_console");
+            Message.sendMessage(sender,"repair_helditem_other_sender", replacementsSender);
             return true;
         }
         _repairInventory(player.getInventory());
         if (sender instanceof Player) {
-            String[][] replacementsPlayer = {{"<PLAYER>", ((Player) sender).getDisplayName()}};
-            Message.sendPlayer(player, "repair_all_other_player", replacementsPlayer);
-            Message.sendPlayer((Player) sender, "repair_all_other_sender", replacementsSender);
+            String[][] replacementsPlayer = {{"<PLAYER>", getDisplayName((Player) sender)}};
+            Message.sendMessage(player, "repair_all_other_player", replacementsPlayer);
+            Message.sendMessage(sender, "repair_all_other_sender", replacementsSender);
             return true;
         }
-        Message.sendPlayer(player, "repair_all_other_console");
-        Message.sendConsole("repair_all_other_sender", replacementsSender);
+        Message.sendMessage(player, "repair_all_other_console");
+        Message.sendMessage(sender,"repair_all_other_sender", replacementsSender);
         return true;
     }
 
@@ -122,7 +124,6 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-
         if (args.length == 1) {
             List<String> options = Arrays.asList("HeldItem", "all");
             List<String> result = new ArrayList<>(Collections.emptyList());
@@ -134,9 +135,7 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
             return result;
         }
 
-        if (args.length == 2) {
-            return null;
-        }
+        if (args.length == 2) { return null; }
 
         return List.of();
     }

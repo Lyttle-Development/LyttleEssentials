@@ -24,7 +24,7 @@ dependencies {
 }
 
 group = "com.lyttledev"
-version = "2.4.0"
+version = (property("pluginVersion") as String)
 description = "LyttleEssentials"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
@@ -67,7 +67,7 @@ val copyContents by tasks.registering(Copy::class) {
 
     from(sourceFolder) {
         // Exclude the destination folder itself to avoid copying it into itself
-        exclude("_defaults/**")
+        exclude("#defaults/**")
     }
     into(destinationFolder)
 
