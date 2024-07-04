@@ -20,35 +20,35 @@ public class TopCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender.hasPermission("lyttleessentials.top"))) {
-            Message.sendPlayer((Player) sender, "no_permission");
+            Message.sendMessage(sender, "no_permission");
             return true;
         }
 
         if (args.length > 1) {
             if (sender instanceof Player) {
-                Message.sendPlayer((Player) sender, "top_usage");
+                Message.sendMessage(sender, "top_usage");
             }
-            Message.sendConsole("top_usage");
+            Message.sendMessage(sender,"top_usage");
             return true;
         }
 
         if (args.length == 0) {
             if (!(sender instanceof Player)) {
-                Message.sendConsole("top_usage");
+                Message.sendMessage(sender,"top_usage");
                 return true;
             }
             Player player = (Player) sender;
             _teleportToTop(player);
-            Message.sendPlayer(player, "top_self");
+            Message.sendMessage(player, "top_self");
             return true;
         }
 
         if (Bukkit.getPlayerExact(args[0]) == null) {
             if (sender instanceof Player) {
-                Message.sendPlayer((Player) sender, "player_not_found");
+                Message.sendMessage(sender, "player_not_found");
                 return true;
             }
-            Message.sendConsole("player_not_found");
+            Message.sendMessage(sender,"player_not_found");
             return true;
         }
 
@@ -59,18 +59,18 @@ public class TopCommand implements CommandExecutor, TabCompleter {
         _teleportToTop(player);
 
         if (sender == Bukkit.getPlayerExact(args[0])) {
-            Message.sendPlayer(player, "top_self");
+            Message.sendMessage(player, "top_self");
             return true;
         }
 
         if (sender instanceof Player) {
             String[][] replacementsPlayer = {{"<PLAYER>", ((Player) sender).getDisplayName()}};
-            Message.sendPlayer((Player) sender, "top_other_sender", replacementsSender);
-            Message.sendPlayer(player, "top_other_player", replacementsPlayer);
+            Message.sendMessage(sender, "top_other_sender", replacementsSender);
+            Message.sendMessage(player, "top_other_player", replacementsPlayer);
             return true;
         }
-        Message.sendConsole("top_other_sender", replacementsSender);
-        Message.sendPlayer(player, "top_console");
+        Message.sendMessage(sender,"top_other_sender", replacementsSender);
+        Message.sendMessage(player, "top_console");
         return true;
     }
 

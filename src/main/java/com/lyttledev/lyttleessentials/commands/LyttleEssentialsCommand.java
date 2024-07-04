@@ -6,7 +6,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,7 @@ public class LyttleEssentialsCommand implements CommandExecutor, TabCompleter {
 
         // Check for permission
         if (!(sender.hasPermission("lyttleessentials.lyttleessentials") || sender.hasPermission("mc.admin"))) {
-            Message.sendPlayer((Player) sender, "no_permission");
+            Message.sendMessage(sender, "no_permission");
             return true;
         }
 
@@ -34,7 +33,7 @@ public class LyttleEssentialsCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reload")) {
                 plugin.config.reload();
-                Message.sendPlayerRaw((Player) sender, "The config has been reloaded");
+                Message.sendMessageRaw(sender, "The config has been reloaded");
             }
         }
         return true;

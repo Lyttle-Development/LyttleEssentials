@@ -11,7 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class SpawnCommand implements CommandExecutor, TabCompleter {
@@ -27,7 +26,7 @@ public class SpawnCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            Message.sendConsole("must_be_player");
+            Message.sendMessage(sender,"must_be_player");
             return true;
         }
 
@@ -37,37 +36,37 @@ public class SpawnCommand implements CommandExecutor, TabCompleter {
                 Location spawn = player.getLocation();
                 plugin.config.locations.set("spawn", spawn);
                 Console.playerCommand(player, "setworldspawn");
-                Message.sendPlayer(player, "spawn_set");
+                Message.sendMessage(player, "spawn_set");
                 return true;
             }
             if (label.equalsIgnoreCase("delspawn")) {
                 plugin.config.locations.set("spawn", null);
-                Message.sendPlayer(player, "spawn_deleted");
+                Message.sendMessage(player, "spawn_deleted");
                 return true;
             }
         }
 
         if (plugin.config.locations.get("spawn") == null) {
-            Message.sendPlayer(player, "spawn_not_set");
+            Message.sendMessage(player, "spawn_not_set");
             return true;
         }
 
         Bill bill = plugin.invoice.teleportToSpawn(player);
         if (bill.total < 0) {
-            Message.sendPlayer(player, "tokens_missing");
+            Message.sendMessage(player, "tokens_missing");
             return true;
         }
 
         Location spawn = (Location) plugin.config.locations.get("spawn");
         player.teleport(spawn);
         String[][] replacements = {{"<PRICE>", String.valueOf(bill.total)}};
-        Message.sendPlayer(player, "spawn_teleported", replacements);
+        Message.sendMessage(player, "spawn_teleported", replacements);
 
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] arguments) {
-        return Arrays.asList();
+        return List.of();
     }
 }
