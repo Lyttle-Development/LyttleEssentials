@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class HomeCommand implements CommandExecutor, TabCompleter {
-    private LyttleEssentials plugin;
+    private final LyttleEssentials plugin;
 
     public HomeCommand(LyttleEssentials plugin) {
         plugin.getCommand("home").setExecutor(this);

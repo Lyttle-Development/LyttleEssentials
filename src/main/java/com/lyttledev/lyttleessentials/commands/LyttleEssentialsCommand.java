@@ -7,11 +7,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class LyttleEssentialsCommand implements CommandExecutor, TabCompleter {
-    private LyttleEssentials plugin;
+    private final LyttleEssentials plugin;
 
     public LyttleEssentialsCommand(LyttleEssentials plugin) {
         plugin.getCommand("lyttleessentials").setExecutor(this);
@@ -39,33 +38,12 @@ public class LyttleEssentialsCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    private List<String> arguments = new ArrayList<String>();
-    private List<String> limit = new ArrayList<String>();
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
-
-        List<String> result = new ArrayList<String>();
-
-        if (arguments.isEmpty()) {
-            arguments.add("reload");
-        }
-
         if (args.length == 1) {
-            for (String x : arguments) {
-                if (x.toLowerCase().startsWith(args[0]))
-                    result.add(x);
-            }
-            return result;
+            return List.of("reload");
         }
 
-        if (args.length >= 2) {
-            for (String x : limit) {
-                if (x.toLowerCase().startsWith(args[0]))
-                    result.add(x);
-            }
-            return result;
-        }
-
-        return null;
+        return List.of();
     }
 }

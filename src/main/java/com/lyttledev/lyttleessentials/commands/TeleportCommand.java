@@ -14,6 +14,8 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 
+import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
+
 public class TeleportCommand implements CommandExecutor, TabCompleter {
     private final LyttleEssentials plugin;
 
@@ -83,14 +85,14 @@ public class TeleportCommand implements CommandExecutor, TabCompleter {
         }
 
         String[][] replacements = {
-                {"<PLAYER>", player.getDisplayName()}
+                {"<PLAYER>", getDisplayName(player)}
         };
         Message.sendMessage(playerTarget, "tp_ask_target", replacements);
 
         targetMap.put(player.getUniqueId(), playerTarget.getUniqueId());
 
         String[][] replacements2 = {
-                {"<TARGET>", playerTarget.getDisplayName()}
+                {"<TARGET>", getDisplayName(playerTarget)}
         };
         Message.sendMessage(player, "tp_requested", replacements2);
 
@@ -145,13 +147,13 @@ public class TeleportCommand implements CommandExecutor, TabCompleter {
                     targetMap.remove(entry.getKey());
                     Player playerSender = Bukkit.getPlayer(entry.getKey());
                     String[][] replacements = {
-                            {"<TARGET>", player.getDisplayName()}
+                            {"<TARGET>", getDisplayName(player)}
                     };
                     Message.sendMessage(playerSender, "tpdeny_denied_player", replacements);
 
 
                     String[][] replacements2 = {
-                            {"<TARGET>", player.getDisplayName()}
+                            {"<TARGET>", getDisplayName(player)}
                     };
                     Message.sendMessage(playerSender, "tpdeny_denied_player", replacements2);
                     Message.sendMessage(player, "tpdeny_denied_target");

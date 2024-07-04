@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class WarpCommand implements CommandExecutor, TabCompleter {
-    private LyttleEssentials plugin;
+    private final LyttleEssentials plugin;
 
     public WarpCommand(LyttleEssentials plugin) {
         plugin.getCommand("warp").setExecutor(this);

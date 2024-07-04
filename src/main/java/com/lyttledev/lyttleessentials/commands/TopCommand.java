@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
+
 public class TopCommand implements CommandExecutor, TabCompleter {
 
     public TopCommand(LyttleEssentials plugin) {
@@ -54,7 +56,7 @@ public class TopCommand implements CommandExecutor, TabCompleter {
 
         Player player = Bukkit.getPlayer(args[0]);
 
-        String[][] replacementsSender = {{"<PLAYER>", player.getDisplayName()}};
+        String[][] replacementsSender = {{"<PLAYER>", getDisplayName(player)}};
 
         _teleportToTop(player);
 
@@ -64,7 +66,7 @@ public class TopCommand implements CommandExecutor, TabCompleter {
         }
 
         if (sender instanceof Player) {
-            String[][] replacementsPlayer = {{"<PLAYER>", ((Player) sender).getDisplayName()}};
+            String[][] replacementsPlayer = {{"<PLAYER>", getDisplayName((Player) sender)}};
             Message.sendMessage(sender, "top_other_sender", replacementsSender);
             Message.sendMessage(player, "top_other_player", replacementsPlayer);
             return true;

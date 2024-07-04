@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
+
 public class RepairCommand implements CommandExecutor, TabCompleter {
 
     public RepairCommand(LyttleEssentials plugin) {
@@ -78,12 +80,12 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
 
         Player player = Bukkit.getPlayerExact(args[1]);
 
-        String[][] replacementsSender = {{"<PLAYER>", player.getDisplayName()}};
+        String[][] replacementsSender = {{"<PLAYER>", getDisplayName(player)}};
 
         if (args[0].equalsIgnoreCase("HeldItem")) {
             _repairItem(player.getInventory().getItemInMainHand());
             if (sender instanceof Player) {
-                String[][] replacementsPlayer = {{"<PLAYER>", ((Player) sender).getDisplayName()}};
+                String[][] replacementsPlayer = {{"<PLAYER>", getDisplayName((Player) sender)}};
                 Message.sendMessage(player, "repair_helditem_other_player", replacementsPlayer);
                 Message.sendMessage(sender, "repair_helditem_other_sender", replacementsSender);
                 return true;
@@ -94,7 +96,7 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
         }
         _repairInventory(player.getInventory());
         if (sender instanceof Player) {
-            String[][] replacementsPlayer = {{"<PLAYER>", ((Player) sender).getDisplayName()}};
+            String[][] replacementsPlayer = {{"<PLAYER>", getDisplayName((Player) sender)}};
             Message.sendMessage(player, "repair_all_other_player", replacementsPlayer);
             Message.sendMessage(sender, "repair_all_other_sender", replacementsSender);
             return true;
@@ -122,7 +124,6 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-
         if (args.length == 1) {
             List<String> options = Arrays.asList("HeldItem", "all");
             List<String> result = new ArrayList<>(Collections.emptyList());
@@ -134,9 +135,7 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
             return result;
         }
 
-        if (args.length == 2) {
-            return null;
-        }
+        if (args.length == 2) { return null; }
 
         return List.of();
     }
