@@ -39,7 +39,6 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 1) {
-
             if (!(sender.hasPermission("lyttleessentials.repair.self"))) {
                 Message.sendMessage(sender, "no_permission");
                 return true;

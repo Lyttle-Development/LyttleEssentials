@@ -26,7 +26,6 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if (!(sender.hasPermission("lyttleessentials.gamemode"))) {
             Message.sendMessage(sender, "no_permission");
             return true;

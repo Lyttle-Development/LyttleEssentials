@@ -37,6 +37,10 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 0) {
+            if (!sender.hasPermission("lyttleessentials.fly.self")) {
+                Message.sendMessage(sender, "no_permission");
+                return true;
+            }
             boolean active = toggleFly((Player) sender);
             flySelfMessage((Player) sender, active);
             return true;

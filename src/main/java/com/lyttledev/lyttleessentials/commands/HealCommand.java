@@ -58,8 +58,6 @@ public class HealCommand implements CommandExecutor, TabCompleter {
         }
 
         Player player = Bukkit.getPlayerExact(args[0]);
-        assert player != null;
-
         heal(player);
 
         if (sender == Bukkit.getPlayerExact(args[0])) {

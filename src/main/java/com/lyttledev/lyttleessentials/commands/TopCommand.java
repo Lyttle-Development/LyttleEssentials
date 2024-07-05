@@ -36,9 +36,18 @@ public class TopCommand implements CommandExecutor, TabCompleter {
                 Message.sendMessage(sender,"top_usage");
                 return true;
             }
+            if (!(sender.hasPermission("lyttleessentials.top.self"))) {
+                Message.sendMessage(sender, "no_permission");
+                return true;
+            }
             Player player = (Player) sender;
             _teleportToTop(player);
             Message.sendMessage(player, "top_self");
+            return true;
+        }
+
+        if (!(sender.hasPermission("lyttleessentials.top.other"))) {
+            Message.sendMessage(sender, "no_permission");
             return true;
         }
 
