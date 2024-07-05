@@ -31,7 +31,8 @@ public class SpawnCommand implements CommandExecutor, TabCompleter {
         }
 
         Player player = (Player) sender;
-        if (player.hasPermission("mc.admin")) {
+
+        if (player.hasPermission("lyttleessentials.spawn.set")) {
             if (label.equalsIgnoreCase("setspawn")) {
                 Location spawn = player.getLocation();
                 plugin.config.locations.set("spawn", spawn);
@@ -44,6 +45,11 @@ public class SpawnCommand implements CommandExecutor, TabCompleter {
                 Message.sendMessage(player, "spawn_deleted");
                 return true;
             }
+        }
+
+        if (!(sender.hasPermission("lyttleessentials.spawn"))) {
+            Message.sendMessage(sender, "no_permission");
+            return true;
         }
 
         if (plugin.config.locations.get("spawn") == null) {
@@ -61,7 +67,6 @@ public class SpawnCommand implements CommandExecutor, TabCompleter {
         player.teleport(spawn);
         String[][] replacements = {{"<PRICE>", String.valueOf(bill.total)}};
         Message.sendMessage(player, "spawn_teleported", replacements);
-
         return true;
     }
 

@@ -30,12 +30,17 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
 
         Player player = (Player) sender;
 
-        if (!player.hasPermission("lyttleessentials.staff")) {
+        if (!player.hasPermission("lyttleessentials.admintp")) {
             Message.sendMessage((Player) sender, "no_permission");
             return true;
         }
 
         if (args.length == 1) {
+            if (!player.hasPermission("lyttleessentials.admintp.self")) {
+                Message.sendMessage(sender, "no_permission");
+                return true;
+            }
+
             Player target = plugin.getServer().getPlayer(args[0]);
 
             if (target == null) {
@@ -50,6 +55,11 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
                 { "<TARGET>", getDisplayName(target) }
             };
             Message.sendMessage(player, "atp_user", messageReplacements);
+            return true;
+        }
+
+        if (!player.hasPermission("lyttleessentials.admintp.other")) {
+            Message.sendMessage(sender, "no_permission");
             return true;
         }
 
