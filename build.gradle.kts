@@ -24,7 +24,7 @@ dependencies {
 }
 
 group = "com.lyttledev"
-version = "2.4.0"
+version = (property("pluginVersion") as String)
 description = "LyttleEssentials"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
