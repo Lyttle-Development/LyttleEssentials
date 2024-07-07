@@ -3,43 +3,67 @@ package com.lyttledev.lyttleessentials.commands;
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleessentials.utils.Console;
 import com.lyttledev.lyttleessentials.utils.Message;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
 
-public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
-    private final LyttleEssentials plugin;
+public class AdminTeleportCommand implements Command<CommandSourceStack> {
+    private static LyttleEssentials plugin;
 
-    public AdminTeleportCommand(LyttleEssentials plugin) {
-        plugin.getCommand("atp").setExecutor(this);
-        this.plugin = plugin;
+
+    public static void register(LyttleEssentials pl, Commands commands) {
+        // Get the economy from Vault
+        plugin = pl;
+
+        // atp command
+        LiteralArgumentBuilder<CommandSourceStack> commandBuilder =
+            Commands.literal("atp")
+                    // atp <target-player>
+                    .then(Commands.argument("target", ArgumentTypes.player())
+                            .executes(new AdminTeleportCommand()))
+                    .then(Commands.argument("target2", ArgumentTypes.player())
+                            .executes(new AdminTeleportCommand()));
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            Message.sendMessage(sender,"must_be_player");
-            return true;
+    public int run(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+
+        Entity entity = source.getExecutor();
+
+
+        if (!(entity instanceof Player)) {
+            Message.sendMessage(entity,"must_be_player");
+            return 0;
         }
 
-        Player player = (Player) sender;
+        Player player = (Player) entity;
 
         if (!player.hasPermission("lyttleessentials.admintp")) {
-            Message.sendMessage((Player) sender, "no_permission");
-            return true;
+            Message.sendMessage(player, "no_permission");
+            return 0;
         }
 
         if (args.length == 1) {
             if (!player.hasPermission("lyttleessentials.admintp.self")) {
-                Message.sendMessage(sender, "no_permission");
-                return true;
+                Message.sendMessage(player, "no_permission");
+                return 0;
             }
+
 
             Player target = plugin.getServer().getPlayer(args[0]);
 
@@ -115,12 +139,12 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] arguments) {
-        if (arguments.length <= 2) {
-            return null;
-        }
-
-        return List.of();
-    }
+//    @Override
+//    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] arguments) {
+//        if (arguments.length <= 2) {
+//            return null;
+//        }
+//
+//        return List.of();
+//    }
 }

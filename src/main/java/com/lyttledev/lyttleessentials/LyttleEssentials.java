@@ -6,8 +6,14 @@ import com.lyttledev.lyttleessentials.types.Configs;
 import com.lyttledev.lyttleessentials.types.Invoice;
 import com.lyttledev.lyttleessentials.utils.*;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 import net.milkbowl.vault.economy.Economy;
+import io.papermc.paper.command.brigadier.Commands;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.io.File;
@@ -35,23 +41,31 @@ public final class LyttleEssentials extends JavaPlugin {
         Console.init(this);
         Message.init(this);
 
-        // Commands
-        new AdminTeleportCommand(this);
-        new HomeCommand(this);
-        new LyttleEssentialsCommand(this);
-        new SpawnCommand(this);
-        new TeleportCommand(this);
-        new WarpCommand(this);
-        new FlyCommand(this);
-        new HealCommand(this);
-        new TopCommand(this);
-        new RepairCommand(this);
-        new GamemodeCommand(this);
+        // Register the commands
+        LifecycleEventManager<Plugin> manager = this.getLifecycleManager();
+        manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
+            final Commands commands = event.registrar();
+            this.registerCommands(commands);
+        });
 
         // Listeners
         new onPlayerChatListener(this);
         new onPlayerJoinListener(this);
         new onPlayerLeaveListener(this);
+    }
+
+    public void registerCommands(Commands commands) {
+        AdminTeleportCommand.register(this, commands);
+//        HomeCommand.register(this, commands);
+//        LyttleEssentialsCommand.register(this, commands);
+//        SpawnCommand.register(this, commands);
+//        TeleportCommand.register(this, commands);
+//        WarpCommand.register(this, commands);
+//        FlyCommand.register(this, commands);
+//        HealCommand.register(this, commands);
+//        TopCommand.register(this, commands);
+//        RepairCommand.register(this, commands);
+        GamemodeCommand.register(this, commands);
     }
 
     private boolean setupEconomy() {

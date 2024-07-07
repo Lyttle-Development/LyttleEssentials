@@ -26,7 +26,7 @@ dependencies {
 group = "com.lyttledev"
 version = (property("pluginVersion") as String)
 description = "LyttleEssentials"
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_21
 
 publishing {
     publications.create<MavenPublication>("maven") {
@@ -118,7 +118,7 @@ val versionString: String =  if (System.getenv("CHANNEL") == "Release") {
 }
 
 tasks.named<ProcessResources>("processResources") {
-    filesMatching("plugin.yml") {
+    filesMatching("paper-plugin.yml") {
         expand("projectVersion" to versionString)
     }
 }
