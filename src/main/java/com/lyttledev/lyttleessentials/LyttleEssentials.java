@@ -1,20 +1,20 @@
 package com.lyttledev.lyttleessentials;
 
-import com.lyttledev.lyttleessentials.commands.*;
-import com.lyttledev.lyttleessentials.handlers.*;
+import com.lyttledev.lyttleessentials.commands.AdminTeleportCommand;
+import com.lyttledev.lyttleessentials.handlers.onPlayerChatListener;
+import com.lyttledev.lyttleessentials.handlers.onPlayerJoinListener;
+import com.lyttledev.lyttleessentials.handlers.onPlayerLeaveListener;
 import com.lyttledev.lyttleessentials.types.Configs;
 import com.lyttledev.lyttleessentials.types.Invoice;
-import com.lyttledev.lyttleessentials.utils.*;
-
-import org.bukkit.plugin.Plugin;
-import net.milkbowl.vault.economy.Economy;
+import com.lyttledev.lyttleessentials.utils.Console;
+import com.lyttledev.lyttleessentials.utils.Message;
 import io.papermc.paper.command.brigadier.Commands;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
-
-import org.bukkit.plugin.java.JavaPlugin;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 
@@ -65,7 +65,7 @@ public final class LyttleEssentials extends JavaPlugin {
 //        HealCommand.register(this, commands);
 //        TopCommand.register(this, commands);
 //        RepairCommand.register(this, commands);
-        GamemodeCommand.register(this, commands);
+//        GamemodeCommand.register(this, commands);
     }
 
     private boolean setupEconomy() {
