@@ -3,49 +3,63 @@ package com.lyttledev.lyttleessentials.commands;
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleessentials.utils.Console;
 import com.lyttledev.lyttleessentials.utils.Message;
+import io.papermc.paper.command.brigadier.BasicCommand;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.plugin.bootstrap.BootstrapContext;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
 
-public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
-    private final LyttleEssentials plugin;
+public class AdminTeleportCommand implements BasicCommand, TabCompleter {
+    private LyttleEssentials plugin;
 
     public AdminTeleportCommand(LyttleEssentials plugin) {
-        plugin.getCommand("atp").setExecutor(this);
         this.plugin = plugin;
     }
 
+    public static void register(LyttleEssentials plugin, LifecycleEventManager<Plugin> manager) {
+        manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
+            final Commands commands = event.registrar();
+            commands.register("atp", "TP", new AdminTeleportCommand(plugin));
+        });
+    }
+
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public void execute(@NotNull CommandSourceStack stack, @NotNull String[] args) {
+        CommandSender sender = stack.getSender();
         if (!(sender instanceof Player)) {
             Message.sendMessage(sender,"must_be_player");
-            return true;
+            return;
         }
 
         Player player = (Player) sender;
 
         if (!player.hasPermission("lyttleessentials.admintp")) {
             Message.sendMessage((Player) sender, "no_permission");
-            return true;
+            return;
         }
 
         if (args.length == 1) {
             if (!player.hasPermission("lyttleessentials.admintp.self")) {
                 Message.sendMessage(sender, "no_permission");
-                return true;
+                return;
             }
 
             Player target = plugin.getServer().getPlayer(args[0]);
 
             if (target == null) {
                 Message.sendMessage(player, "player_not_found");
-                return true;
+                return;
             }
 
             player.teleport(target);
@@ -55,12 +69,12 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
                 { "<TARGET>", getDisplayName(target) }
             };
             Message.sendMessage(player, "atp_user", messageReplacements);
-            return true;
+            return;
         }
 
         if (!player.hasPermission("lyttleessentials.admintp.other")) {
             Message.sendMessage(sender, "no_permission");
-            return true;
+            return;
         }
 
         if (args.length == 2) {
@@ -69,7 +83,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
 
             if (user == null || target == null) {
                 Message.sendMessage(player, "player_not_found");
-                return true;
+                return;
             }
 
             user.teleport(target);
@@ -79,7 +93,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
                 { "<TARGET>", getDisplayName(target) }
             };
             Message.sendMessage(player, "atp_user", messageReplacements);
-            return true;
+            return;
         }
 
         if (args.length == 3) {
@@ -89,7 +103,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
                     { "<USER>", getDisplayName(player) },
                     { "<TARGET>", "Loc(" + args[0] + ", " + args[1] + ", " + args[2] + ")" }
             };
-            return true;
+            return;
         }
 
         if (args.length == 4) {
@@ -97,7 +111,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
 
             if (user == null) {
                 Message.sendMessage(player, "player_not_found");
-                return true;
+                return;
             }
 
             Console.command("minecraft:execute as " +  getDisplayName(user) + " at @s run tp " + args[1] + " " + args[2] + " " + args[3]);
@@ -107,12 +121,10 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
                     { "<TARGET>", "Loc(" + args[1] + ", " + args[2] + ", " + args[3] + ")" }
             };
             Message.sendMessage(player, "atp_user", messageReplacements);
-            return true;
+            return;
         }
 
         Message.sendMessage(player, "atp_usage");
-
-        return true;
     }
 
     @Override

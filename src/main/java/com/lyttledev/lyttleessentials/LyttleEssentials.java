@@ -6,6 +6,10 @@ import com.lyttledev.lyttleessentials.types.Configs;
 import com.lyttledev.lyttleessentials.types.Invoice;
 import com.lyttledev.lyttleessentials.utils.*;
 
+import io.papermc.paper.plugin.bootstrap.BootstrapContext;
+import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -16,6 +20,7 @@ public final class LyttleEssentials extends JavaPlugin {
     public Economy economyImplementer;
     public Configs config;
     public Invoice invoice = new Invoice(this);
+    public LifecycleEventManager<BootstrapContext> manager;
 
     @Override
     public void onEnable() {
@@ -36,17 +41,20 @@ public final class LyttleEssentials extends JavaPlugin {
         Message.init(this);
 
         // Commands
-        new AdminTeleportCommand(this);
-        new HomeCommand(this);
-        new LyttleEssentialsCommand(this);
-        new SpawnCommand(this);
-        new TeleportCommand(this);
-        new WarpCommand(this);
-        new FlyCommand(this);
-        new HealCommand(this);
-        new TopCommand(this);
-        new RepairCommand(this);
-        new GamemodeCommand(this);
+        LifecycleEventManager<Plugin> manager = this.getLifecycleManager();
+        // Same as for JavaPlugin
+
+        AdminTeleportCommand.register(this, manager);
+//        new HomeCommand(this);
+//        new LyttleEssentialsCommand(this);
+//        new SpawnCommand(this);
+//        new TeleportCommand(this);
+//        new WarpCommand(this);
+//        new FlyCommand(this);
+//        new HealCommand(this);
+//        new TopCommand(this);
+//        new RepairCommand(this);
+//        new GamemodeCommand(this);
 
         // Listeners
         new onPlayerChatListener(this);
