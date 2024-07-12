@@ -31,7 +31,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
 
         if (!player.hasPermission("lyttleessentials.admintp")) {
-            Message.sendMessage((Player) sender, "no_permission");
+            Message.sendMessage(sender, "no_permission");
             return true;
         }
 

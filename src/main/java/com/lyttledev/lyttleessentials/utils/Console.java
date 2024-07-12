@@ -28,6 +28,6 @@ public class Console {
     }
 
     public static void log(String message) {
-        Bukkit.getLogger().info(message);
+        plugin.getLogger().info(message);
     }
 }
