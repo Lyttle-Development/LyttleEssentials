@@ -8,19 +8,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
+
 public class onPlayerLeaveListener implements Listener {
-    private LyttleEssentials plugin;
 
     public onPlayerLeaveListener(LyttleEssentials plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
-        this.plugin = plugin;
     }
 
     @EventHandler
     public void onLeave(PlayerQuitEvent event){
         Player player = event.getPlayer();
         event.quitMessage(null);
-        String[][] replacements = {{"<PLAYER>", player.getDisplayName()}};
+        String[][] replacements = {{"<PLAYER>", getDisplayName(player)}};
         Message.sendBroadcast("leave_message", replacements);
     }
 }
