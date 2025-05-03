@@ -18,8 +18,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
+
 public class WarpCommand implements CommandExecutor, TabCompleter {
-    private LyttleEssentials plugin;
+    private final LyttleEssentials plugin;
 
     public WarpCommand(LyttleEssentials plugin) {
         plugin.getCommand("warp").setExecutor(this);
@@ -31,81 +33,104 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            Message.sendConsole("must_be_player");
+            Message.sendMessage(sender,"must_be_player");
+            return true;
+        }
+
+        if (!(sender.hasPermission("lyttleessentials.warp"))) {
+            Message.sendMessage(sender, "no_permission");
             return true;
         }
 
         Player player = (Player) sender;
 
         if (Objects.equals(label, "setwarp")) {
+            if (!(sender.hasPermission("lyttleessentials.warp.set"))) {
+                Message.sendMessage(sender, "no_permission");
+                return true;
+            }
+
             if (args.length == 0) {
                 // No name provided
-                Message.sendPlayer(player, "setwarp_no_name");
+                Message.sendMessage(player, "setwarp_no_name");
                 return true;
             }
 
             if (args.length == 1) {
                 // Name provided, for current player
+                if (!(sender.hasPermission("lyttleessentials.warp.set.self"))) {
+                    Message.sendMessage(sender, "no_permission");
+                    return true;
+                }
                 String warpName = MessageCleaner.cleanMessage(args[0]);
                 Warp warp = new Warp(player, warpName);
                 if (!plugin.config.warps.containsLowercase(warpName)) {
                     Bill bill = plugin.invoice.createWarp(player);
                     if (bill.total < 0) {
-                        Message.sendPlayer(player, "tokens_missing");
+                        Message.sendMessage(player, "tokens_missing");
                         return true;
                     }
 
                     plugin.config.warps.set(warpName, warp);
                     String[][] replacements = {{"<NAME>", warpName}, {"<PRICE>", String.valueOf(bill.total)}};
-                    Message.sendPlayer(player, "setwarp_success", replacements);
+                    Message.sendMessage(player, "setwarp_success", replacements);
                 } else {
                     String[][] replacements = {{"<NAME>", warpName}};
-                    Message.sendPlayer(player, "setwarp_already_exists", replacements);
+                    Message.sendMessage(player, "setwarp_already_exists", replacements);
                 }
                 return true;
             }
 
             if (args.length == 2) {
-                if (player.hasPermission("lyttleessentials.warp.others")) {
-                    // Name and player provided
-                    String warpName = args[0];
-                    Player target = Bukkit.getPlayer(args[1]);
-                    Warp warp = new Warp(target, warpName);
-                    String[][] replacements = {{"<NAME>", warpName}, {"<PLAYER>", target.getName()}};
-                    if (!plugin.config.warps.containsLowercase(warpName)) {
-                        plugin.config.warps.set(warpName, warp);
-                        Message.sendPlayer(player, "setwarp_success_other", replacements);
-                    } else {
-                        Message.sendPlayer(player, "setwarp_already_exists_other", replacements);
-                    }
+                // Name and player provided
+                if (!(sender.hasPermission("lyttleessentials.warp.set.other"))) {
+                    Message.sendMessage(sender, "no_permission");
                     return true;
                 }
-
-                Message.sendPlayer(player, "no_permission");
+                String warpName = args[0];
+                Player target = Bukkit.getPlayer(args[1]);
+                Warp warp = new Warp(target, warpName);
+                String[][] replacements = {{"<NAME>", warpName}, {"<PLAYER>", getDisplayName(target)}};
+                if (!plugin.config.warps.containsLowercase(warpName)) {
+                    plugin.config.warps.set(warpName, warp);
+                    Message.sendMessage(player, "setwarp_success_other", replacements);
+                } else {
+                    Message.sendMessage(player, "setwarp_already_exists_other", replacements);
+                }
                 return true;
             }
         }
 
         if (Objects.equals(label, "delwarp")) {
+            if (!(sender.hasPermission("lyttleessentials.warp.del"))) {
+                Message.sendMessage(sender, "no_permission");
+                return true;
+            }
+
             if (args.length == 0) {
                 // No name provided
-                Message.sendPlayer(player, "delwarp_no_name");
+                Message.sendMessage(player, "delwarp_no_name");
                 return true;
             }
 
             if (args.length == 1) {
                 // Name provided
-                if (player.hasPermission("lyttleessentials.warp.others") && args.length == 2) {
+                if (player.hasPermission("lyttleessentials.del.warp.others") && args.length == 2) {
                     // Name and player provided
                     String warpName = args[0];
                     Player target = Bukkit.getPlayer(args[1]);
-                    String[][] replacements = {{"<NAME>", warpName}, {"<PLAYER>", target.getName()}};
+                    String[][] replacements = {{"<NAME>", warpName}, {"<PLAYER>", getDisplayName(target)}};
                     if (plugin.config.warps.contains(warpName)) {
                         plugin.config.warps.remove(warpName);
-                        Message.sendPlayer(player, "delwarp_success_other", replacements);
+                        Message.sendMessage(player, "delwarp_success_other", replacements);
                     } else {
-                        Message.sendPlayer(player, "delwarp_doesnt_exist_other", replacements);
+                        Message.sendMessage(player, "delwarp_doesnt_exist_other", replacements);
                     }
+                }
+
+                if (!(sender.hasPermission("lyttleessentials.warp.del.self"))) {
+                    Message.sendMessage(sender, "no_permission");
+                    return true;
                 }
 
                 String warpName = args[0];
@@ -113,20 +138,20 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                 if (plugin.config.warps.contains(warpName)) {
                     ConfigurationSection warpSection = plugin.config.warps.getSection(warpName);
                     if (warpSection == null) {
-                        Message.sendPlayer(player, "warp_doesnt_exist");
+                        Message.sendMessage(player, "warp_doesnt_exist");
                         return true;
                     }
                     Warp warp = new Warp(warpSection);
 
                     if (!Objects.equals(warp.owner, player.getUniqueId().toString())) {
-                        Message.sendPlayer(player, "delwarp_not_owner", replacements);
+                        Message.sendMessage(player, "delwarp_not_owner", replacements);
                         return true;
                     }
                     plugin.config.warps.remove(warpName);
 
-                    Message.sendPlayer(player, "delwarp_success", replacements);
+                    Message.sendMessage(player, "delwarp_success", replacements);
                 } else {
-                    Message.sendPlayer(player, "delwarp_doesnt_exist", replacements);
+                    Message.sendMessage(player, "delwarp_doesnt_exist", replacements);
                 }
                 return true;
             }
@@ -135,17 +160,22 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
         if (Objects.equals(label, "warp")) {
             if (args.length == 0) {
                 // No name provided
-                Message.sendPlayer(player, "warp_no_name");
+                Message.sendMessage(player, "warp_no_name");
                 return true;
             }
 
             if (args.length == 1) {
+                if (!(sender.hasPermission("lyttleessentials.warp.self"))) {
+                    Message.sendMessage(sender, "no_permission");
+                    return true;
+                }
+
                 // Name provided
                 String warpName = args[0];
                 if (plugin.config.warps.contains(warpName)) {
                     ConfigurationSection warpSection = plugin.config.warps.getSection(warpName);
                     if (warpSection == null) {
-                        Message.sendPlayer(player, "warp_doesnt_exist");
+                        Message.sendMessage(player, "warp_doesnt_exist");
                         return true;
                     }
                     Warp warp = new Warp(warpSection);
@@ -154,16 +184,16 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
 
                     Bill bill = plugin.invoice.teleportToWarp(player);
                     if (bill.total < 0) {
-                        Message.sendPlayer(player, "tokens_missing");
+                        Message.sendMessage(player, "tokens_missing");
                         return true;
                     }
 
                     player.teleport(location);
                     String[][] replacements = {{"<NAME>", warpName}, {"<PRICE>", String.valueOf(bill.total)}};
-                    Message.sendPlayer(player, "warp_success", replacements);
+                    Message.sendMessage(player, "warp_success", replacements);
                 } else {
                     String[][] replacements = {{"<NAME>", warpName}};
-                    Message.sendPlayer(player, "warp_doesnt_exist", replacements);
+                    Message.sendMessage(player, "warp_doesnt_exist", replacements);
                 }
                 return true;
             }
@@ -185,6 +215,6 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
             }
         }
 
-        return Arrays.asList();
+        return List.of();
     }
 }
