@@ -1,20 +1,50 @@
-# Do not change the config_version, it is used to update the configuration file.
-config_version: 3
+####################################################
+#           Lyttle Essentials - config.yml         #
+####################################################
+# This file controls the economy and service pricing
+# for various features within Lyttle Essentials.
+#
+# ⚠️ Do NOT remove any keys. You may adjust values as needed.
+# Always ensure proper YAML formatting to avoid errors.
+####################################################
 
-# Invoice settings
+##########################
+# Invoice / Economy Setup #
+##########################
+
+# Each action below can be assigned a token price.
+# The "increase" option determines whether the price increases per use.
+
 invoices:
+  # Price to teleport to your home using /home
   teleport_to_home:
-    price: 2
-    increase: false
+    price: 2         # Cost in tokens
+    increase: false  # Set to true if the cost should grow per use
+
+  # Price to create a warp point with /setwarp
   create_warp:
     price: 5
-    increase: true
+    increase: true   # Cost will increase each time this is used
+
+  # Price to teleport to an existing warp with /warp
   teleport_to_warp:
     price: 3
     increase: false
+
+  # Price to teleport to another player with /tpa
   teleport_to_player:
     price: 2
     increase: true
+
+  # Price to teleport to spawn using /spawn
   teleport_to_spawn:
     price: 1
     increase: false
+
+##########################
+# Configuration Metadata #
+##########################
+
+# Used internally for configuration updates.
+# ⚠️ Do not change this value.
+config_version: 3
