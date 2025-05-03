@@ -8,18 +8,18 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
+
 public class onPlayerJoinListener implements Listener {
-    private LyttleEssentials plugin;
 
     public onPlayerJoinListener(LyttleEssentials plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
-        this.plugin = plugin;
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
-        String[][] replacements = {{"<PLAYER>", player.getDisplayName()}};
+        String[][] replacements = {{"<PLAYER>", getDisplayName(player)}};
         event.joinMessage(null);
 
         if (!player.hasPlayedBefore()) {

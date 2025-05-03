@@ -1,5 +1,6 @@
 package com.lyttledev.lyttleessentials.handlers;
 
+import io.papermc.paper.event.player.AsyncChatEvent;
 import net.luckperms.api.LuckPermsProvider;
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleessentials.utils.Message;
@@ -7,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;
@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 import java.util.regex.*;
 
 import static com.lyttledev.lyttleessentials.utils.Message.*;
+import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
 
 public class onPlayerChatListener implements Listener {
     private final LyttleEssentials plugin;
@@ -32,13 +33,13 @@ public class onPlayerChatListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerChat(AsyncPlayerChatEvent event) {
+    public void onPlayerChat(AsyncChatEvent event) {
         // Cancel the default chat message
         event.setCancelled(true);
 
         // Get the player's message
         Player player = event.getPlayer();
-        String message = event.getMessage();
+        String message = event.message().toString();
         String roleDisplayname = getConfigMessage("chat_default_role");
 
         // check if luckperms is installed
@@ -66,7 +67,7 @@ public class onPlayerChatListener implements Listener {
         }
 
         String[][] replacements = {
-            {"<PLAYER>", player.getDisplayName()},
+            {"<PLAYER>", getDisplayName(player)},
             {"<ROLE>", roleDisplayname},
             {"<MESSAGE>", filterMessage(message)}
         };
@@ -117,8 +118,7 @@ public class onPlayerChatListener implements Listener {
         String regexList = "";
         // Read the file as a string
         try {
-            String content = readFileToString(filePath);
-            regexList = content;
+            regexList = readFileToString(filePath);
         } catch (IOException ignored) {}
 
         return regexList;
@@ -129,8 +129,7 @@ public class onPlayerChatListener implements Listener {
         Path path = Paths.get(filePath);
 
         // Use Files.readString() to read the entire contents of the file into a string
-        String content = Files.readString(path);
 
-        return content;
+        return Files.readString(path);
     }
 }
