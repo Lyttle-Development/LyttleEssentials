@@ -35,6 +35,11 @@ public class TeleportCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (!(sender.hasPermission("lyttleessentials.tp"))) {
+            Message.sendMessage(sender, "no_permission");
+            return true;
+        }
+
         if (label.equalsIgnoreCase("tp")) {
             return tpCommand(sender, command, label, args);
         }

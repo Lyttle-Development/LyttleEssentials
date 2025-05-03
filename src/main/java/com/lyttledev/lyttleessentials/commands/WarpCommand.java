@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
+
 public class WarpCommand implements CommandExecutor, TabCompleter {
     private final LyttleEssentials plugin;
 
@@ -35,9 +37,19 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (!(sender.hasPermission("lyttleessentials.warp"))) {
+            Message.sendMessage(sender, "no_permission");
+            return true;
+        }
+
         Player player = (Player) sender;
 
         if (Objects.equals(label, "setwarp")) {
+            if (!(sender.hasPermission("lyttleessentials.warp.set"))) {
+                Message.sendMessage(sender, "no_permission");
+                return true;
+            }
+
             if (args.length == 0) {
                 // No name provided
                 Message.sendMessage(player, "setwarp_no_name");
@@ -46,6 +58,10 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
 
             if (args.length == 1) {
                 // Name provided, for current player
+                if (!(sender.hasPermission("lyttleessentials.warp.set.self"))) {
+                    Message.sendMessage(sender, "no_permission");
+                    return true;
+                }
                 String warpName = MessageCleaner.cleanMessage(args[0]);
                 Warp warp = new Warp(player, warpName);
                 if (!plugin.config.warps.containsLowercase(warpName)) {
@@ -66,27 +82,31 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
             }
 
             if (args.length == 2) {
-                if (player.hasPermission("lyttleessentials.warp.others")) {
-                    // Name and player provided
-                    String warpName = args[0];
-                    Player target = Bukkit.getPlayer(args[1]);
-                    Warp warp = new Warp(target, warpName);
-                    String[][] replacements = {{"<NAME>", warpName}, {"<PLAYER>", target.getName()}};
-                    if (!plugin.config.warps.containsLowercase(warpName)) {
-                        plugin.config.warps.set(warpName, warp);
-                        Message.sendMessage(player, "setwarp_success_other", replacements);
-                    } else {
-                        Message.sendMessage(player, "setwarp_already_exists_other", replacements);
-                    }
+                // Name and player provided
+                if (!(sender.hasPermission("lyttleessentials.warp.set.other"))) {
+                    Message.sendMessage(sender, "no_permission");
                     return true;
                 }
-
-                Message.sendMessage(player, "no_permission");
+                String warpName = args[0];
+                Player target = Bukkit.getPlayer(args[1]);
+                Warp warp = new Warp(target, warpName);
+                String[][] replacements = {{"<NAME>", warpName}, {"<PLAYER>", getDisplayName(target)}};
+                if (!plugin.config.warps.containsLowercase(warpName)) {
+                    plugin.config.warps.set(warpName, warp);
+                    Message.sendMessage(player, "setwarp_success_other", replacements);
+                } else {
+                    Message.sendMessage(player, "setwarp_already_exists_other", replacements);
+                }
                 return true;
             }
         }
 
         if (Objects.equals(label, "delwarp")) {
+            if (!(sender.hasPermission("lyttleessentials.warp.del"))) {
+                Message.sendMessage(sender, "no_permission");
+                return true;
+            }
+
             if (args.length == 0) {
                 // No name provided
                 Message.sendMessage(player, "delwarp_no_name");
@@ -95,17 +115,22 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
 
             if (args.length == 1) {
                 // Name provided
-                if (player.hasPermission("lyttleessentials.warp.others") && args.length == 2) {
+                if (player.hasPermission("lyttleessentials.del.warp.others") && args.length == 2) {
                     // Name and player provided
                     String warpName = args[0];
                     Player target = Bukkit.getPlayer(args[1]);
-                    String[][] replacements = {{"<NAME>", warpName}, {"<PLAYER>", target.getName()}};
+                    String[][] replacements = {{"<NAME>", warpName}, {"<PLAYER>", getDisplayName(target)}};
                     if (plugin.config.warps.contains(warpName)) {
                         plugin.config.warps.remove(warpName);
                         Message.sendMessage(player, "delwarp_success_other", replacements);
                     } else {
                         Message.sendMessage(player, "delwarp_doesnt_exist_other", replacements);
                     }
+                }
+
+                if (!(sender.hasPermission("lyttleessentials.warp.del.self"))) {
+                    Message.sendMessage(sender, "no_permission");
+                    return true;
                 }
 
                 String warpName = args[0];
@@ -140,6 +165,11 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
             }
 
             if (args.length == 1) {
+                if (!(sender.hasPermission("lyttleessentials.warp.self"))) {
+                    Message.sendMessage(sender, "no_permission");
+                    return true;
+                }
+
                 // Name provided
                 String warpName = args[0];
                 if (plugin.config.warps.contains(warpName)) {

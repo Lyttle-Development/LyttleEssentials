@@ -1,19 +1,42 @@
+####################################################
+#        Lyttle Essentials - messages.yml          #
+####################################################
+# This file contains all in-game messages used by the plugin.
+# You can use MiniMessage formatting and Minecraft color codes.
+#
+# ⚠️ Do NOT remove any keys — the plugin depends on them.
+# You are free to customize the text and formatting.
+####################################################
+
+################
+# Message Prefix
+################
 prefix: <dark_aqua><bold>Lyttle<aqua><bold>Essentials<reset> <dark_gray>- <gray>
+
+##########################
+# Generic Error Messages #
+##########################
 no_permission: <red>You do not have permission to do that!
 player_not_found: <dark_red>Player not found
 must_be_player: <red>You must be a player to use this command!
-message_not_found: <red>Oh... I can''t react to that. (Contact the Administrators)
+message_not_found: <red>Oh... I can't react to that. (Contact the Administrators)
 
-# Chat messages
+#################
+# Chat Formatting
+#################
 chat_format: <reset><ROLE><PLAYER><reset> <dark_gray><bold>-<reset> <gray><italic><MESSAGE><reset>
 chat_default_role: <dark_gray><bold>User <gray><bold>
 
-# Token messages
+###################
+# Token Economy
+###################
 tokens_missing: <red>You do not have enough tokens!
 tokens_missing_amount: You do not have enough tokens! You need <TOKENS>
 tokens_self_gift: You're unable to send tokens to yourself!
 
-# AdminTeleport messages
+########################
+# AdminTeleport Messages
+########################
 atp_usage: /atp <Player> <Player>
 atp_user: You have teleported to <TARGET>
 atp_target: <PLAYER> teleported to you using AdminTeleport!
@@ -21,105 +44,123 @@ atp_user_other: You have teleported <TARGET> to <PLAYER>
 atp_target_other: <USER> teleported <PLAYER> to you using AdminTeleport!
 atp_player_other: <USER> has used AdminTeleport to teleport you to <TARGET>
 
-# Teleport messages
+#########################
+# Player Teleportation
+#########################
 tpaccept_no_request: You don't have any pending requests!
 tpaccept_accept: TPA request accepted!
 tpdeny_denied_player: Your TPA request was denied by <TARGET>!
 tpdeny_denied_target: Denied TPA request.
-tp_self: You can't teleport to yourself that would be a waste of tokens
+tp_self: You can't teleport to yourself — that would be a waste of tokens.
 tp_already_requested: You already have a pending request!
 tp_teleporting: Subtracting <CostNow> from your balance, next time this will be <CostNextTime>!
-tp_ask_target:
-  <PLAYER> wants to teleport to you.\nType "/tpaccept" to accept
-  this request.\nType "/tpdeny" to deny this request.\nYou have 5 minutes to respond.
-tp_requested: Send TPA request to <TARGET>
+tp_ask_target: |
+  <PLAYER> wants to teleport to you.
+  Type "/tpaccept" to accept this request.
+  Type "/tpdeny" to deny this request.
+  You have 5 minutes to respond.
+tp_requested: Sent TPA request to <TARGET>
 tp_usage: Please try using /tp <PLAYERNAME>
 
-# Teleportation messages
-
+###################
 # Spawn Messages
+###################
 spawn_not_set: The spawn has not been set yet!
-spawn_deleted: You have succesfully deleted the spawn!
-spawn_set: You have succesfully set the spawn!
-spawn_teleported: You have succesfully teleported to spawn! That costed <PRICE> tokens...
+spawn_deleted: You have successfully deleted the spawn!
+spawn_set: You have successfully set the spawn!
+spawn_teleported: You teleported to spawn! That costed <PRICE> tokens...
 spawn_usage: Please use /spawn
 
-# Home messages
-sethome_success: You have succesfully set your home!
-sethome_other_success: You have succesfully set <PLAYER>'s home!
+##################
+# Home Commands
+##################
+sethome_success: You have successfully set your home!
+sethome_other_success: You have successfully set <PLAYER>'s home!
 sethome_usage: Please use /sethome
-delhome_success: You have succesfully deleted your home!
-delhome_other_success: You have succesfully deleted <PLAYER>'s home!
+delhome_success: You have successfully deleted your home!
+delhome_other_success: You have successfully deleted <PLAYER>'s home!
 delhome_usage: Please use /delhome
-home_success: You have succesfully teleported to your home! That costed <PRICE> tokens...
-home_other_success:
-  You have successfully teleported to <PLAYER>'s home! That costed
-  <PRICE> tokens...
+home_success: You teleported to your home! That costed <PRICE> tokens...
+home_other_success: You teleported to <PLAYER>'s home! That costed <PRICE> tokens...
 home_not_set: You have not set your home yet!
 home_other_not_set: <PLAYER> has not set their home yet!
 home_usage: Please use /home
 
-# Warp messages
+##################
+# Warp Commands
+##################
 setwarp_no_name: Please use /setwarp <name>
-setwarp_success: You have succesfully set the warp <NAME>! That costed <PRICE> tokens...
+setwarp_success: You set the warp <NAME>! That costed <PRICE> tokens...
 setwarp_already_exists: This warp already exists!
-setwarp_success_other: You have succesfully set the warp <NAME> for <PLAYER>!
+setwarp_success_other: You set the warp <NAME> for <PLAYER>!
 setwarp_already_exists_other: This warp already exists for <PLAYER>!
 delwarp_no_name: Please use /delwarp <name>
-delwarp_success: You have succesfully deleted the warp <NAME>!
+delwarp_success: You deleted the warp <NAME>!
 delwarp_doesnt_exist: This warp doesn't exist!
-delwarp_success_other: You have succesfully deleted the warp <NAME> for <PLAYER>!
+delwarp_success_other: You deleted the warp <NAME> for <PLAYER>!
 delwarp_doesnt_exist_other: This warp doesn't exist for <PLAYER>!
 delwarp_not_owner: You are not the owner of this warp!
 warp_no_name: Please use /warp <name>
-warp_success: You have succesfully teleported to <NAME>! That costed <PRICE> tokens...
+warp_success: You teleported to <NAME>! That costed <PRICE> tokens...
 warp_doesnt_exist: This warp doesn't exist!
 
-# Fly messages
+##################
+# Fly Commands
+##################
 fly_usage: Please use /fly <playername>
 fly_activate: You enabled flight on yourself.
-fly_deactivate: You deactivated flight on yourself.
+fly_deactivate: You disabled flight on yourself.
 fly_activate_other_sender: You enabled flight on <PLAYER>.
-fly_deactivate_other_sender: You deactivated flight on <PLAYER>.
+fly_deactivate_other_sender: You disabled flight on <PLAYER>.
 fly_activate_other_target: <PLAYER> enabled flight on you.
-fly_deactivate_other_target: <PLAYER> deactivated flight on you.
+fly_deactivate_other_target: <PLAYER> disabled flight on you.
 fly_activate_console: The console enabled flight on you.
-fly_deactivate_console: The console deactivated flight on you.
+fly_deactivate_console: The console disabled flight on you.
 
-# Heal messages
+##################
+# Heal Commands
+##################
 heal_usage: Please use /heal <playername>
 heal_self: You healed yourself!
 heal_other_sender: You healed <PLAYER>.
 heal_other_player: <PLAYER> healed you.
 heal_console: The console has healed you.
 
-# Join and Leave messages
+#########################
+# Join & Leave Messages
+#########################
 first_join_message: <green><PLAYER> joined for the very first time!
 join_message: <green>[+] <PLAYER>
 leave_message: <red>[-] <PLAYER>
 
-# Top messages
+##################
+# Top Command
+##################
 top_usage: Please use /top <playername>
 top_self: You teleported yourself to the top.
 top_other_sender: You teleported <PLAYER> to the top.
 top_other_player: <PLAYER> teleported you to the top.
 top_console: The console teleported you to the top.
 
-# Repair messages
+#####################
+# Repair Commands
+#####################
 repair_usage: Please use /repair <HeldItem / all> <playername>
 repair_helditem_self: You repaired the item in your hand.
 repair_all_self: You repaired all the items in your inventory.
-repair_helditem_other_sender: You have repaired the item in the hand of <PLAYER>.
-repair_helditem_other_player: <PLAYER> has repaired the item in your hand.
-repair_helditem_other_console: The console has repaired the item in your hand.
-repair_all_other_sender: You have repaired all items in the inventory of <PLAYER>.
-repair_all_other_player: <PLAYER> has repaired all the items in your inventory.
-repair_all_other_console: The console has repaired all the items in your inventory.
+repair_helditem_other_sender: You repaired the item in the hand of <PLAYER>.
+repair_helditem_other_player: <PLAYER> repaired the item in your hand.
+repair_helditem_other_console: The console repaired the item in your hand.
+repair_all_other_sender: You repaired all items in <PLAYER>'s inventory.
+repair_all_other_player: <PLAYER> repaired all the items in your inventory.
+repair_all_other_console: The console repaired all the items in your inventory.
 
-# Gamemode messages
+#######################
+# Gamemode Commands
+#######################
 gamemode_usage: Please use /gamemode <creative / survival / adventure / spectator> [playername]
 gamemode_self: You set your own gamemode to <MODE>.
-gamemode_other_sender: You set <PLAYER> in <MODE>.
-gamemode_other_target: <PLAYER> set you in <MODE>.
-gamemode_console: The console set you in <MODE>.
+gamemode_other_sender: You set <PLAYER> to <MODE>.
+gamemode_other_target: <PLAYER> set you to <MODE>.
+gamemode_console: The console set you to <MODE>.
 gmx_usage: Wrong arguments => /gm<c / s / a / sp> [playername]

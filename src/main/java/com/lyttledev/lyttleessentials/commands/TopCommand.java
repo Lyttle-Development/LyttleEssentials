@@ -27,9 +27,6 @@ public class TopCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length > 1) {
-            if (sender instanceof Player) {
-                Message.sendMessage(sender, "top_usage");
-            }
             Message.sendMessage(sender,"top_usage");
             return true;
         }
@@ -39,25 +36,28 @@ public class TopCommand implements CommandExecutor, TabCompleter {
                 Message.sendMessage(sender,"top_usage");
                 return true;
             }
+            if (!(sender.hasPermission("lyttleessentials.top.self"))) {
+                Message.sendMessage(sender, "no_permission");
+                return true;
+            }
             Player player = (Player) sender;
             _teleportToTop(player);
             Message.sendMessage(player, "top_self");
             return true;
         }
 
+        if (!(sender.hasPermission("lyttleessentials.top.other"))) {
+            Message.sendMessage(sender, "no_permission");
+            return true;
+        }
+
         if (Bukkit.getPlayerExact(args[0]) == null) {
-            if (sender instanceof Player) {
-                Message.sendMessage(sender, "player_not_found");
-                return true;
-            }
             Message.sendMessage(sender,"player_not_found");
             return true;
         }
 
         Player player = Bukkit.getPlayer(args[0]);
-
         String[][] replacementsSender = {{"<PLAYER>", getDisplayName(player)}};
-
         _teleportToTop(player);
 
         if (sender == Bukkit.getPlayerExact(args[0])) {

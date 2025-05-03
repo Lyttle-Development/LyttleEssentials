@@ -15,7 +15,7 @@ public class Config {
     private final String pluginFolderPath;
     private final String configPath;
     private YamlConfiguration config = null;
-    private LyttleEssentials plugin;
+    private final LyttleEssentials plugin;
 
     public Config(LyttleEssentials plugin, String configPath) {
         this.pluginFolderPath = plugin.getDataFolder().getPath();

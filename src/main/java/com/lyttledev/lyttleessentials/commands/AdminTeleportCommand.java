@@ -11,8 +11,10 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
+
 public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
-    private LyttleEssentials plugin;
+    private final LyttleEssentials plugin;
 
     public AdminTeleportCommand(LyttleEssentials plugin) {
         plugin.getCommand("atp").setExecutor(this);
@@ -28,12 +30,17 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
 
         Player player = (Player) sender;
 
-        if (!player.hasPermission("lyttleessentials.staff")) {
-            Message.sendMessage((Player) sender, "no_permission");
+        if (!player.hasPermission("lyttleessentials.admintp")) {
+            Message.sendMessage(sender, "no_permission");
             return true;
         }
 
         if (args.length == 1) {
+            if (!player.hasPermission("lyttleessentials.admintp.self")) {
+                Message.sendMessage(sender, "no_permission");
+                return true;
+            }
+
             Player target = plugin.getServer().getPlayer(args[0]);
 
             if (target == null) {
@@ -44,10 +51,15 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
             player.teleport(target);
 
             String[][] messageReplacements = {
-                { "<USER>", player.getName() },
-                { "<TARGET>", target.getName() }
+                { "<USER>", getDisplayName(player) },
+                { "<TARGET>", getDisplayName(target) }
             };
             Message.sendMessage(player, "atp_user", messageReplacements);
+            return true;
+        }
+
+        if (!player.hasPermission("lyttleessentials.admintp.other")) {
+            Message.sendMessage(sender, "no_permission");
             return true;
         }
 
@@ -63,8 +75,8 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
             user.teleport(target);
 
             String[][] messageReplacements = {
-                { "<USER>", user.getName() },
-                { "<TARGET>", target.getName() }
+                { "<USER>", getDisplayName(user) },
+                { "<TARGET>", getDisplayName(target) }
             };
             Message.sendMessage(player, "atp_user", messageReplacements);
             return true;
@@ -74,7 +86,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
             Console.playerCommand(player, "minecraft:tp " + args[0] + " " + args[1] + " " + args[2]);
 
             String[][] messageReplacements = {
-                    { "<USER>", player.getName() },
+                    { "<USER>", getDisplayName(player) },
                     { "<TARGET>", "Loc(" + args[0] + ", " + args[1] + ", " + args[2] + ")" }
             };
             return true;
@@ -88,10 +100,10 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            Console.command("minecraft:execute as " +  user.getName() + " at @s run tp " + args[1] + " " + args[2] + " " + args[3]);
+            Console.command("minecraft:execute as " +  getDisplayName(user) + " at @s run tp " + args[1] + " " + args[2] + " " + args[3]);
 
             String[][] messageReplacements = {
-                    { "<USER>", user.getName() },
+                    { "<USER>", getDisplayName(user) },
                     { "<TARGET>", "Loc(" + args[1] + ", " + args[2] + ", " + args[3] + ")" }
             };
             Message.sendMessage(player, "atp_user", messageReplacements);
