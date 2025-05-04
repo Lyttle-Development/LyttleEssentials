@@ -1,12 +1,16 @@
 name: LyttleEssentials
+description: Lightweight Essentials plugin.
 version: '${projectVersion}'
 main: com.lyttledev.lyttleessentials.LyttleEssentials
 api-version: '1.21'
 authors:
-    - Stualyttle
-    - ThatsATim
-description: Lightweight Essentials plugin.
+  - LyttleDevelopment
+  - ThatsATim
+  - Stualyttle
+
 depend:
+  - LyttleUtils
+softdepend:
   - Vault
 
 commands:
