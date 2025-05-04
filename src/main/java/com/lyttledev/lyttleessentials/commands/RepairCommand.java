@@ -1,7 +1,6 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
-import com.lyttledev.lyttleutils.utils.communication.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,31 +20,33 @@ import java.util.List;
 import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
 
 public class RepairCommand implements CommandExecutor, TabCompleter {
+    private final LyttleEssentials plugin;
 
     public RepairCommand(LyttleEssentials plugin) {
+        this.plugin = plugin;
         plugin.getCommand("repair").setExecutor(this);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender.hasPermission("lyttleessentials.repair"))) {
-            Message.sendMessage(sender, "no_permission");
+            plugin.message.sendMessage(sender, "no_permission");
             return true;
         }
 
         if (args.length > 2 || args.length == 0) {
-            Message.sendMessage(sender,"repair_usage");
+            plugin.message.sendMessage(sender,"repair_usage");
             return true;
         }
 
         if (args.length == 1) {
             if (!(sender.hasPermission("lyttleessentials.repair.self"))) {
-                Message.sendMessage(sender, "no_permission");
+                plugin.message.sendMessage(sender, "no_permission");
                 return true;
             }
 
             if (!(sender instanceof Player)) {
-                Message.sendMessage(sender,"repair_usage");
+                plugin.message.sendMessage(sender,"repair_usage");
                 return true;
             }
 
@@ -53,22 +54,22 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
 
             if (args[0].equalsIgnoreCase("HeldItem")) {
                 _repairItem(player.getInventory().getItemInMainHand());
-                Message.sendMessage(player, "repair_helditem_self");
+                plugin.message.sendMessage(player, "repair_helditem_self");
                 return true;
             }
 
             _repairInventory(player.getInventory());
-            Message.sendMessage(player, "repair_all_self");
+            plugin.message.sendMessage(player, "repair_all_self");
             return true;
         }
 
         if (!(sender.hasPermission("lyttleessentials.repair.other"))) {
-            Message.sendMessage(sender, "no_permission");
+            plugin.message.sendMessage(sender, "no_permission");
             return true;
         }
 
         if (Bukkit.getPlayerExact(args[1]) == null) {
-            Message.sendMessage(sender,"player_not_found");
+            plugin.message.sendMessage(sender,"player_not_found");
             return true;
         }
 
@@ -80,23 +81,23 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
             _repairItem(player.getInventory().getItemInMainHand());
             if (sender instanceof Player) {
                 String[][] replacementsPlayer = {{"<PLAYER>", getDisplayName((Player) sender)}};
-                Message.sendMessage(player, "repair_helditem_other_player", replacementsPlayer);
-                Message.sendMessage(sender, "repair_helditem_other_sender", replacementsSender);
+                plugin.message.sendMessage(player, "repair_helditem_other_player", replacementsPlayer);
+                plugin.message.sendMessage(sender, "repair_helditem_other_sender", replacementsSender);
                 return true;
             }
-            Message.sendMessage(player, "repair_helditem_other_console");
-            Message.sendMessage(sender,"repair_helditem_other_sender", replacementsSender);
+            plugin.message.sendMessage(player, "repair_helditem_other_console");
+            plugin.message.sendMessage(sender,"repair_helditem_other_sender", replacementsSender);
             return true;
         }
         _repairInventory(player.getInventory());
         if (sender instanceof Player) {
             String[][] replacementsPlayer = {{"<PLAYER>", getDisplayName((Player) sender)}};
-            Message.sendMessage(player, "repair_all_other_player", replacementsPlayer);
-            Message.sendMessage(sender, "repair_all_other_sender", replacementsSender);
+            plugin.message.sendMessage(player, "repair_all_other_player", replacementsPlayer);
+            plugin.message.sendMessage(sender, "repair_all_other_sender", replacementsSender);
             return true;
         }
-        Message.sendMessage(player, "repair_all_other_console");
-        Message.sendMessage(sender,"repair_all_other_sender", replacementsSender);
+        plugin.message.sendMessage(player, "repair_all_other_console");
+        plugin.message.sendMessage(sender,"repair_all_other_sender", replacementsSender);
         return true;
     }
 

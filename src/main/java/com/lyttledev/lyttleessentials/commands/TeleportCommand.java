@@ -2,7 +2,6 @@ package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleessentials.types.Bill;
-import com.lyttledev.lyttleutils.utils.communication.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,12 +30,12 @@ public class TeleportCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            Message.sendMessage(sender, "must_be_player");
+            plugin.message.sendMessage(sender, "must_be_player");
             return true;
         }
 
         if (!(sender.hasPermission("lyttleessentials.tp"))) {
-            Message.sendMessage(sender, "no_permission");
+            plugin.message.sendMessage(sender, "no_permission");
             return true;
         }
 
@@ -60,7 +59,7 @@ public class TeleportCommand implements CommandExecutor, TabCompleter {
 
         // Check if target player is online and found
         if (Bukkit.getPlayerExact(args[0]) == null) {
-            Message.sendMessage(player, "player_not_found");
+            plugin.message.sendMessage(player, "player_not_found");
             return true;
         }
 
@@ -69,13 +68,13 @@ public class TeleportCommand implements CommandExecutor, TabCompleter {
 
         // Checks for a TP to the player himself
         if (player == playerTarget) {
-            Message.sendMessage(player, "tp_self");
+            plugin.message.sendMessage(player, "tp_self");
             return true;
         }
 
         // Check if the player already has a /tp request
         if (targetMap.containsKey(player.getUniqueId())) {
-            Message.sendMessage(player, "tp_already_requested");
+            plugin.message.sendMessage(player, "tp_already_requested");
             return true;
         }
 
@@ -85,21 +84,21 @@ public class TeleportCommand implements CommandExecutor, TabCompleter {
             String[][] replacements = {
                     {"<TOKENS>", String.valueOf(bill.total)},
             };
-            Message.sendMessage(player, "tokens_missing_amount", replacements);
+            plugin.message.sendMessage(player, "tokens_missing_amount", replacements);
             return true;
         }
 
         String[][] replacements = {
                 {"<PLAYER>", getDisplayName(player)}
         };
-        Message.sendMessage(playerTarget, "tp_ask_target", replacements);
+        plugin.message.sendMessage(playerTarget, "tp_ask_target", replacements);
 
         targetMap.put(player.getUniqueId(), playerTarget.getUniqueId());
 
         String[][] replacements2 = {
                 {"<TARGET>", getDisplayName(playerTarget)}
         };
-        Message.sendMessage(player, "tp_requested", replacements2);
+        plugin.message.sendMessage(player, "tp_requested", replacements2);
 
         // Wait 5 minutes to remove the teleport request
         (new BukkitRunnable() {
@@ -118,7 +117,7 @@ public class TeleportCommand implements CommandExecutor, TabCompleter {
                     Player requester = Bukkit.getPlayer(entry.getKey());
                     if (requester == null) {
                         targetMap.remove(entry.getKey());
-                        Message.sendMessage(player, "player_not_found");
+                        plugin.message.sendMessage(player, "player_not_found");
                         return true;
                     }
 
@@ -130,8 +129,8 @@ public class TeleportCommand implements CommandExecutor, TabCompleter {
                             {"<CostNow>", String.valueOf(bill.total)},
                             {"<CostNextTime>", String.valueOf(costNextTime)}
                     };
-                    Message.sendMessage(player, "tpaccept_accept");
-                    Message.sendMessage(requester, "tp_teleporting", replacements);
+                    plugin.message.sendMessage(player, "tpaccept_accept");
+                    plugin.message.sendMessage(requester, "tp_teleporting", replacements);
 
                     requester.teleport(player);
                     targetMap.remove(entry.getKey());
@@ -139,7 +138,7 @@ public class TeleportCommand implements CommandExecutor, TabCompleter {
                 }
             }
         } else {
-            Message.sendMessage(player, "tpaccept_no_request");
+            plugin.message.sendMessage(player, "tpaccept_no_request");
         }
         return true;
     }
@@ -154,19 +153,19 @@ public class TeleportCommand implements CommandExecutor, TabCompleter {
                     String[][] replacements = {
                             {"<TARGET>", getDisplayName(player)}
                     };
-                    Message.sendMessage(playerSender, "tpdeny_denied_player", replacements);
+                    plugin.message.sendMessage(playerSender, "tpdeny_denied_player", replacements);
 
 
                     String[][] replacements2 = {
                             {"<TARGET>", getDisplayName(player)}
                     };
-                    Message.sendMessage(playerSender, "tpdeny_denied_player", replacements2);
-                    Message.sendMessage(player, "tpdeny_denied_target");
+                    plugin.message.sendMessage(playerSender, "tpdeny_denied_player", replacements2);
+                    plugin.message.sendMessage(player, "tpdeny_denied_target");
                     break;
                 }
             }
         } else {
-            Message.sendMessage(player, "tpaccept_no_request");
+            plugin.message.sendMessage(player, "tpaccept_no_request");
         }
         return true;
     }

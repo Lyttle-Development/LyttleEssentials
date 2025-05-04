@@ -1,7 +1,6 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
-import com.lyttledev.lyttleutils.utils.communication.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,7 +20,7 @@ public class LyttleEssentialsCommand implements CommandExecutor, TabCompleter {
 
         // Check for permission
         if (!(sender.hasPermission("lyttleessentials.lyttleessentials"))) {
-            Message.sendMessage(sender, "no_permission");
+            plugin.message.sendMessage(sender, "no_permission");
             return true;
         }
 
@@ -32,7 +31,7 @@ public class LyttleEssentialsCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reload")) {
                 plugin.config.reload();
-                Message.sendMessageRaw(sender, "The config has been reloaded");
+                plugin.message.sendMessageRaw(sender, "The config has been reloaded");
             }
         }
         return true;

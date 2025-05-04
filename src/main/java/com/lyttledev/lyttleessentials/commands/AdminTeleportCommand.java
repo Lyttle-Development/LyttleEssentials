@@ -1,8 +1,6 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
-import com.lyttledev.lyttleutils.utils.communication.Message;
-import com.lyttledev.lyttleutils.utils.communication.Console;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,27 +22,27 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            Message.sendMessage(sender,"must_be_player");
+            plugin.message.sendMessage(sender,"must_be_player");
             return true;
         }
 
         Player player = (Player) sender;
 
         if (!player.hasPermission("lyttleessentials.admintp")) {
-            Message.sendMessage(sender, "no_permission");
+            plugin.message.sendMessage(sender, "no_permission");
             return true;
         }
 
         if (args.length == 1) {
             if (!player.hasPermission("lyttleessentials.admintp.self")) {
-                Message.sendMessage(sender, "no_permission");
+                plugin.message.sendMessage(sender, "no_permission");
                 return true;
             }
 
             Player target = plugin.getServer().getPlayer(args[0]);
 
             if (target == null) {
-                Message.sendMessage(player, "player_not_found");
+                plugin.message.sendMessage(player, "player_not_found");
                 return true;
             }
 
@@ -54,12 +52,12 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
                 { "<USER>", getDisplayName(player) },
                 { "<TARGET>", getDisplayName(target) }
             };
-            Message.sendMessage(player, "atp_user", messageReplacements);
+            plugin.message.sendMessage(player, "atp_user", messageReplacements);
             return true;
         }
 
         if (!player.hasPermission("lyttleessentials.admintp.other")) {
-            Message.sendMessage(sender, "no_permission");
+            plugin.message.sendMessage(sender, "no_permission");
             return true;
         }
 
@@ -68,7 +66,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
             Player target = plugin.getServer().getPlayer(args[1]);
 
             if (user == null || target == null) {
-                Message.sendMessage(player, "player_not_found");
+                plugin.message.sendMessage(player, "player_not_found");
                 return true;
             }
 
@@ -78,12 +76,12 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
                 { "<USER>", getDisplayName(user) },
                 { "<TARGET>", getDisplayName(target) }
             };
-            Message.sendMessage(player, "atp_user", messageReplacements);
+            plugin.message.sendMessage(player, "atp_user", messageReplacements);
             return true;
         }
 
         if (args.length == 3) {
-            Console.run(player, "minecraft:tp " + args[0] + " " + args[1] + " " + args[2]);
+            plugin.console.run(player, "minecraft:tp " + args[0] + " " + args[1] + " " + args[2]);
 
             String[][] messageReplacements = {
                     { "<USER>", getDisplayName(player) },
@@ -96,21 +94,21 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
             Player user = plugin.getServer().getPlayer(args[0]);
 
             if (user == null) {
-                Message.sendMessage(player, "player_not_found");
+                plugin.message.sendMessage(player, "player_not_found");
                 return true;
             }
 
-            Console.run("minecraft:execute as " +  getDisplayName(user) + " at @s run tp " + args[1] + " " + args[2] + " " + args[3]);
+            plugin.console.run("minecraft:execute as " +  getDisplayName(user) + " at @s run tp " + args[1] + " " + args[2] + " " + args[3]);
 
             String[][] messageReplacements = {
                     { "<USER>", getDisplayName(user) },
                     { "<TARGET>", "Loc(" + args[1] + ", " + args[2] + ", " + args[3] + ")" }
             };
-            Message.sendMessage(player, "atp_user", messageReplacements);
+            plugin.message.sendMessage(player, "atp_user", messageReplacements);
             return true;
         }
 
-        Message.sendMessage(player, "atp_usage");
+        plugin.message.sendMessage(player, "atp_usage");
 
         return true;
     }

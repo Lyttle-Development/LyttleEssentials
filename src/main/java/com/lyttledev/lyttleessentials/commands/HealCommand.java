@@ -1,7 +1,6 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
-import com.lyttledev.lyttleutils.utils.communication.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
@@ -16,44 +15,46 @@ import java.util.List;
 import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
 
 public class HealCommand implements CommandExecutor, TabCompleter {
+    private final LyttleEssentials plugin;
 
     public HealCommand(LyttleEssentials plugin) {
+        this.plugin = plugin;
         plugin.getCommand("heal").setExecutor(this);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("lyttleessentials.heal")) {
-            Message.sendMessage(sender, "no_permission");
+            plugin.message.sendMessage(sender, "no_permission");
             return true;
         }
 
         if (args.length > 1) {
-            Message.sendMessage(sender,"heal_usage");
+            plugin.message.sendMessage(sender,"heal_usage");
             return true;
         }
 
         if (args.length == 0) {
             if (!(sender instanceof Player)) {
-                Message.sendMessage(sender,"heal_usage");
+                plugin.message.sendMessage(sender,"heal_usage");
                 return true;
             }
             if (!sender.hasPermission("lyttleessentials.heal.self")) {
-                Message.sendMessage(sender, "no_permission");
+                plugin.message.sendMessage(sender, "no_permission");
                 return true;
             }
-            Message.sendMessage(sender, "heal_self");
+            plugin.message.sendMessage(sender, "heal_self");
             heal((Player) sender);
             return true;
         }
 
         if (!(sender.hasPermission("lyttleessentials.heal.other"))) {
-            Message.sendMessage(sender, "no_permission");
+            plugin.message.sendMessage(sender, "no_permission");
             return true;
         }
 
         if ((Bukkit.getPlayerExact(args[0]) == null)) {
-            Message.sendMessage(sender,"player_not_found");
+            plugin.message.sendMessage(sender,"player_not_found");
             return true;
         }
 
@@ -69,13 +70,13 @@ public class HealCommand implements CommandExecutor, TabCompleter {
 
         if (sender instanceof Player) {
             String[][] replacementsPlayer = {{"<PLAYER>", getDisplayName((Player) sender)}};
-            Message.sendMessage(player, "heal_other_player", replacementsPlayer);
-            Message.sendMessage(sender, "heal_other_sender", replacementsSender);
+            plugin.message.sendMessage(player, "heal_other_player", replacementsPlayer);
+            plugin.message.sendMessage(sender, "heal_other_sender", replacementsSender);
             return true;
         }
 
-        Message.sendMessage(player, "heal_console");
-        Message.sendMessage(sender,"heal_other_sender", replacementsSender);
+        plugin.message.sendMessage(player, "heal_console");
+        plugin.message.sendMessage(sender,"heal_other_sender", replacementsSender);
         return true;
     }
 
@@ -87,7 +88,7 @@ public class HealCommand implements CommandExecutor, TabCompleter {
     }
 
     private void healSelfMessage(Player player) {
-        Message.sendMessage(player, "heal_self");
+        plugin.message.sendMessage(player, "heal_self");
     }
 
     @Override

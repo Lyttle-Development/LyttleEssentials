@@ -17,6 +17,8 @@ public final class LyttleEssentials extends JavaPlugin {
     public Economy economyImplementer;
     public Configs config;
     public Invoice invoice = new Invoice(this);
+    public Console console;
+    public Message message;
 
     @Override
     public void onEnable() {
@@ -33,8 +35,8 @@ public final class LyttleEssentials extends JavaPlugin {
         migrateConfig();
 
         // Plugin startup logic
-        Console.init(this);
-        Message.init(this, config.messages);
+        this.console = new Console(this);
+        this.message = new Message(this, config.messages);
 
         // Commands
         new AdminTeleportCommand(this);
