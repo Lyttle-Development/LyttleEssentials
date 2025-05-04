@@ -1,9 +1,9 @@
 package com.lyttledev.lyttleessentials.handlers;
 
+import com.lyttledev.lyttleutils.utils.communication.Message;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.luckperms.api.LuckPermsProvider;
 import com.lyttledev.lyttleessentials.LyttleEssentials;
-import com.lyttledev.lyttleessentials.utils.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,8 +21,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.regex.*;
 
-import static com.lyttledev.lyttleessentials.utils.Message.*;
 import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
+import static com.lyttledev.lyttleutils.utils.communication.Message.getConfigMessage;
 
 public class onPlayerChatListener implements Listener {
     private final LyttleEssentials plugin;

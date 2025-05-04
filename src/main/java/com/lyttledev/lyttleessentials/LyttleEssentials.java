@@ -4,8 +4,9 @@ import com.lyttledev.lyttleessentials.commands.*;
 import com.lyttledev.lyttleessentials.handlers.*;
 import com.lyttledev.lyttleessentials.types.Configs;
 import com.lyttledev.lyttleessentials.types.Invoice;
-import com.lyttledev.lyttleessentials.utils.*;
 
+import com.lyttledev.lyttleutils.utils.communication.Console;
+import com.lyttledev.lyttleutils.utils.communication.Message;
 import org.bukkit.plugin.java.JavaPlugin;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -33,7 +34,7 @@ public final class LyttleEssentials extends JavaPlugin {
 
         // Plugin startup logic
         Console.init(this);
-        Message.init(this);
+        Message.init(this, config.messages);
 
         // Commands
         new AdminTeleportCommand(this);

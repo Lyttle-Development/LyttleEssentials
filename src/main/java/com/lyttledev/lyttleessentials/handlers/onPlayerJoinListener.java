@@ -1,7 +1,7 @@
 package com.lyttledev.lyttleessentials.handlers;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
-import com.lyttledev.lyttleessentials.utils.Message;
+import com.lyttledev.lyttleutils.utils.communication.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

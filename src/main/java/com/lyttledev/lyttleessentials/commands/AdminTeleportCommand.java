@@ -1,8 +1,8 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
-import com.lyttledev.lyttleessentials.utils.Console;
-import com.lyttledev.lyttleessentials.utils.Message;
+import com.lyttledev.lyttleutils.utils.communication.Message;
+import com.lyttledev.lyttleutils.utils.communication.Console;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -83,7 +83,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 3) {
-            Console.playerCommand(player, "minecraft:tp " + args[0] + " " + args[1] + " " + args[2]);
+            Console.run(player, "minecraft:tp " + args[0] + " " + args[1] + " " + args[2]);
 
             String[][] messageReplacements = {
                     { "<USER>", getDisplayName(player) },
@@ -100,7 +100,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            Console.command("minecraft:execute as " +  getDisplayName(user) + " at @s run tp " + args[1] + " " + args[2] + " " + args[3]);
+            Console.run("minecraft:execute as " +  getDisplayName(user) + " at @s run tp " + args[1] + " " + args[2] + " " + args[3]);
 
             String[][] messageReplacements = {
                     { "<USER>", getDisplayName(user) },

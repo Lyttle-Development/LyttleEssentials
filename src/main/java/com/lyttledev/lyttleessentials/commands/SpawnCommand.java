@@ -2,8 +2,8 @@ package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleessentials.types.Bill;
-import com.lyttledev.lyttleessentials.utils.Console;
-import com.lyttledev.lyttleessentials.utils.Message;
+import com.lyttledev.lyttleutils.utils.communication.Console;
+import com.lyttledev.lyttleutils.utils.communication.Message;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -36,7 +36,7 @@ public class SpawnCommand implements CommandExecutor, TabCompleter {
             if (label.equalsIgnoreCase("setspawn")) {
                 Location spawn = player.getLocation();
                 plugin.config.locations.set("spawn", spawn);
-                Console.playerCommand(player, "setworldspawn");
+                Console.run(player, "setworldspawn");
                 Message.sendMessage(player, "spawn_set");
                 return true;
             }
