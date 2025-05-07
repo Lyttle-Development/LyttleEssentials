@@ -1,7 +1,6 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
-import com.lyttledev.lyttleessentials.utils.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,31 +13,33 @@ import java.util.List;
 import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
 
 public class FlyCommand implements CommandExecutor, TabCompleter {
+    private final LyttleEssentials plugin;
 
     public FlyCommand(LyttleEssentials plugin) {
+        this.plugin = plugin;
         plugin.getCommand("fly").setExecutor(this);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("lyttleessentials.fly")) {
-            Message.sendMessage(sender, "no_permission");
+            plugin.message.sendMessage(sender, "no_permission");
             return true;
         }
 
         if (!(sender instanceof Player) && args.length != 1) {
-            Message.sendMessage(sender, "fly_usage");
+            plugin.message.sendMessage(sender, "fly_usage");
             return true;
         }
 
         if (args.length > 1) {
-            Message.sendMessage(sender, "fly_usage");
+            plugin.message.sendMessage(sender, "fly_usage");
             return true;
         }
 
         if (args.length == 0) {
             if (!sender.hasPermission("lyttleessentials.fly.self")) {
-                Message.sendMessage(sender, "no_permission");
+                plugin.message.sendMessage(sender, "no_permission");
                 return true;
             }
             boolean active = toggleFly((Player) sender);
@@ -47,12 +48,12 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
         }
 
         if (!sender.hasPermission("lyttleessentials.fly.other")) {
-            Message.sendMessage(sender, "no_permission");
+            plugin.message.sendMessage(sender, "no_permission");
             return true;
         }
 
         if ((Bukkit.getPlayerExact(args[0]) == null)) {
-            Message.sendMessage(sender, "player_not_found");
+            plugin.message.sendMessage(sender, "player_not_found");
             return true;
         }
 
@@ -69,22 +70,22 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
         if (sender instanceof Player) {
             String[][] replacementsPlayer = {{"<PLAYER>", getDisplayName((Player) sender)}};
             if (active) {
-                Message.sendMessage(sender, "fly_activate_other_sender", replacementsSender);
-                Message.sendMessage(player, "fly_activate_other_target", replacementsPlayer);
+                plugin.message.sendMessage(sender, "fly_activate_other_sender", replacementsSender);
+                plugin.message.sendMessage(player, "fly_activate_other_target", replacementsPlayer);
                 return true;
             }
-            Message.sendMessage(sender, "fly_deactivate_other_sender", replacementsSender);
-            Message.sendMessage(player, "fly_deactivate_other_target", replacementsPlayer);
+            plugin.message.sendMessage(sender, "fly_deactivate_other_sender", replacementsSender);
+            plugin.message.sendMessage(player, "fly_deactivate_other_target", replacementsPlayer);
             return true;
         }
 
         if (active) {
-            Message.sendMessage(sender, "fly_activate_other_sender", replacementsSender);
-            Message.sendMessage(player, "fly_activate_console");
+            plugin.message.sendMessage(sender, "fly_activate_other_sender", replacementsSender);
+            plugin.message.sendMessage(player, "fly_activate_console");
             return true;
         }
-        Message.sendMessage(sender, "fly_deactivate_other_sender", replacementsSender);
-        Message.sendMessage(player, "fly_deactivate_console");
+        plugin.message.sendMessage(sender, "fly_deactivate_other_sender", replacementsSender);
+        plugin.message.sendMessage(player, "fly_deactivate_console");
         return true;
     }
 
@@ -99,10 +100,10 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
 
     public void flySelfMessage(Player receiver, boolean active) {
         if (active) {
-            Message.sendMessage(receiver, "fly_activate");
+            plugin.message.sendMessage(receiver, "fly_activate");
             return;
         }
-        Message.sendMessage(receiver, "fly_deactivate");
+        plugin.message.sendMessage(receiver, "fly_deactivate");
     }
 
     @Override
