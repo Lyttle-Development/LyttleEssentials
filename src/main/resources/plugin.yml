@@ -8,8 +8,6 @@ authors:
   - ThatsATim
   - Stualyttle
 
-depend:
-  - LyttleUtils
 softdepend:
   - Vault
 
