@@ -1,6 +1,7 @@
 package com.lyttledev.lyttleessentials.types;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleutils.types.Config;
 
 public class Configs {
     private final LyttleEssentials plugin;

@@ -3,7 +3,6 @@ package com.lyttledev.lyttleessentials.handlers;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.luckperms.api.LuckPermsProvider;
 import com.lyttledev.lyttleessentials.LyttleEssentials;
-import com.lyttledev.lyttleessentials.utils.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,7 +20,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.regex.*;
 
-import static com.lyttledev.lyttleessentials.utils.Message.*;
 import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
 
 public class onPlayerChatListener implements Listener {
@@ -40,7 +38,7 @@ public class onPlayerChatListener implements Listener {
         // Get the player's message
         Player player = event.getPlayer();
         String message = event.message().toString();
-        String roleDisplayname = getConfigMessage("chat_default_role");
+        String roleDisplayname = plugin.message.getConfigMessage("chat_default_role");
 
         // check if luckperms is installed
         if (Bukkit.getPluginManager().getPlugin("LuckPerms") != null) {
@@ -72,7 +70,7 @@ public class onPlayerChatListener implements Listener {
             {"<MESSAGE>", filterMessage(message)}
         };
 
-        Message.sendBroadcast("chat_format", replacements, false);
+        plugin.message.sendBroadcast("chat_format", replacements, false);
     }
 
     private String filterMessage(String message) {
