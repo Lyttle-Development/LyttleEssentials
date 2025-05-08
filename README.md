@@ -106,10 +106,13 @@ Contains regex patterns for chat moderation:
 - Easy to update and maintain
 
 ### 🔄 The #defaults Folder
-Contains original copies of all configuration files and serves as a backup reference.
+The folder serves several important purposes: `#defaults`
+1. **Backup Reference**: Contains original copies of all configuration files
+2. **Reset Option**: Use these to restore default settings
+3. **Update Safety**: Preserved during plugin updates
+4. **Documentation**: Shows all available options with comments
 
 > 💡 **Never modify files in the #defaults folder!** They are automatically overwritten during server restarts.
-
 ---
 
 ## 💬 Support
