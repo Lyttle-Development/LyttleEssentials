@@ -12,7 +12,7 @@
 
 </div>
 
-![Divider](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
+![Divider](https://raw.githubusercontent.com/Lyttle-Development/LyttleUtils/refs/heads/main/line.png)
 
 ## 🌟 Features
 
@@ -146,6 +146,6 @@ If you enjoy this plugin, please consider:
 💬 Sharing it with other server owners<br>
 🎁 Supporting development through [Donations](https://github.com/LyttleDevelopment)
 
-![Divider](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
+![Divider](https://raw.githubusercontent.com/Lyttle-Development/LyttleUtils/refs/heads/main/line.png)
 
 </div>
