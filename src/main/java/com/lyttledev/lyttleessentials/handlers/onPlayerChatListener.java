@@ -1,6 +1,7 @@
 package com.lyttledev.lyttleessentials.handlers;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.luckperms.api.LuckPermsProvider;
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import org.bukkit.Bukkit;
@@ -37,7 +38,8 @@ public class onPlayerChatListener implements Listener {
 
         // Get the player's message
         Player player = event.getPlayer();
-        String message = event.message().toString();
+        String message = PlainTextComponentSerializer.plainText().serialize(event.message());;
+
         String roleDisplayname = plugin.message.getConfigMessage("chat_default_role");
 
         // check if luckperms is installed
