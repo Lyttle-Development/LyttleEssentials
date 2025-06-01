@@ -1,6 +1,7 @@
 package com.lyttledev.lyttleessentials.handlers;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,7 +21,10 @@ public class onPlayerJoinListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
-        String[][] replacements = {{"<PLAYER>", getDisplayName(player)}};
+        Replacements replacements = new Replacements.Builder()
+            .add("<PLAYER>", getDisplayName(player))
+            .build();
+
         event.joinMessage(null);
 
         if (!player.hasPlayedBefore()) {
