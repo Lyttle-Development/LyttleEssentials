@@ -32,7 +32,7 @@ dependencies {
     compileOnly(libs.io.papermc.paper.paper.api)
     compileOnly(libs.com.github.milkbowl.vaultapi)
     compileOnly(libs.net.luckperms.api)
-    implementation("com.lyttledev:lyttleutils:1.0.1")
+    implementation("com.lyttledev:lyttleutils:1.1.0")
 }
 
 group = "com.lyttledev"
