@@ -7,6 +7,7 @@ import com.lyttledev.lyttleessentials.types.Invoice;
 
 import com.lyttledev.lyttleutils.utils.communication.Console;
 import com.lyttledev.lyttleutils.utils.communication.Message;
+import com.lyttledev.lyttleutils.utils.storage.GlobalConfig;
 import org.bukkit.plugin.java.JavaPlugin;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -19,6 +20,7 @@ public final class LyttleEssentials extends JavaPlugin {
     public Invoice invoice = new Invoice(this);
     public Console console;
     public Message message;
+    public GlobalConfig global;
 
     @Override
     public void onEnable() {
@@ -30,13 +32,15 @@ public final class LyttleEssentials extends JavaPlugin {
 
         saveDefaultConfig();
         // Setup config after creating the configs
-        config = new Configs(this);
+        this.config = new Configs(this);
+        this.global = new GlobalConfig(this);
+
         // Migrate config
         migrateConfig();
 
         // Plugin startup logic
         this.console = new Console(this);
-        this.message = new Message(this, config.messages);
+        this.message = new Message(this, config.messages, global);
 
         // Commands
         new AdminTeleportCommand(this);

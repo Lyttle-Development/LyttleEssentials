@@ -1,6 +1,7 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.command.*;
@@ -56,7 +57,10 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
 
-                String[][] replacements = {{"<MODE>", mode}};
+                Replacements replacements= new Replacements.Builder()
+                        .add("<MODE>", mode)
+                        .build();
+
                 plugin.message.sendMessage(sender, "gamemode_self", replacements);
                 return true;
             }
@@ -87,16 +91,29 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
+            Replacements replacementsSender = new Replacements.Builder()
+                    .add("<MODE>", mode)
+                    .add("<PLAYER>", getDisplayName(player))
+                    .build();
+
             if (sender instanceof Player) {
-                String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", getDisplayName(player)}};
                 plugin.message.sendMessage(sender, "gamemode_other_sender", replacementsSender);
-                String[][] replacementsPlayer = {{"<MODE>", mode}, {"<PLAYER>", getDisplayName((Player) sender)}};
+
+                Replacements replacementsPlayer = new Replacements.Builder()
+                        .add("<MODE>", mode)
+                        .add("<PLAYER>", getDisplayName((Player) sender))
+                        .build();
+
                 plugin.message.sendMessage(player, "gamemode_other_target", replacementsPlayer);
                 return true;
             }
-            String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", getDisplayName(player)}};
+
             plugin.message.sendMessage(sender,"gamemode_other_sender", replacementsSender);
-            String[][] replacementsConsole = {{"<MODE>", mode}};
+
+            Replacements replacementsConsole = new Replacements.Builder()
+                    .add("<MODE>", mode)
+                    .build();
+
             plugin.message.sendMessage(player, "gamemode_console", replacementsConsole);
             return true;
         }
@@ -126,7 +143,9 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            String[][] replacements = {{"<MODE>", mode}};
+            Replacements replacements = new Replacements.Builder()
+                    .add("<MODE>", mode)
+                    .build();
             plugin.message.sendMessage(sender, "gamemode_self", replacements);
             return true;
         }
@@ -149,17 +168,29 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        Replacements replacementsSender = new Replacements.Builder()
+                .add("<MODE>", mode)
+                .add("<PLAYER>", getDisplayName(player))
+                .build();
+
         if (sender instanceof Player) {
-            String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", getDisplayName(player)}};
             plugin.message.sendMessage(sender, "gamemode_other_sender", replacementsSender);
-            String[][] replacementsPlayer = {{"<MODE>", mode}, {"<PLAYER>", getDisplayName((Player) sender)}};
+
+            Replacements replacementsPlayer = new Replacements.Builder()
+                    .add("<MODE>", mode)
+                    .add("<PLAYER>", getDisplayName((Player) sender))
+                    .build();
+
             plugin.message.sendMessage(player, "gamemode_other_target", replacementsPlayer);
             return true;
         }
 
-        String[][] replacementsSender = {{"<MODE>", mode}, {"<PLAYER>", getDisplayName(player)}};
         plugin.message.sendMessage(sender,"gamemode_other_sender", replacementsSender);
-        String[][] replacementsConsole = {{"<MODE>", mode}};
+
+        Replacements replacementsConsole = new Replacements.Builder()
+                .add("<MODE>", mode)
+                .build();
+
         plugin.message.sendMessage(player, "gamemode_console", replacementsConsole);
         return true;
     }

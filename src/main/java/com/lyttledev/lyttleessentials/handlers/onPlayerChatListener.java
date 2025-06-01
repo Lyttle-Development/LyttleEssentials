@@ -1,6 +1,8 @@
 package com.lyttledev.lyttleessentials.handlers;
 
+import com.lyttledev.lyttleutils.types.Message.Replacements;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.luckperms.api.LuckPermsProvider;
 import com.lyttledev.lyttleessentials.LyttleEssentials;
@@ -40,7 +42,7 @@ public class onPlayerChatListener implements Listener {
         Player player = event.getPlayer();
         String message = PlainTextComponentSerializer.plainText().serialize(event.message());;
 
-        String roleDisplayname = plugin.message.getConfigMessage("chat_default_role");
+        String roleDisplayname = MiniMessage.miniMessage().serialize(plugin.message.getConfigMessage("chat_default_role"));
 
         // check if luckperms is installed
         if (Bukkit.getPluginManager().getPlugin("LuckPerms") != null) {
@@ -66,11 +68,11 @@ public class onPlayerChatListener implements Listener {
             }
         }
 
-        String[][] replacements = {
-            {"<PLAYER>", getDisplayName(player)},
-            {"<ROLE>", roleDisplayname},
-            {"<MESSAGE>", filterMessage(message)}
-        };
+        Replacements replacements = new Replacements.Builder()
+            .add("<PLAYER>", getDisplayName(player))
+            .add("<ROLE>", roleDisplayname)
+            .add("<MESSAGE>", filterMessage(message))
+            .build();
 
         plugin.message.sendBroadcast("chat_format", replacements, false);
     }
