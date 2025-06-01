@@ -2,6 +2,7 @@ package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleessentials.types.Bill;
+import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -63,7 +64,10 @@ public class SpawnCommand implements CommandExecutor, TabCompleter {
 
         Location spawn = (Location) plugin.config.locations.get("spawn");
         player.teleport(spawn);
-        String[][] replacements = {{"<PRICE>", String.valueOf(bill.total)}};
+        Replacements replacements = new Replacements.Builder()
+            .add("<PRICE>", String.valueOf(bill.total))
+            .build();
+
         plugin.message.sendMessage(player, "spawn_teleported", replacements);
         return true;
     }

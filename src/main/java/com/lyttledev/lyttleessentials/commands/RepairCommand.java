@@ -1,6 +1,7 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -75,12 +76,17 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
 
         Player player = Bukkit.getPlayerExact(args[1]);
 
-        String[][] replacementsSender = {{"<PLAYER>", getDisplayName(player)}};
+        Replacements replacementsSender = new Replacements.Builder()
+            .add("<PLAYER>", getDisplayName(player))
+            .build();
+
+        Replacements replacementsPlayer = new Replacements.Builder()
+            .add("<PLAYER>", getDisplayName((Player) sender))
+            .build();
 
         if (args[0].equalsIgnoreCase("HeldItem")) {
             _repairItem(player.getInventory().getItemInMainHand());
             if (sender instanceof Player) {
-                String[][] replacementsPlayer = {{"<PLAYER>", getDisplayName((Player) sender)}};
                 plugin.message.sendMessage(player, "repair_helditem_other_player", replacementsPlayer);
                 plugin.message.sendMessage(sender, "repair_helditem_other_sender", replacementsSender);
                 return true;
@@ -91,7 +97,6 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
         }
         _repairInventory(player.getInventory());
         if (sender instanceof Player) {
-            String[][] replacementsPlayer = {{"<PLAYER>", getDisplayName((Player) sender)}};
             plugin.message.sendMessage(player, "repair_all_other_player", replacementsPlayer);
             plugin.message.sendMessage(sender, "repair_all_other_sender", replacementsSender);
             return true;

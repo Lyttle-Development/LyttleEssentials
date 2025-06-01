@@ -2,6 +2,7 @@ package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleessentials.types.Bill;
+import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -81,23 +82,26 @@ public class TeleportCommand implements CommandExecutor, TabCompleter {
         // send a message if the player does not have enough tokens
         Bill bill = plugin.invoice.teleportToPlayerCheck(player);
         if (bill.total < 0) {
-            String[][] replacements = {
-                    {"<TOKENS>", String.valueOf(bill.total)},
-            };
+            Replacements replacements = new Replacements.Builder()
+                    .add("<TOKENS>", String.valueOf(bill.total))
+                    .build();
+
             plugin.message.sendMessage(player, "tokens_missing_amount", replacements);
             return true;
         }
 
-        String[][] replacements = {
-                {"<PLAYER>", getDisplayName(player)}
-        };
+        Replacements replacements = new Replacements.Builder()
+            .add("<PLAYER>", getDisplayName(player))
+            .build();
+
         plugin.message.sendMessage(playerTarget, "tp_ask_target", replacements);
 
         targetMap.put(player.getUniqueId(), playerTarget.getUniqueId());
 
-        String[][] replacements2 = {
-                {"<TARGET>", getDisplayName(playerTarget)}
-        };
+        Replacements replacements2 = new Replacements.Builder()
+            .add("<TARGET>", getDisplayName(playerTarget))
+            .build();
+
         plugin.message.sendMessage(player, "tp_requested", replacements2);
 
         // Wait 5 minutes to remove the teleport request
@@ -125,10 +129,11 @@ public class TeleportCommand implements CommandExecutor, TabCompleter {
 
                     //send message with info to the player
                     int costNextTime = bill.next;
-                    String[][] replacements = {
-                            {"<CostNow>", String.valueOf(bill.total)},
-                            {"<CostNextTime>", String.valueOf(costNextTime)}
-                    };
+                    Replacements replacements = new Replacements.Builder()
+                        .add("<CostNow>", String.valueOf(bill.total))
+                        .add("<CostNextTime>", String.valueOf(costNextTime))
+                        .build();
+
                     plugin.message.sendMessage(player, "tpaccept_accept");
                     plugin.message.sendMessage(requester, "tp_teleporting", replacements);
 
@@ -150,16 +155,14 @@ public class TeleportCommand implements CommandExecutor, TabCompleter {
                 if ((entry.getValue()).equals(player.getUniqueId())) {
                     targetMap.remove(entry.getKey());
                     Player playerSender = Bukkit.getPlayer(entry.getKey());
-                    String[][] replacements = {
-                            {"<TARGET>", getDisplayName(player)}
-                    };
+
+                    Replacements replacements = new Replacements.Builder()
+                        .add("<TARGET>", getDisplayName(player))
+                        .build();
+
                     plugin.message.sendMessage(playerSender, "tpdeny_denied_player", replacements);
 
-
-                    String[][] replacements2 = {
-                            {"<TARGET>", getDisplayName(player)}
-                    };
-                    plugin.message.sendMessage(playerSender, "tpdeny_denied_player", replacements2);
+                    plugin.message.sendMessage(playerSender, "tpdeny_denied_player", replacements);
                     plugin.message.sendMessage(player, "tpdeny_denied_target");
                     break;
                 }

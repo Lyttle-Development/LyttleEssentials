@@ -4,6 +4,7 @@ import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleessentials.types.Bill;
 import com.lyttledev.lyttleessentials.types.Warp;
 import com.lyttledev.lyttleessentials.utils.MessageCleaner;
+import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -71,10 +72,17 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                     }
 
                     plugin.config.warps.set(warpName, warp);
-                    String[][] replacements = {{"<NAME>", warpName}, {"<PRICE>", String.valueOf(bill.total)}};
+                    Replacements replacements = new Replacements.Builder()
+                        .add("<NAME>", warpName)
+                        .add("<PRICE>", String.valueOf(bill.total))
+                        .build();
+
                     plugin.message.sendMessage(player, "setwarp_success", replacements);
                 } else {
-                    String[][] replacements = {{"<NAME>", warpName}};
+                    Replacements replacements = new Replacements.Builder()
+                        .add("<NAME>", warpName)
+                        .build();
+
                     plugin.message.sendMessage(player, "setwarp_already_exists", replacements);
                 }
                 return true;
@@ -89,7 +97,11 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                 String warpName = args[0];
                 Player target = Bukkit.getPlayer(args[1]);
                 Warp warp = new Warp(target, warpName);
-                String[][] replacements = {{"<NAME>", warpName}, {"<PLAYER>", getDisplayName(target)}};
+                Replacements replacements = new Replacements.Builder()
+                    .add("<NAME>", warpName)
+                    .add("<PLAYER>", getDisplayName(target))
+                    .build();
+
                 if (!plugin.config.warps.containsLowercase(warpName)) {
                     plugin.config.warps.set(warpName, warp);
                     plugin.message.sendMessage(player, "setwarp_success_other", replacements);
@@ -118,7 +130,12 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                     // Name and player provided
                     String warpName = args[0];
                     Player target = Bukkit.getPlayer(args[1]);
-                    String[][] replacements = {{"<NAME>", warpName}, {"<PLAYER>", getDisplayName(target)}};
+
+                    Replacements replacements = new Replacements.Builder()
+                        .add("<NAME>", warpName)
+                        .add("<PLAYER>", getDisplayName(target))
+                        .build();
+
                     if (plugin.config.warps.contains(warpName)) {
                         plugin.config.warps.remove(warpName);
                         plugin.message.sendMessage(player, "delwarp_success_other", replacements);
@@ -133,7 +150,10 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                 }
 
                 String warpName = args[0];
-                String[][] replacements = {{"<NAME>", warpName}};
+                Replacements replacements = new Replacements.Builder()
+                    .add("<NAME>", warpName)
+                    .build();
+
                 if (plugin.config.warps.contains(warpName)) {
                     ConfigurationSection warpSection = plugin.config.warps.getSection(warpName);
                     if (warpSection == null) {
@@ -188,10 +208,16 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                     }
 
                     player.teleport(location);
-                    String[][] replacements = {{"<NAME>", warpName}, {"<PRICE>", String.valueOf(bill.total)}};
+                    Replacements replacements = new Replacements.Builder()
+                            .add("<NAME>", warpName)
+                            .add("<PRICE>", String.valueOf(bill.total))
+                            .build();
+
                     plugin.message.sendMessage(player, "warp_success", replacements);
                 } else {
-                    String[][] replacements = {{"<NAME>", warpName}};
+                    Replacements replacements = new Replacements.Builder()
+                            .add("<NAME>", warpName)
+                            .build();
                     plugin.message.sendMessage(player, "warp_doesnt_exist", replacements);
                 }
                 return true;
