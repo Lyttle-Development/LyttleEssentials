@@ -1,6 +1,7 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -65,10 +66,15 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        String[][] replacementsSender = {{"<PLAYER>", getDisplayName(player)}};
+        Replacements replacementsSender = new Replacements.Builder()
+            .add("<PLAYER>", getDisplayName(player))
+            .build();
 
         if (sender instanceof Player) {
-            String[][] replacementsPlayer = {{"<PLAYER>", getDisplayName((Player) sender)}};
+            Replacements replacementsPlayer = new Replacements.Builder()
+                    .add("<PLAYER>", getDisplayName((Player) sender))
+                    .build();
+
             if (active) {
                 plugin.message.sendMessage(sender, "fly_activate_other_sender", replacementsSender);
                 plugin.message.sendMessage(player, "fly_activate_other_target", replacementsPlayer);

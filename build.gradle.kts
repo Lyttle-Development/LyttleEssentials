@@ -2,12 +2,14 @@ import io.papermc.hangarpublishplugin.model.Platforms
 import java.io.ByteArrayOutputStream
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.Copy
+import org.gradle.kotlin.dsl.named
 
 plugins {
     `java-library`
     `maven-publish`
     id("io.papermc.hangar-publish-plugin") version "0.1.2"
     id("co.uzzu.dotenv.gradle") version "4.0.0"
+    id("com.gradleup.shadow") version "8.3.6"
 }
 
 repositories {
@@ -31,7 +33,7 @@ dependencies {
     compileOnly(libs.io.papermc.paper.paper.api)
     compileOnly(libs.com.github.milkbowl.vaultapi)
     compileOnly(libs.net.luckperms.api)
-    implementation("com.lyttledev:lyttleutils:0.0.1-ALPHA.18")
+    implementation("com.lyttledev:lyttleutils:1.1.0")
 }
 
 group = "com.lyttledev"

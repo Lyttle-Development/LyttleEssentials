@@ -1,6 +1,7 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
@@ -66,10 +67,15 @@ public class HealCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        String[][] replacementsSender = {{"<PLAYER>", getDisplayName(player)}};
+        Replacements replacementsSender = new Replacements.Builder()
+            .add("<PLAYER>", getDisplayName(player))
+            .build();
 
         if (sender instanceof Player) {
-            String[][] replacementsPlayer = {{"<PLAYER>", getDisplayName((Player) sender)}};
+            Replacements replacementsPlayer = new Replacements.Builder()
+                .add("<PLAYER>", getDisplayName((Player) sender))
+                .build();
+
             plugin.message.sendMessage(player, "heal_other_player", replacementsPlayer);
             plugin.message.sendMessage(sender, "heal_other_sender", replacementsSender);
             return true;

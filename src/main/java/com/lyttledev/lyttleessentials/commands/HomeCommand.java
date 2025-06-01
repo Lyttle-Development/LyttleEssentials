@@ -2,6 +2,7 @@ package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleessentials.types.Bill;
+import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -69,7 +70,10 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
             Player target = Bukkit.getPlayer(args[0]);
 
             if (target == null) {
-                String[][] replacements = {{"%player%", args[0]}};
+                Replacements replacements = new Replacements.Builder()
+                    .add("%player%", args[0])
+                    .build();
+
                 plugin.message.sendMessage(player, "player_not_found", replacements);
                 return true;
             }
@@ -77,7 +81,11 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
             String homeName = args[0];
             Location location = player.getLocation();
             plugin.config.homes.set(player.getUniqueId().toString(), location);
-            String[][] replacements = {{"<PLAYER>", homeName}};
+
+            Replacements replacements = new Replacements.Builder()
+                .add("<PLAYER>", homeName)
+                .build();
+
             plugin.message.sendMessage(player, "sethome_other_success", replacements);
             return true;
         }
@@ -117,7 +125,11 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
 
             String homeName = args[0];
             plugin.config.homes.set(getDisplayName(player), null);
-            String[][] replacements = {{"<PLAYER>", homeName}};
+
+            Replacements replacements = new Replacements.Builder()
+                    .add("<PLAYER>", homeName)
+                    .build();
+
             plugin.message.sendMessage(player, "delhome_other_success", replacements);
             return true;
         }
@@ -147,7 +159,10 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
             }
 
             player.teleport(location);
-            String[][] replacements = {{"<PRICE>", String.valueOf(bill.total)}};
+            Replacements replacements = new Replacements.Builder()
+                .add("<PRICE>", String.valueOf(bill.total))
+                .build();
+
             plugin.message.sendMessage(player, "home_success", replacements);
             return true;
         }
