@@ -1,6 +1,7 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -58,7 +59,10 @@ public class TopCommand implements CommandExecutor, TabCompleter {
         }
 
         Player player = Bukkit.getPlayer(args[0]);
-        String[][] replacementsSender = {{"<PLAYER>", getDisplayName(player)}};
+        Replacements replacementsSender = new Replacements.Builder()
+            .add("<PLAYER>", getDisplayName(player))
+            .build();
+
         _teleportToTop(player);
 
         if (sender == Bukkit.getPlayerExact(args[0])) {
@@ -67,7 +71,10 @@ public class TopCommand implements CommandExecutor, TabCompleter {
         }
 
         if (sender instanceof Player) {
-            String[][] replacementsPlayer = {{"<PLAYER>", getDisplayName((Player) sender)}};
+            Replacements replacementsPlayer = new Replacements.Builder()
+                .add("<PLAYER>", getDisplayName((Player) sender))
+                .build();
+
             plugin.message.sendMessage(sender, "top_other_sender", replacementsSender);
             plugin.message.sendMessage(player, "top_other_player", replacementsPlayer);
             return true;

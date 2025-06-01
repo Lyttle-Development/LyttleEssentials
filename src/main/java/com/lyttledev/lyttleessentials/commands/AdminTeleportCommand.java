@@ -1,6 +1,7 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -48,11 +49,12 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
 
             player.teleport(target);
 
-            String[][] messageReplacements = {
-                { "<USER>", getDisplayName(player) },
-                { "<TARGET>", getDisplayName(target) }
-            };
-            plugin.message.sendMessage(player, "atp_user", messageReplacements);
+            Replacements replacements = new Replacements.Builder()
+                .add("<USER>", getDisplayName(player))
+                .add("<TARGET>", getDisplayName(target))
+                .build();
+
+            plugin.message.sendMessage(player, "atp_user", replacements, player);
             return true;
         }
 
@@ -72,21 +74,17 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
 
             user.teleport(target);
 
-            String[][] messageReplacements = {
-                { "<USER>", getDisplayName(user) },
-                { "<TARGET>", getDisplayName(target) }
-            };
-            plugin.message.sendMessage(player, "atp_user", messageReplacements);
+            Replacements replacements = new Replacements.Builder()
+                .add("<USER>", getDisplayName(user))
+                .add("<TARGET>", getDisplayName(target))
+                .build();
+
+            plugin.message.sendMessage(player, "atp_user", replacements, player);
             return true;
         }
 
         if (args.length == 3) {
             plugin.console.run(player, "minecraft:tp " + args[0] + " " + args[1] + " " + args[2]);
-
-            String[][] messageReplacements = {
-                    { "<USER>", getDisplayName(player) },
-                    { "<TARGET>", "Loc(" + args[0] + ", " + args[1] + ", " + args[2] + ")" }
-            };
             return true;
         }
 
@@ -100,11 +98,12 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
 
             plugin.console.run("minecraft:execute as " +  getDisplayName(user) + " at @s run tp " + args[1] + " " + args[2] + " " + args[3]);
 
-            String[][] messageReplacements = {
-                    { "<USER>", getDisplayName(user) },
-                    { "<TARGET>", "Loc(" + args[1] + ", " + args[2] + ", " + args[3] + ")" }
-            };
-            plugin.message.sendMessage(player, "atp_user", messageReplacements);
+            Replacements replacements = new Replacements.Builder()
+                    .add("<USER>", getDisplayName(user))
+                    .add("<TARGET>", "Loc(" + args[1] + ", " + args[2] + ", " + args[3] + ")")
+                    .build();
+
+            plugin.message.sendMessage(player, "atp_user", replacements, player);
             return true;
         }
 

@@ -1,6 +1,7 @@
 package com.lyttledev.lyttleessentials.handlers;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,7 +22,9 @@ public class onPlayerLeaveListener implements Listener {
     public void onLeave(PlayerQuitEvent event){
         Player player = event.getPlayer();
         event.quitMessage(null);
-        String[][] replacements = {{"<PLAYER>", getDisplayName(player)}};
+        Replacements replacements = new Replacements.Builder()
+                .add("<PLAYER>", getDisplayName(player))
+                .build();
         plugin.message.sendBroadcast("leave_message", replacements);
     }
 }
