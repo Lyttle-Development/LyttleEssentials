@@ -1,14 +1,13 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import io.papermc.hangarpublishplugin.model.Platforms
 import java.io.ByteArrayOutputStream
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.Copy
-import org.gradle.kotlin.dsl.named
 
 plugins {
     `java-library`
     `maven-publish`
     id("io.papermc.hangar-publish-plugin") version "0.1.2"
-    id("co.uzzu.dotenv.gradle") version "4.0.0"
     id("com.gradleup.shadow") version "8.3.6"
 }
 
@@ -22,8 +21,8 @@ repositories {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/Lyttle-Development/LyttleUtils")
         credentials {
-            username = project.findProperty("GPR_USER") as String? ?: System.getenv("GPR_USER") ?: env.GPR_USER.value
-            password = project.findProperty("GPR_API_KEY") as String? ?: System.getenv("GPR_API_KEY") ?: env.GPR_API_KEY.value
+            username = project.findProperty("GPR_USER") as String? ?: System.getenv("GPR_USER")
+            password = project.findProperty("GPR_API_KEY") as String? ?: System.getenv("GPR_API_KEY")
         }
 
     }
@@ -33,13 +32,30 @@ dependencies {
     compileOnly(libs.io.papermc.paper.paper.api)
     compileOnly(libs.com.github.milkbowl.vaultapi)
     compileOnly(libs.net.luckperms.api)
-    implementation("com.lyttledev:lyttleutils:1.1.0")
+    implementation("com.lyttledev:lyttleutils:1.0.1")
 }
 
 group = "com.lyttledev"
 version = (property("pluginVersion") as String)
 description = "LyttleEssentials"
 java.sourceCompatibility = JavaVersion.VERSION_21
+
+tasks.named<ShadowJar>("shadowJar") {
+    archiveClassifier.set("")
+    configurations = listOf(project.configurations.runtimeClasspath.get())
+
+    dependencies {
+        include(dependency("com.lyttledev:lyttleutils"))
+    }
+}
+
+tasks.named<Jar>("jar") {
+    enabled = false // Disable regular jar to prevent accidental use
+}
+
+tasks.named("build") {
+    dependsOn("shadowJar")
+}
 
 publishing {
     publications.create<MavenPublication>("maven") {
@@ -156,7 +172,7 @@ hangarPublish {
         apiKey.set(System.getenv("HANGAR_API_TOKEN"))
         platforms {
             register(Platforms.PAPER) {
-                jar.set(tasks.jar.flatMap { it.archiveFile })
+                jar.set(tasks.named<ShadowJar>("shadowJar").flatMap { it.archiveFile })
 
                 // Get platform versions from gradle.properties file
                 val versions: List<String> = (property("paperVersion") as String)
