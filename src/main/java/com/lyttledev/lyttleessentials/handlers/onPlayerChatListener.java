@@ -74,7 +74,7 @@ public class onPlayerChatListener implements Listener {
             .add("<MESSAGE>", filterMessage(message))
             .build();
 
-        plugin.message.sendBroadcast("chat_format", replacements, false);
+        plugin.message.sendBroadcast("chat_format", replacements, false, player);
     }
 
     private String filterMessage(String message) {
