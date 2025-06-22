@@ -183,7 +183,7 @@ hangarPublish {
 // --- Modrinth Publish Configuration ---
 
 modrinth {
-    token.set(System.getenv("MODRINTH_TOKEN")) // Token from workflow secrets
+    token.set(System.getenv("MODRINTH_API_TOKEN")) // Token from workflow secrets
     projectId.set("lyttleessentials") // Replace with your Modrinth project slug or ID
     versionNumber.set(versionString)
     changelog.set(changelogContent)
