@@ -34,7 +34,7 @@ jobs:
         env:
           USERNAME: ${{ secrets.GPR_USER }}  # GitHub Packages username
           TOKEN: ${{ secrets.GPR_API_KEY }}  # GitHub Packages token
-          CHANNEL: 'Snapshot'                # Github Release channel
+          CHANNEL: 'Beta'                    # Github Release channel
         run: |
           # Publishes artifacts to GitHub Packages (Maven)
           ./gradlew publish --stacktrace
@@ -42,7 +42,7 @@ jobs:
       - name: Publish to Hangar (Upload)
         env:
           HANGAR_API_TOKEN: ${{ secrets.HANGAR_API_TOKEN }}  # Hangar API token (secret)
-          CHANNEL: 'Snapshot'                                # Hangar release channel
+          CHANNEL: 'Beta'                                    # Hangar release channel
         run: |
           # Uploads the plugin to Hangar platform
           ./gradlew publishPluginPublicationToHangar --stacktrace
@@ -50,7 +50,7 @@ jobs:
       - name: Publish to Modrinth (Upload)
         env:
           MODRINTH_API_TOKEN: ${{ secrets.MODRINTH_API_TOKEN }}  # Modrinth API token (secret)
-          CHANNEL: 'Snapshot'                            # Modrinth release channel
+          CHANNEL: 'Beta'                                        # Modrinth release channel
         run: |
           # Publishes to Modrinth (ensure your build.gradle is configured for this)
           ./gradlew modrinth --stacktrace

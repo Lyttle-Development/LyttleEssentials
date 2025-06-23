@@ -50,7 +50,7 @@ jobs:
       - name: Publish to Modrinth (Upload)
         env:
           MODRINTH_API_TOKEN: ${{ secrets.MODRINTH_API_TOKEN }}  # Modrinth API token (secret)
-          CHANNEL: 'Alpha'                               # Modrinth release channel
+          CHANNEL: 'Alpha'                                       # Modrinth release channel
         run: |
           # Publishes to Modrinth (ensure your build.gradle is configured for this)
           ./gradlew modrinth --stacktrace
