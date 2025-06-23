@@ -132,7 +132,6 @@ tasks.named<ProcessResources>("processResources") {
 }
 
 // --- Publishing configuration for Maven (GitHub Packages with ShadowJar) ---
-
 publishing {
     publications {
         create<MavenPublication>("maven") {
