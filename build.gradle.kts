@@ -69,7 +69,7 @@ publishing {
             }
             groupId = project.group.toString()
             artifactId = "lyttleessentials"
-            version = (property("pluginVersion") as String)
+            version = versionString
         }
     }
     repositories {
