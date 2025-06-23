@@ -9,8 +9,7 @@ plugins {
     `maven-publish`
     id("io.papermc.hangar-publish-plugin") version "0.1.2"
     id("com.gradleup.shadow") version "8.3.6"
-    // Add the Modrinth Gradle plugin (update version as appropriate)
-    id("com.modrinth.minotaur") version "2.+" // https://github.com/modrinth/minotaur
+    id("com.modrinth.minotaur") version "2.+"
 }
 
 repositories {
@@ -42,7 +41,6 @@ description = "LyttleEssentials"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
 // --- Shadow JAR configuration ---
-
 tasks.named<ShadowJar>("shadowJar") {
     archiveClassifier.set("")
     configurations = listOf(project.configurations.runtimeClasspath.get())
@@ -61,16 +59,32 @@ tasks.named("build") {
     dependsOn("shadowJar", "copyContents")
 }
 
-// --- Publishing configuration for Maven (GitHub Packages) ---
+// --- Publishing configuration for Maven (GitHub Packages with ShadowJar) ---
 
 publishing {
-    publications.create<MavenPublication>("maven") {
-        from(components["java"])
+    publications {
+        create<MavenPublication>("maven") {
+            artifact(tasks.named<ShadowJar>("shadowJar").get()) {
+                classifier = null // main artifact, no classifier
+            }
+            groupId = project.group.toString()
+            artifactId = "lyttleessentials"
+            version = (property("pluginVersion") as String)
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Lyttle-Development/LyttleEssentials")
+            credentials {
+                username = project.findProperty("GPR_USER") as String? ?: System.getenv("GPR_USER")
+                password = project.findProperty("GPR_API_KEY") as String? ?: System.getenv("GPR_API_KEY")
+            }
+        }
     }
 }
 
 // --- Encoding setup for Java and Javadoc ---
-
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
@@ -79,7 +93,6 @@ tasks.withType<Javadoc> {
 }
 
 // --- Resources folder handling ---
-
 val folderToDelete = project.file("src/main/resources/#defaults")
 val sourceFolder = project.file("src/main/resources")
 val destinationFolder = project.file("src/main/resources/#defaults")
@@ -113,7 +126,6 @@ tasks.named("processResources") {
 }
 
 // --- Helper methods for Git integration ---
-
 fun executeGitCommand(vararg command: String): String {
     val byteOut = ByteArrayOutputStream()
     exec {
@@ -128,14 +140,6 @@ fun latestCommitMessage(): String {
 }
 
 // --- Versioning logic based on CHANNEL environment variable ---
-
-/**
- * For multi-branch support, each workflow sets the CHANNEL environment variable.
- * - "Release" for stable/main
- * - "Snapshot" for development/snapshot
- * - "Alpha", "Beta", etc. for pre-releases
- * This logic ensures version suffixes and proper publishing per branch.
- */
 val envChannel: String = System.getenv("CHANNEL") ?: "Alpha"
 val runNumber: String? = System.getenv("GITHUB_RUN_NUMBER")
 
@@ -146,7 +150,6 @@ val versionString: String = when (envChannel) {
 }
 
 // --- Version expansion in plugin.yml ---
-
 tasks.named<ProcessResources>("processResources") {
     filesMatching("plugin.yml") {
         expand("projectVersion" to versionString)
@@ -154,7 +157,6 @@ tasks.named<ProcessResources>("processResources") {
 }
 
 // --- Hangar Publish Configuration ---
-
 val changelogContent: String = latestCommitMessage()
 
 println("Version: $versionString")
@@ -170,7 +172,6 @@ hangarPublish {
         platforms {
             register(Platforms.PAPER) {
                 jar.set(tasks.named<ShadowJar>("shadowJar").flatMap { it.archiveFile })
-                // Get platform versions from gradle.properties file
                 val versions: List<String> = (property("paperVersion") as String)
                     .split(",")
                     .map { it.trim() }
@@ -181,7 +182,6 @@ hangarPublish {
 }
 
 // --- Modrinth Publish Configuration ---
-
 modrinth {
     token.set(System.getenv("MODRINTH_API_TOKEN")) // Token from workflow secrets
     projectId.set("lyttleessentials") // Replace with your Modrinth project slug or ID
@@ -198,5 +198,4 @@ modrinth {
         }
     )
     loaders.set(listOf("paper")) // Or add "spigot", "bukkit" etc as appropriate
-    // Optionally: dependencies, additional files, etc.
 }
