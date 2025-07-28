@@ -42,7 +42,7 @@ public class onPlayerChatListener implements Listener {
         Player player = event.getPlayer();
         String message = PlainTextComponentSerializer.plainText().serialize(event.message());;
 
-        String roleDisplayname = MiniMessage.miniMessage().serialize(plugin.message.getConfigMessage("chat_default_role"));
+        String roleDisplayname = MiniMessage.miniMessage().serialize(plugin.message.getMessage("chat_default_role"));
 
         // check if luckperms is installed
         if (Bukkit.getPluginManager().getPlugin("LuckPerms") != null) {
@@ -74,7 +74,7 @@ public class onPlayerChatListener implements Listener {
             .add("<MESSAGE>", filterMessage(message))
             .build();
 
-        plugin.message.sendBroadcast("chat_format", replacements, false, player);
+        plugin.message.sendBroadcast(false, "chat_format", replacements, player);
     }
 
     private String filterMessage(String message) {

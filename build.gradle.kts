@@ -29,10 +29,10 @@ repositories {
 }
 
 dependencies {
-    compileOnly(libs.io.papermc.paper.paper.api)
-    compileOnly(libs.com.github.milkbowl.vaultapi)
-    compileOnly(libs.net.luckperms.api)
-    implementation("com.lyttledev:lyttleutils:1.1.1")
+    compileOnly("io.papermc.paper:paper-api:" + (property("paperVersion") as String) + "-R0.1-SNAPSHOT")
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7") { exclude(group = "org.bukkit", module = "bukkit") }
+    compileOnly("net.luckperms:api:5.4")
+    implementation("com.lyttledev:lyttleutils:1.1.7")
 }
 
 group = "com.lyttledev"
@@ -132,7 +132,6 @@ tasks.named<ProcessResources>("processResources") {
 }
 
 // --- Publishing configuration for Maven (GitHub Packages with ShadowJar) ---
-
 publishing {
     publications {
         create<MavenPublication>("maven") {
