@@ -3,14 +3,13 @@ package com.lyttledev.lyttleessentials.commands;
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Bukkit;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
-
+import org.bukkit.attribute.Attribute;
 import java.util.List;
 
 import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
@@ -87,7 +86,7 @@ public class HealCommand implements CommandExecutor, TabCompleter {
     }
 
     private void heal(Player player) {
-        player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+        player.setHealth(player.getAttribute(Attribute.MAX_HEALTH).getValue());
         player.setFoodLevel(20);
         player.setFireTicks(0);
         for (PotionEffect effect : player.getActivePotionEffects()) { player.removePotionEffect(effect.getType()); }
