@@ -18,7 +18,7 @@ commands:
 
   tp:
     description: Allows players to teleport using their tokens.
-    permission: lyttleessentials.tp.others
+    permission: lyttleessentials.tp
 
   tpaccept:
     description: Accept incoming requests
