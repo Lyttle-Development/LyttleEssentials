@@ -101,9 +101,13 @@ public final class LyttleEssentials extends JavaPlugin {
         if (!new File(getDataFolder(), invoicesPath).exists())
             saveResource(invoicesPath, false);
 
-        String chatFilterPath = "data/chat_filter.txt";
-        if (!new File(getDataFolder(), chatFilterPath).exists())
-            saveResource(chatFilterPath, false);
+        String chatFilterEnglishPath = "data/chat_filter/english.txt";
+        if (!new File(getDataFolder(), chatFilterEnglishPath).exists())
+            saveResource(chatFilterEnglishPath, false);
+
+        String chatFilterDutchPath = "data/chat_filter/dutch.txt";
+        if (!new File(getDataFolder(), chatFilterDutchPath).exists())
+            saveResource(chatFilterDutchPath, false);
 
         // Defaults:
         String defaultPath = "#defaults/";
