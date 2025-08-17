@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.regex.*;
 
 import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
@@ -40,7 +41,7 @@ public class onPlayerChatListener implements Listener {
 
         // Get the player's message
         Player player = event.getPlayer();
-        String message = PlainTextComponentSerializer.plainText().serialize(event.message());;
+        String message = PlainTextComponentSerializer.plainText().serialize(event.message());
 
         String roleDisplayname = MiniMessage.miniMessage().serialize(plugin.message.getMessage("chat_default_role"));
 
@@ -68,58 +69,100 @@ public class onPlayerChatListener implements Listener {
             }
         }
 
+        String filteredMessage = filterMessage(message);
+        if (filteredMessage.isEmpty()) {
+            // If the filtered message is empty, do not send the chat message
+            return;
+        }
+
         Replacements replacements = new Replacements.Builder()
-            .add("<PLAYER>", getDisplayName(player))
-            .add("<ROLE>", roleDisplayname)
-            .add("<MESSAGE>", filterMessage(message))
-            .build();
+                .add("<PLAYER>", getDisplayName(player))
+                .add("<ROLE>", roleDisplayname)
+                .add("<MESSAGE>", filteredMessage)
+                .build();
 
         plugin.message.sendBroadcast(false, "chat_format", replacements, player);
     }
 
+    /**
+     * Filters the chat message by:
+     *  - Removing banned words
+     *  - Removing MiniMessage formatting
+     *  - Removing all newlines (literal or real)
+     *  - Collapsing all whitespace (space, tab, etc.) into a single space
+     *  - Trimming leading/trailing whitespace
+     *  - Ensuring messages like "\n\n   \n test" become "test"
+     */
     private String filterMessage(String message) {
-        try {
-            String pluginFolderPath = plugin.getDataFolder().getPath();
-            // Your list of regex expressions with new lines per expression
-            String regexList = Files.readString(Paths.get(pluginFolderPath, "/data/chat_filter.txt"));
-            // Bring it back to LF format if it's CRLF
-            regexList = regexList.replace("\r\n", "\n");
+        // Filter banned words
+        message = filterBannedWords(message);
 
-            // Split the regex list into an array of regex expressions
-            String[] regexArray = regexList.split("\n");
+        // Remove any MiniMessage formatting (like &x or <color>)
+        String[] miniMessageTags = {
+                "<red>", "<green>", "<blue>", "<yellow>", "<gray>", "<dark_red>",
+                "<dark_green>", "<dark_blue>", "<dark_yellow>", "<dark_gray>",
+                "<black>", "<white>", "<reset>"
+        };
+        message = MiniMessage.miniMessage().serialize(
+                        MiniMessage.miniMessage().deserialize(message)
+                )
+                .replaceAll("(?i)§[0-9a-fk-or]", "") // Remove color codes
+                .replaceAll(String.join("|", miniMessageTags), ""); // Remove MiniMessage tags
 
-            // Iterate over each regex in the array but make it in-case-sensitive
-            for (String regex : regexArray) {
-                // Trim the regex to remove any leading or trailing whitespace
-                regex = regex.trim();
-                if (!regex.isEmpty()) {
-                    // Compile the regex with case-insensitive flag
-                    Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-                    // Replace matches with an empty string
-                    message = pattern.matcher(message).replaceAll("");
-                }
-            }
+        // Remove all newlines: literal "\n", real newlines, and Windows/Mac newlines
+        message = message.replaceAll("(\\r\\n|\\r|\\n|\\\\n)", " ");
 
-            // Remove newlines (with space)
-            message = message.replaceAll("\\n", " ");
-            // Replace multiple spaces with a single space
-            message = message.replaceAll("\\s+", " ");
-            // Remove any kind of link (http:// https:// mailto: tel: ...)
-            message = message.replaceAll("(?i)\\b(?:https?://|www\\.|mailto:|tel:|ftp://|file://|irc://|xmpp:)[^\\s]+", "");
-            // Remove any kind of email address
-            message = message.replaceAll("(?i)\\b[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}\\b", "");
-            // Remove any kind of phone number
-            message = message.replaceAll("(?i)\\b\\+?[0-9][0-9\\s.-]{7,}[0-9]\\b", "");
-            // Remove color codes
-            message = message.replaceAll("(?i)§[0-9a-fk-or]", "");
-            // Remove any kind of special characters
-            message = message.replaceAll("[^\\p{L}\\p{N}\\s]", "");
-            // Remove any kind of domains
-            message = message.replaceAll("(?i)\\b(?:[a-z0-9-]+\\.)+[a-z]{2,}\\b", "");
+        // Collapse all whitespace (spaces, tabs, newlines, non-breaking spaces, etc.) into a single space
+        message = message.replaceAll("[\\s\\u00A0]+", " ");
 
-            return message;
-        } catch (IOException ignored) {
-            return message;
+        // Remove leading/trailing whitespace
+        return message.trim();
+    }
+
+    private String filterBannedWords(String message) {
+        String pluginFolderPath = plugin.getDataFolder().getPath();
+        String chatFilterFolderPath = pluginFolderPath + "/data/chat_filter";
+
+        String[] files = Paths.get(chatFilterFolderPath).toFile().list((dir, name) -> name.endsWith(".txt"));
+
+        if (files == null || files.length < 1) {
+            return message; // No files to process, return the original message
         }
+
+        // Normalize message: remove all non-letters, lowercase
+        String normalizedMessage = message.replaceAll("[^a-zA-Z]", "").toLowerCase();
+        boolean matchedCombined = false;
+
+        for (String file : files) {
+            try {
+                String regexList = Files.readString(Paths.get(chatFilterFolderPath, file));
+                regexList = regexList.replace("\r\n", "\n");
+
+                String[] regexArray = regexList.split("\n");
+
+                for (String regex : regexArray) {
+                    regex = regex.trim();
+                    if (!regex.isEmpty()) {
+                        // 1. Regular replacement (normal chat)
+                        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+                        message = pattern.matcher(message).replaceAll("");
+
+                        // 2. Combined/obfuscated version: also check for combined matches
+                        String simpleRegex = regex.replaceAll("[^a-zA-Z]", "").toLowerCase();
+                        if (!simpleRegex.isEmpty()) {
+                            if (normalizedMessage.contains(simpleRegex)) {
+                                matchedCombined = true;
+                            }
+                        }
+                    }
+                }
+            } catch (IOException ignored) {}
+        }
+
+        if (matchedCombined) {
+            return "";
+        }
+
+        return message;
     }
 }
