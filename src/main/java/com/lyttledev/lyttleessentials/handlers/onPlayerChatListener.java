@@ -41,7 +41,7 @@ public class onPlayerChatListener implements Listener {
 
         // Get the player's message
         Player player = event.getPlayer();
-        String message = PlainTextComponentSerializer.plainText().serialize(event.message());;
+        String message = PlainTextComponentSerializer.plainText().serialize(event.message());
 
         String roleDisplayname = MiniMessage.miniMessage().serialize(plugin.message.getMessage("chat_default_role"));
 
@@ -76,39 +76,46 @@ public class onPlayerChatListener implements Listener {
         }
 
         Replacements replacements = new Replacements.Builder()
-            .add("<PLAYER>", getDisplayName(player))
-            .add("<ROLE>", roleDisplayname)
-            .add("<MESSAGE>", filteredMessage)
-            .build();
+                .add("<PLAYER>", getDisplayName(player))
+                .add("<ROLE>", roleDisplayname)
+                .add("<MESSAGE>", filteredMessage)
+                .build();
 
         plugin.message.sendBroadcast(false, "chat_format", replacements, player);
     }
 
+    /**
+     * Filters the chat message by:
+     *  - Removing banned words
+     *  - Removing MiniMessage formatting
+     *  - Removing all newlines (literal or real)
+     *  - Collapsing all whitespace (space, tab, etc.) into a single space
+     *  - Trimming leading/trailing whitespace
+     *  - Ensuring messages like "\n\n   \n test" become "test"
+     */
     private String filterMessage(String message) {
         // Filter banned words
         message = filterBannedWords(message);
 
-        // Remove any MiniMessage formatting
-        message = MiniMessage.miniMessage().serialize(MiniMessage.miniMessage().deserialize(message
-                .replaceAll("(?i)§[0-9a-fk-or]", ""))); // Remove color codes
+        // Remove any MiniMessage formatting (like &x or <color>)
+        String[] miniMessageTags = {
+                "<red>", "<green>", "<blue>", "<yellow>", "<gray>", "<dark_red>",
+                "<dark_green>", "<dark_blue>", "<dark_yellow>", "<dark_gray>",
+                "<black>", "<white>", "<reset>"
+        };
+        message = MiniMessage.miniMessage().serialize(
+                        MiniMessage.miniMessage().deserialize(message)
+                )
+                .replaceAll("(?i)§[0-9a-fk-or]", "") // Remove color codes
+                .replaceAll(String.join("|", miniMessageTags), ""); // Remove MiniMessage tags
 
-        // Remove newlines (with space)
-        message = message.replaceAll("\\n", " ");
-        // Replace multiple spaces with a single space
-        message = message.replaceAll("\\s+", " ");
-//        // Remove any kind of link (http:// https:// mailto: tel: ...)
-//        message = message.replaceAll("(?i)\\b(?:https?://|www\\.|mailto:|tel:|ftp://|file://|irc://|xmpp:)[^\\s]+", "");
-//        // Remove any kind of email address
-//        message = message.replaceAll("(?i)\\b[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}\\b", "");
-//        // Remove any kind of phone number
-//        message = message.replaceAll("(?i)\\b\\+?[0-9][0-9\\s.-]{7,}[0-9]\\b", "");
-//        // Remove color codes
-//        message = message.replaceAll("(?i)§[0-9a-fk-or]", "");
-//        // Remove any kind of special characters
-//        message = message.replaceAll("[^\\p{L}\\p{N}\\s]", "");
-//        // Remove any kind of domains
-//        message = message.replaceAll("(?i)\\b(?:[a-z0-9-]+\\.)+[a-z]{2,}\\b", "");
+        // Remove all newlines: literal "\n", real newlines, and Windows/Mac newlines
+        message = message.replaceAll("(\\r\\n|\\r|\\n|\\\\n)", " ");
 
+        // Collapse all whitespace (spaces, tabs, newlines, non-breaking spaces, etc.) into a single space
+        message = message.replaceAll("[\\s\\u00A0]+", " ");
+
+        // Remove leading/trailing whitespace
         return message.trim();
     }
 
