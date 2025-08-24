@@ -103,10 +103,17 @@ public class onPlayerChatListener implements Listener {
                 "<dark_green>", "<dark_blue>", "<dark_yellow>", "<dark_gray>",
                 "<black>", "<white>", "<reset>"
         };
+
+        message = message
+                .replaceAll("(?i)§[0-9a-fk-or]", "") // Remove color codes
+                .replaceAll("(?i)&[0-9a-fk-or]", "") // Remove color codes
+                .replaceAll(String.join("|", miniMessageTags), ""); // Remove MiniMessage tags
+
         message = MiniMessage.miniMessage().serialize(
                         MiniMessage.miniMessage().deserialize(message)
                 )
                 .replaceAll("(?i)§[0-9a-fk-or]", "") // Remove color codes
+                .replaceAll("(?i)&[0-9a-fk-or]", "") // Remove color codes
                 .replaceAll(String.join("|", miniMessageTags), ""); // Remove MiniMessage tags
 
         // Remove all newlines: literal "\n", real newlines, and Windows/Mac newlines
