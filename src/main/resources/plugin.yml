@@ -95,5 +95,8 @@ commands:
     permission: lyttleessentials.gamemode
 
   gmsp:
-    description: Shor command for gamemode spectator
+    description: Short command for gamemode spectator
     permission: lyttleessentials.gamemode
+  vanish:
+    description: Vanish for staff purposes
+    permission: lyttleessentials.vanish
