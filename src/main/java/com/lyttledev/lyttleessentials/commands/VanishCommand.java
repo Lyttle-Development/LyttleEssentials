@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class VanishCommand implements CommandExecutor, TabCompleter {
     private final LyttleEssentials plugin;
@@ -18,6 +19,8 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
         plugin.getCommand("vanish").setExecutor(this);
         this.plugin = plugin;
     }
+
+    private List<UUID> vanishedPlayers = new ArrayList<>();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -46,32 +49,55 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("true") ||  args[0].equalsIgnoreCase("false")) {
                 Player target = (Player) sender;
-                Boolean bool = Boolean.parseBoolean(args[0]);
-                vanishPlayer(target, bool);
+                boolean bool = Boolean.parseBoolean(args[0]);
+                setVanish(target, bool);
                 return true;
             }
             Player target = Bukkit.getPlayerExact(args[0]);
             if (target == null) {
                 plugin.message.sendMessage(sender, "player_not_found");
             }
-            vanishPlayer(target);
+            toggleVanish(target);
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
-        Boolean bool = Boolean.parseBoolean(args[1]);
-        vanishPlayer(target, bool);
+        boolean bool = Boolean.parseBoolean(args[1]);
+        setVanish(target, bool);
         return true;
     }
 
-    // Toggle vanish
-    private void vanishPlayer(Player player) {
-
+    private void toggleVanish(Player player) {
+        if (vanishedPlayers.contains(player.getUniqueId())) {
+            hidePlayer(player);
+            vanishedPlayers.remove(player.getUniqueId());
+            return;
+        }
+        vanishedPlayers.add(player.getUniqueId());
+        showPlayer(player);
     }
 
-    // Set vanish
-    private void vanishPlayer(Player player, Boolean bool) {
+    private void setVanish(Player player, boolean bool) {
+        if (bool) {
+            vanishedPlayers.add(player.getUniqueId());
+            showPlayer(player);
+            return;
+        }
+        hidePlayer(player);
+        vanishedPlayers.remove(player.getUniqueId());
+    }
 
+
+    private void hidePlayer(Player player) {
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            onlinePlayer.hidePlayer(plugin, player);
+        }
+    }
+
+    private void showPlayer(Player player) {
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            onlinePlayer.showPlayer(plugin, player);
+        }
     }
 
     private List<String> getOptionList() {
