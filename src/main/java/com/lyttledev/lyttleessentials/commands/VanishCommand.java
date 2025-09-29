@@ -28,35 +28,48 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
 
         // Handle it when the console doesn't give a player
         if (args.length == 0 && !(sender instanceof Player)) {
-            // Message that the console can't vanish itself
+            plugin.message.sendMessage(sender, "vanish_console");
+            return true;
+        }
+
+        if (!(sender instanceof Player) && args.length == 1 && (args[0].equalsIgnoreCase("true") || args[0].equalsIgnoreCase("false"))) {
+            plugin.message.sendMessage(sender, "vanish_console");
             return true;
         }
 
         // Too many arguments given
         if (args.length > 2) {
-            // TODO Message the sender
+            plugin.message.sendMessage(sender, "vanish_usage");
             return true;
         }
 
+        if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("true") ||  args[0].equalsIgnoreCase("false")) {
+                Player target = (Player) sender;
+                Boolean bool = Boolean.parseBoolean(args[0]);
+                vanishPlayer(target, bool);
+                return true;
+            }
+            Player target = Bukkit.getPlayerExact(args[0]);
+            if (target == null) {
+                plugin.message.sendMessage(sender, "player_not_found");
+            }
+            vanishPlayer(target);
+            return true;
+        }
+
+        Player target = Bukkit.getPlayer(args[0]);
+        Boolean bool = Boolean.parseBoolean(args[1]);
+        vanishPlayer(target, bool);
         return true;
     }
 
-    // Toggle own Vanish
-    private void vanishPlayer() {
-
-    }
-
-    // Set own Vanish
-    private void vanishPlayer(Boolean bool) {
-
-    }
-
-    // Toggle another players vanish
+    // Toggle vanish
     private void vanishPlayer(Player player) {
 
     }
 
-    // Set another players vanish
+    // Set vanish
     private void vanishPlayer(Player player, Boolean bool) {
 
     }
