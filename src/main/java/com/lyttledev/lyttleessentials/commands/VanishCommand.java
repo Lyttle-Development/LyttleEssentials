@@ -46,6 +46,11 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if  (args.length == 0) {
+            toggleVanish((Player) sender);
+            return true;
+        }
+
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("true") ||  args[0].equalsIgnoreCase("false")) {
                 Player target = (Player) sender;
@@ -69,12 +74,12 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
 
     private void toggleVanish(Player player) {
         if (vanishedPlayers.contains(player.getUniqueId())) {
-            hidePlayer(player);
+            showPlayer(player);
             vanishedPlayers.remove(player.getUniqueId());
             return;
         }
+        hidePlayer(player);
         vanishedPlayers.add(player.getUniqueId());
-        showPlayer(player);
     }
 
     private void setVanish(Player player, boolean bool) {
