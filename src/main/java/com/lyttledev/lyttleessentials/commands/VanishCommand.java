@@ -109,12 +109,22 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
     }
 
     private void messageHandler(Player target, CommandSender sender, Boolean bool) {
+        Replacements replacementsTarget = new Replacements.Builder()
+                .add("<PLAYER>", sender.getName())
+                .build();
+
+        Replacements replacementsSender = new Replacements.Builder()
+                .add("<TARGET>", target.getName())
+                .build();
+
         if (sender == Bukkit.getConsoleSender()) {
             if (bool) {
                 plugin.message.sendMessage(target, "vanish_enable_console");
+                plugin.message.sendMessage(sender, "vanish_enable_other_sender", replacementsSender);
                 return;
             }
             plugin.message.sendMessage(target, "vanish_disable_console");
+            plugin.message.sendMessage(sender, "vanish_disable_other_sender", replacementsSender);
             return;
         }
 
@@ -126,14 +136,6 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
             plugin.message.sendMessage(target, "vanish_disable_self");
             return;
         }
-
-        Replacements replacementsTarget = new Replacements.Builder()
-                .add("<PLAYER>", sender.getName())
-                .build();
-
-        Replacements replacementsSender = new Replacements.Builder()
-                .add("<TARGET>", target.getName())
-                .build();
 
         if (bool) {
             plugin.message.sendMessage(target, "vanish_enable_other_target", replacementsTarget);
