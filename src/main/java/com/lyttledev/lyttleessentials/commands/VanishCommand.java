@@ -2,11 +2,9 @@ package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleessentials.utils.MemoryClass;
+import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -45,7 +43,7 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
         }
 
         if  (args.length == 0) {
-            toggleVanish((Player) sender);
+            toggleVanish((Player) sender, sender);
             return true;
         }
 
@@ -53,7 +51,7 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
             if (args[0].equalsIgnoreCase("true") ||  args[0].equalsIgnoreCase("false")) {
                 Player target = (Player) sender;
                 boolean bool = Boolean.parseBoolean(args[0]);
-                setVanish(target, bool);
+                setVanish(target, bool, sender);
                 return true;
             }
             Player target = Bukkit.getPlayerExact(args[0]);
@@ -61,36 +59,40 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
                 plugin.message.sendMessage(sender, "player_not_found");
                 return true;
             }
-            toggleVanish(target);
+            toggleVanish(target, sender);
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
         boolean bool = Boolean.parseBoolean(args[1]);
-        setVanish(target, bool);
+        setVanish(target, bool, sender);
         return true;
     }
 
-    private void toggleVanish(Player player) {
-        if (MemoryClass.isVanished(player)) {
-            showPlayer(player);
-            MemoryClass.showPlayer(player);
+    private void toggleVanish(Player target, CommandSender sender) {
+        if (MemoryClass.isVanished(target)) {
+            showPlayer(target);
+            MemoryClass.showPlayer(target);
+            messageHandler(target, sender, false);
             return;
         }
-        hidePlayer(player);
-        MemoryClass.hidePlayer(player);
+        hidePlayer(target);
+        MemoryClass.hidePlayer(target);
+        messageHandler(target, sender, true);
     }
 
-    private void setVanish(Player player, boolean bool) {
+    private void setVanish(Player target, boolean bool, CommandSender sender) {
         if (bool) {
-            hidePlayer(player);
-            if (MemoryClass.isVanished(player)) { return; }
-            MemoryClass.hidePlayer(player);
+            hidePlayer(target);
+            if (MemoryClass.isVanished(target)) { return; }
+            MemoryClass.hidePlayer(target);
+            messageHandler(target, sender, true);
             return;
         }
-        showPlayer(player);
-        if (!MemoryClass.isVanished(player)) { return; }
-        MemoryClass.showPlayer(player);
+        showPlayer(target);
+        if (!MemoryClass.isVanished(target)) { return; }
+        MemoryClass.showPlayer(target);
+        messageHandler(target, sender, false);
     }
 
 
@@ -104,6 +106,42 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             onlinePlayer.showPlayer(plugin, player);
         }
+    }
+
+    private void messageHandler(Player target, CommandSender sender, Boolean bool) {
+        if (sender == Bukkit.getConsoleSender()) {
+            if (bool) {
+                plugin.message.sendMessage(target, "vanish_enable_console");
+                return;
+            }
+            plugin.message.sendMessage(target, "vanish_disable_console");
+            return;
+        }
+
+        if (target == sender) {
+            if (bool) {
+                plugin.message.sendMessage(target, "vanish_enable_self");
+                return;
+            }
+            plugin.message.sendMessage(target, "vanish_disable_self");
+            return;
+        }
+
+        Replacements replacementsTarget = new Replacements.Builder()
+                .add("<PLAYER>", sender.getName())
+                .build();
+
+        Replacements replacementsSender = new Replacements.Builder()
+                .add("<TARGET>", target.getName())
+                .build();
+
+        if (bool) {
+            plugin.message.sendMessage(target, "vanish_enable_other_target", replacementsTarget);
+            plugin.message.sendMessage(sender, "vanish_enable_other_sender", replacementsSender);
+            return;
+        }
+        plugin.message.sendMessage(target, "vanish_disable_other_target", replacementsTarget);
+        plugin.message.sendMessage(sender, "vanish_disable_other_sender", replacementsSender);
     }
 
     private List<String> getOptionList() {
