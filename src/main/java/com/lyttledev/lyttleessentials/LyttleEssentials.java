@@ -216,8 +216,10 @@ public final class LyttleEssentials extends JavaPlugin {
                 config.messages.set("vanish_console",  config.defaultMessages.get("vanish_console"));
                 config.messages.set("vanish_enable_self",  config.defaultMessages.get("vanish_enable_self"));
                 config.messages.set("vanish_disable_self",  config.defaultMessages.get("vanish_disable_self"));
-                config.messages.set("vanish_enable_other",  config.defaultMessages.get("vanish_enable_other"));
-                config.messages.set("vanish_disable_other",  config.defaultMessages.get("vanish_disable_other"));
+                config.messages.set("vanish_enable_other_target",  config.defaultMessages.get("vanish_enable_other_target"));
+                config.messages.set("vanish_disable_other_target",  config.defaultMessages.get("vanish_disable_other_target"));
+                config.messages.set("vanish_enable_other_sender",  config.defaultMessages.get("vanish_enable_other_sender"));
+                config.messages.set("vanish_disable_other_sender",  config.defaultMessages.get("vanish_disable_other_sender"));
                 config.messages.set("vanish_enable_console",  config.defaultMessages.get("vanish_enable_console"));
                 config.messages.set("vanish_disable_console",  config.defaultMessages.get("vanish_disable_console"));
 
