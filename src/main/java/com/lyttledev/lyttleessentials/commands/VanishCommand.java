@@ -79,11 +79,11 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
 
     private void setVanish(Player player, boolean bool) {
         if (bool) {
+            hidePlayer(player);
             vanishedPlayers.add(player.getUniqueId());
-            showPlayer(player);
             return;
         }
-        hidePlayer(player);
+        showPlayer(player);
         vanishedPlayers.remove(player.getUniqueId());
     }
 
