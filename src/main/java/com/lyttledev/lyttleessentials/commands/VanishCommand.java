@@ -1,6 +1,7 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleessentials.utils.MemoryClass;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,7 +11,6 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class VanishCommand implements CommandExecutor, TabCompleter {
     private final LyttleEssentials plugin;
@@ -19,8 +19,6 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
         plugin.getCommand("vanish").setExecutor(this);
         this.plugin = plugin;
     }
-
-    private List<UUID> vanishedPlayers = new ArrayList<>();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -61,6 +59,7 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
             Player target = Bukkit.getPlayerExact(args[0]);
             if (target == null) {
                 plugin.message.sendMessage(sender, "player_not_found");
+                return true;
             }
             toggleVanish(target);
             return true;
@@ -73,23 +72,25 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
     }
 
     private void toggleVanish(Player player) {
-        if (vanishedPlayers.contains(player.getUniqueId())) {
+        if (MemoryClass.isVanished(player)) {
             showPlayer(player);
-            vanishedPlayers.remove(player.getUniqueId());
+            MemoryClass.showPlayer(player);
             return;
         }
         hidePlayer(player);
-        vanishedPlayers.add(player.getUniqueId());
+        MemoryClass.hidePlayer(player);
     }
 
     private void setVanish(Player player, boolean bool) {
         if (bool) {
             hidePlayer(player);
-            vanishedPlayers.add(player.getUniqueId());
+            if (MemoryClass.isVanished(player)) { return; }
+            MemoryClass.hidePlayer(player);
             return;
         }
         showPlayer(player);
-        vanishedPlayers.remove(player.getUniqueId());
+        if (!MemoryClass.isVanished(player)) { return; }
+        MemoryClass.showPlayer(player);
     }
 
 
@@ -109,9 +110,7 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
         List<String> optionList = new ArrayList<>();
         optionList.add("true");
         optionList.add("false");
-        Bukkit.getOnlinePlayers().forEach(player -> {
-            optionList.add(player.getName());
-        });
+        Bukkit.getOnlinePlayers().forEach(player -> optionList.add(player.getName()));
         return optionList;
     }
 
