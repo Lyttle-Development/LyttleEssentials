@@ -54,6 +54,7 @@ public final class LyttleEssentials extends JavaPlugin {
         new TopCommand(this);
         new RepairCommand(this);
         new GamemodeCommand(this);
+        new PtimeCommand(this);
 
         // Listeners
         new onPlayerChatListener(this);
