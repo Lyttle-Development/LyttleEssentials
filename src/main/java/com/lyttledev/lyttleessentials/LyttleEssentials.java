@@ -54,6 +54,7 @@ public final class LyttleEssentials extends JavaPlugin {
         new TopCommand(this);
         new RepairCommand(this);
         new GamemodeCommand(this);
+        new VanishCommand(this);
 
         // Listeners
         new onPlayerChatListener(this);
@@ -205,6 +206,25 @@ public final class LyttleEssentials extends JavaPlugin {
 
                 // Update config version.
                 config.general.set("config_version", 3);
+
+                // Recheck if the config is fully migrated.
+                migrateConfig();
+                break;
+            case "3":
+                // Migrate config entries.
+                config.messages.set("vanish_usage",  config.defaultMessages.get("vanish_usage"));
+                config.messages.set("vanish_console",  config.defaultMessages.get("vanish_console"));
+                config.messages.set("vanish_enable_self",  config.defaultMessages.get("vanish_enable_self"));
+                config.messages.set("vanish_disable_self",  config.defaultMessages.get("vanish_disable_self"));
+                config.messages.set("vanish_enable_other_target",  config.defaultMessages.get("vanish_enable_other_target"));
+                config.messages.set("vanish_disable_other_target",  config.defaultMessages.get("vanish_disable_other_target"));
+                config.messages.set("vanish_enable_other_sender",  config.defaultMessages.get("vanish_enable_other_sender"));
+                config.messages.set("vanish_disable_other_sender",  config.defaultMessages.get("vanish_disable_other_sender"));
+                config.messages.set("vanish_enable_console",  config.defaultMessages.get("vanish_enable_console"));
+                config.messages.set("vanish_disable_console",  config.defaultMessages.get("vanish_disable_console"));
+
+                // Update config version.
+                config.general.set("config_version", 4);
 
                 // Recheck if the config is fully migrated.
                 migrateConfig();
