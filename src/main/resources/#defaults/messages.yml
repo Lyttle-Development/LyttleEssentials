@@ -164,3 +164,13 @@ gamemode_other_sender: You set <PLAYER> to <MODE>.
 gamemode_other_target: <PLAYER> set you to <MODE>.
 gamemode_console: The console set you to <MODE>.
 gmx_usage: Wrong arguments => /gm<c / s / a / sp> [playername]
+
+#######################
+# Ptime Command
+#######################
+ptime_usage: Please use /ptime <day / noon / midnight / reset> [player]
+ptime_console: Please specify a user you would like to set the ptime for!
+ptime_set_self: You have set your ptime to <PTIME>.
+ptime_set_other_target: <PLAYER> has set your ptime to <PTIME>.
+ptime_set_other_sender: You have set <PLAYER>'s ptime to <PTIME>.
+ptime_set_console: The console has set your ptime to <PTIME>.

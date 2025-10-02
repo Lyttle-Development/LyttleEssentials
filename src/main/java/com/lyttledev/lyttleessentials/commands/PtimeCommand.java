@@ -1,6 +1,7 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleutils.types.Message.Replacements;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -26,36 +27,30 @@ public class PtimeCommand implements CommandExecutor, TabCompleter {
         }
 
         if (!(sender instanceof Player) && args.length != 2) {
-            plugin.message.sendMessageRaw(sender, Component.text("WRONG USAGE"));
+            plugin.message.sendMessage(sender, "ptime_console");
             return true;
         }
 
-        if (args.length > 2) {
-            plugin.message.sendMessageRaw(sender, Component.text("WRONG USAGE"));
-            return true;
-        }
-
-        if (args.length == 0) {
-            Player player = (Player) sender;
-            plugin.message.sendMessageRaw(player, Component.text("WRONG USAGE"));
+        if (args.length > 2 || args.length == 0) {
+            plugin.message.sendMessage(sender, "ptime_usage");
             return true;
         }
 
         if (args.length == 1) {
             Player player = (Player) sender;
             String msg = setPtime(player, args[0]);
-            plugin.message.sendMessageRaw(player, Component.text(msg));
+            messageHandler(player, player, msg);
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[1]);
         if (target == null) {
-            plugin.message.sendMessageRaw(sender, Component.text("PLAYER NOT FOUND"));
+            plugin.message.sendMessage(sender, "player_not_found");
             return true;
         }
 
         String msg = setPtime(target, args[0]);
-        plugin.message.sendMessageRaw(sender, Component.text(msg));
+        messageHandler(target, sender, msg);
         return true;
     }
 
@@ -63,26 +58,62 @@ public class PtimeCommand implements CommandExecutor, TabCompleter {
         return switch (time) {
             case "day" -> {
                 player.setPlayerTime(1000, false);
-                yield "SET TO DAY";
+                yield "day";
             }
             case "noon" -> {
                 player.setPlayerTime(6000, false);
-                yield "SET TO NOON";
+                yield "noon";
             }
             case "night" -> {
                 player.setPlayerTime(13000, false);
-                yield "SET TO NIGHT";
+                yield "night";
             }
             case "midnight" -> {
                 player.setPlayerTime(18000, false);
-                yield "SET TO MIDNIGHT";
+                yield "midnight";
             }
             case "reset" -> {
                 player.resetPlayerTime();
-                yield "SET TO RESET";
+                yield "reset";
             }
-            default -> "WRONG USAGE";
+            default -> "WRONG-USAGE";
         };
+    }
+
+    private void messageHandler(Player target, CommandSender sender, String ptime) {
+        if (ptime.equals("WRONG-USAGE")) {
+            plugin.message.sendMessage(sender, "ptime_usage");
+            return;
+        }
+
+        Replacements replacementsTarget = new Replacements.Builder()
+                .add("<PLAYER>", sender.getName())
+                .add("<PTIME>", ptime)
+                .build();
+
+        Replacements replacementsSender = new Replacements.Builder()
+                .add("<PLAYER>", target.getName())
+                .add("<PTIME>", ptime)
+                .build();
+
+        Replacements replacements = new Replacements.Builder()
+                .add("<PTIME>", ptime)
+                .build();
+
+
+        if (target == sender) {
+            plugin.message.sendMessage(sender, "ptime_set_self",  replacements);
+            return;
+        }
+
+        if (sender == Bukkit.getConsoleSender()) {
+            plugin.message.sendMessage(target, "ptime_set_console", replacements);
+            plugin.message.sendMessage(sender, "ptime_set_other_sender", replacementsSender);
+            return;
+        }
+
+        plugin.message.sendMessage(sender, "ptime_set_other_sender", replacementsSender);
+        plugin.message.sendMessage(target, "ptime_set_other_target", replacementsTarget);
     }
 
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] arguments) {
