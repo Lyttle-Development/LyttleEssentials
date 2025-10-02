@@ -223,6 +223,12 @@ public final class LyttleEssentials extends JavaPlugin {
                 config.messages.set("vanish_disable_other_sender",  config.defaultMessages.get("vanish_disable_other_sender"));
                 config.messages.set("vanish_enable_console",  config.defaultMessages.get("vanish_enable_console"));
                 config.messages.set("vanish_disable_console",  config.defaultMessages.get("vanish_disable_console"));
+                config.messages.set("ptime_usage", config.defaultMessages.get("ptime_usage"));
+                config.messages.set("ptime_console", config.defaultMessages.get("ptime_console"));
+                config.messages.set("ptime_set_self", config.defaultMessages.get("ptime_set_self"));
+                config.messages.set("ptime_set_other_target", config.defaultMessages.get("ptime_set_other_target"));
+                config.messages.set("ptime_set_other_sender", config.defaultMessages.get("ptime_set_other_sender"));
+                config.messages.set("ptime_set_console", config.defaultMessages.get("ptime_set_console"));
 
                 // Update config version.
                 config.general.set("config_version", 4);
