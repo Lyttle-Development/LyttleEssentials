@@ -1,6 +1,7 @@
 package com.lyttledev.lyttleessentials.handlers;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleessentials.utils.MemoryClass;
 import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -26,5 +27,8 @@ public class onPlayerLeaveListener implements Listener {
                 .add("<PLAYER>", getDisplayName(player))
                 .build();
         plugin.message.sendBroadcast("leave_message", replacements);
+        if (MemoryClass.isVanished(player)) {
+            MemoryClass.showPlayer(player);
+        }
     }
 }

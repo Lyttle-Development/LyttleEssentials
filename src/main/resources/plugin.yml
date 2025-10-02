@@ -97,7 +97,9 @@ commands:
   gmsp:
     description: Short command for gamemode spectator
     permission: lyttleessentials.gamemode
-
   ptime:
     description: Set a specific time for a specific player
     permission: lyttleessentials.ptime
+  vanish:
+    description: Vanish for staff purposes
+    permission: lyttleessentials.vanish

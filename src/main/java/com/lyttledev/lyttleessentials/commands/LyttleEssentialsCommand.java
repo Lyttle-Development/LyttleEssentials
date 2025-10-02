@@ -26,7 +26,7 @@ public class LyttleEssentialsCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 0) {
-            sender.sendMessage("plugin version: 2.3.1");
+            sender.sendMessage("Plugin version: " + plugin.getDescription().getVersion());
         }
 
         if (args.length == 1) {

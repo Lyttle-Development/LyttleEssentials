@@ -174,3 +174,17 @@ ptime_set_self: You have set your ptime to <PTIME>.
 ptime_set_other_target: <PLAYER> has set your ptime to <PTIME>.
 ptime_set_other_sender: You have set <PLAYER>'s ptime to <PTIME>.
 ptime_set_console: The console has set your ptime to <PTIME>.
+
+#######################
+# Vanish Command
+#######################
+vanish_usage: Please use /vanish [playername | true | false] [true | false]
+vanish_console: Please specify a user you would like to toggle or set the vanish for!
+vanish_enable_self: You have enabled your vanish.
+vanish_disable_self: You have disabled your vanish.
+vanish_enable_other_target: <PLAYER> has enabled your vanish.
+vanish_disable_other_target: <PLAYER> has disabled your vanish.
+vanish_enable_other_sender: You have enable <TARGET>'s vanish.
+vanish_disable_other_sender: You have disabled <TARGET>'s vanish.
+vanish_enable_console: The console has enabled your vanish.
+vanish_disable_console: The console has disabled your vanish.

@@ -55,6 +55,7 @@ public final class LyttleEssentials extends JavaPlugin {
         new RepairCommand(this);
         new GamemodeCommand(this);
         new PtimeCommand(this);
+        new VanishCommand(this);
 
         // Listeners
         new onPlayerChatListener(this);
@@ -102,9 +103,13 @@ public final class LyttleEssentials extends JavaPlugin {
         if (!new File(getDataFolder(), invoicesPath).exists())
             saveResource(invoicesPath, false);
 
-        String chatFilterPath = "data/chat_filter.txt";
-        if (!new File(getDataFolder(), chatFilterPath).exists())
-            saveResource(chatFilterPath, false);
+        String chatFilterEnglishPath = "data/chat_filter/english.txt";
+        if (!new File(getDataFolder(), chatFilterEnglishPath).exists())
+            saveResource(chatFilterEnglishPath, false);
+
+        String chatFilterDutchPath = "data/chat_filter/dutch.txt";
+        if (!new File(getDataFolder(), chatFilterDutchPath).exists())
+            saveResource(chatFilterDutchPath, false);
 
         // Defaults:
         String defaultPath = "#defaults/";
@@ -202,6 +207,25 @@ public final class LyttleEssentials extends JavaPlugin {
 
                 // Update config version.
                 config.general.set("config_version", 3);
+
+                // Recheck if the config is fully migrated.
+                migrateConfig();
+                break;
+            case "3":
+                // Migrate config entries.
+                config.messages.set("vanish_usage",  config.defaultMessages.get("vanish_usage"));
+                config.messages.set("vanish_console",  config.defaultMessages.get("vanish_console"));
+                config.messages.set("vanish_enable_self",  config.defaultMessages.get("vanish_enable_self"));
+                config.messages.set("vanish_disable_self",  config.defaultMessages.get("vanish_disable_self"));
+                config.messages.set("vanish_enable_other_target",  config.defaultMessages.get("vanish_enable_other_target"));
+                config.messages.set("vanish_disable_other_target",  config.defaultMessages.get("vanish_disable_other_target"));
+                config.messages.set("vanish_enable_other_sender",  config.defaultMessages.get("vanish_enable_other_sender"));
+                config.messages.set("vanish_disable_other_sender",  config.defaultMessages.get("vanish_disable_other_sender"));
+                config.messages.set("vanish_enable_console",  config.defaultMessages.get("vanish_enable_console"));
+                config.messages.set("vanish_disable_console",  config.defaultMessages.get("vanish_disable_console"));
+
+                // Update config version.
+                config.general.set("config_version", 4);
 
                 // Recheck if the config is fully migrated.
                 migrateConfig();

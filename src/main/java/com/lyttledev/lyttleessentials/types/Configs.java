@@ -1,44 +1,44 @@
 package com.lyttledev.lyttleessentials.types;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
-import com.lyttledev.lyttleutils.types.Config;
+import com.lyttledev.lyttleutils.types.YamlConfig;
 
 public class Configs {
     private final LyttleEssentials plugin;
 
     // Configs
-    public Config general;
-    public Config messages;
-    public Config locations;
-    public Config homes;
-    public Config warps;
-    public Config invoices;
+    public YamlConfig general;
+    public YamlConfig messages;
+    public YamlConfig locations;
+    public YamlConfig homes;
+    public YamlConfig warps;
+    public YamlConfig invoices;
 
     // Default configs
-    public Config defaultMessages;
-    public Config defaultLocations;
-    public Config defaultHomes;
-    public Config defaultWarps;
-    public Config defaultInvoices;
+    public YamlConfig defaultMessages;
+    public YamlConfig defaultLocations;
+    public YamlConfig defaultHomes;
+    public YamlConfig defaultWarps;
+    public YamlConfig defaultInvoices;
 
 
     public Configs(LyttleEssentials plugin) {
         this.plugin = plugin;
 
         // Configs
-        general = new Config(plugin, "config.yml");
-        messages = new Config(plugin, "messages.yml");
-        locations = new Config(plugin, "data/locations.yml");
-        homes = new Config(plugin, "data/homes.yml");
-        warps = new Config(plugin, "data/warps.yml");
-        invoices = new Config(plugin, "data/invoices.yml");
+        general = new YamlConfig(plugin, "config.yml");
+        messages = new YamlConfig(plugin, "messages.yml");
+        locations = new YamlConfig(plugin, "data/locations.yml");
+        homes = new YamlConfig(plugin, "data/homes.yml");
+        warps = new YamlConfig(plugin, "data/warps.yml");
+        invoices = new YamlConfig(plugin, "data/invoices.yml");
 
         // Default configs
-        defaultMessages = new Config(plugin, "#defaults/messages.yml");
-        defaultLocations = new Config(plugin, "#defaults/data/locations.yml");
-        defaultHomes = new Config(plugin, "#defaults/data/homes.yml");
-        defaultWarps = new Config(plugin, "#defaults/data/warps.yml");
-        defaultInvoices = new Config(plugin, "#defaults/data/invoices.yml");
+        defaultMessages = new YamlConfig(plugin, "#defaults/messages.yml");
+        defaultLocations = new YamlConfig(plugin, "#defaults/data/locations.yml");
+        defaultHomes = new YamlConfig(plugin, "#defaults/data/homes.yml");
+        defaultWarps = new YamlConfig(plugin, "#defaults/data/warps.yml");
+        defaultInvoices = new YamlConfig(plugin, "#defaults/data/invoices.yml");
     }
 
     public void reload() {
