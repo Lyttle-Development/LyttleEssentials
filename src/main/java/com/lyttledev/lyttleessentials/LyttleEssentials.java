@@ -56,6 +56,7 @@ public final class LyttleEssentials extends JavaPlugin {
         new GamemodeCommand(this);
         new PtimeCommand(this);
         new VanishCommand(this);
+        new PweatherCommand(this);
 
         // Listeners
         new onPlayerChatListener(this);
@@ -229,6 +230,13 @@ public final class LyttleEssentials extends JavaPlugin {
                 config.messages.set("ptime_set_other_target", config.defaultMessages.get("ptime_set_other_target"));
                 config.messages.set("ptime_set_other_sender", config.defaultMessages.get("ptime_set_other_sender"));
                 config.messages.set("ptime_set_console", config.defaultMessages.get("ptime_set_console"));
+                config.messages.set("pweather_usage", config.defaultMessages.get("pweather_usage"));
+                config.messages.set("pweather_console", config.defaultMessages.get("pweather_console"));
+                config.messages.set("pweather_set_self", config.defaultMessages.get("pweather_set_self"));
+                config.messages.set("pweather_set_other_target", config.defaultMessages.get("pweather_set_other_target"));
+                config.messages.set("pweather_set_other_sender", config.defaultMessages.get("pweather_set_other_sender"));
+                config.messages.set("pweather_set_console", config.defaultMessages.get("pweather_set_console"));
+
 
                 // Update config version.
                 config.general.set("config_version", 4);

@@ -176,6 +176,16 @@ ptime_set_other_sender: You have set <PLAYER>'s ptime to <PTIME>.
 ptime_set_console: The console has set your ptime to <PTIME>.
 
 #######################
+# Pweather Command
+#######################
+pweather_usage: Please use /pweather <rain / clear / reset> [player]
+pweather_console: Please specify a user you would like to set the pweather for!
+pweather_set_self: You have set your pweather to <PWEATHER>.
+pweather_set_other_target: <PLAYER> has set your pweather to <PWEATHER>.
+pweather_set_other_sender: You have set <PLAYER>'s pweather to <PWEATHER>.
+pweather_set_console: The console has set your pweather to <PWEATHER>.
+
+#######################
 # Vanish Command
 #######################
 vanish_usage: Please use /vanish [playername | true | false] [true | false]

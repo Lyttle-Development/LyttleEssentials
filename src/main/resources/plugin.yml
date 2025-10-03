@@ -103,3 +103,6 @@ commands:
   vanish:
     description: Vanish for staff purposes
     permission: lyttleessentials.vanish
+  pweather:
+    description: Set a specific type of weather for a specific player
+    permission: lyttleessentials.pweather
