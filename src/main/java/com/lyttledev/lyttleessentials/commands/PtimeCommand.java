@@ -1,12 +1,14 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleutils.utils.selector.SelectorUtil;
 import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -42,14 +44,19 @@ public class PtimeCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        Player target = Bukkit.getPlayer(args[1]);
-        if (target == null) {
+        List<Entity> targets = SelectorUtil.resolveSelector(sender, args[1], true);
+        if (targets.isEmpty()) {
             plugin.message.sendMessage(sender, "player_not_found");
             return true;
         }
 
-        String msg = setPtime(target, args[0]);
-        messageHandler(target, sender, msg);
+        for (Entity e : targets) {
+            if (!(e instanceof Player)) continue;
+            Player target = (Player) e;
+
+            String msg = setPtime(target, args[0]);
+            messageHandler(target, sender, msg);
+        }
         return true;
     }
 
@@ -121,7 +128,7 @@ public class PtimeCommand implements CommandExecutor, TabCompleter {
         }
 
         if (arguments.length == 2) {
-            return null;
+            return SelectorUtil.selectorCompletions(arguments[1]);
         }
 
         return List.of();
