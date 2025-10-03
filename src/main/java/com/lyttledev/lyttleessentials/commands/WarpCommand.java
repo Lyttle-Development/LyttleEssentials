@@ -4,7 +4,7 @@ import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleessentials.types.Bill;
 import com.lyttledev.lyttleessentials.types.Warp;
 import com.lyttledev.lyttleessentials.utils.MessageCleaner;
-import com.lyttledev.lyttleessentials.utils.SelectorUtil.SelectorUtil;
+import com.lyttledev.lyttleutils.utils.selector.SelectorUtil;
 import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

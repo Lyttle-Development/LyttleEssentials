@@ -1,7 +1,7 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
-import com.lyttledev.lyttleessentials.utils.SelectorUtil.SelectorUtil;
+import com.lyttledev.lyttleutils.utils.selector.SelectorUtil;
 import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.GameMode;
 import org.bukkit.command.*;
