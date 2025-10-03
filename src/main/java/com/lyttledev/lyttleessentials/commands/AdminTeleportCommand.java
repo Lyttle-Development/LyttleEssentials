@@ -42,25 +42,26 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            List<Entity> targets = SelectorUtil.resolveSelector(player, args[0], true);
+            // Allow any entity as target (@e), require exactly one match
+            List<Entity> targets = SelectorUtil.resolveSelector(player, args[0], false);
             if (targets.isEmpty()) {
                 plugin.message.sendMessage(player, "player_not_found");
                 return true;
             }
-
-            for (Entity e : targets) {
-                if (!(e instanceof Player)) continue;
-                Player target = (Player) e;
-
-                player.teleport(target);
-
-                Replacements replacements = new Replacements.Builder()
-                        .add("<USER>", getDisplayName(player))
-                        .add("<TARGET>", getDisplayName(target))
-                        .build();
-
-                plugin.message.sendMessage(player, "atp_user", replacements, player);
+            if (targets.size() != 1) {
+                plugin.message.sendMessage(player, "selector_single_target_only");
+                return true;
             }
+
+            Entity target = targets.get(0);
+            player.teleport(target);
+
+            Replacements replacements = new Replacements.Builder()
+                    .add("<USER>", getDisplayName(player))
+                    .add("<TARGET>", target instanceof Player ? getDisplayName((Player) target) : target.getName())
+                    .build();
+
+            plugin.message.sendMessage(player, "atp_user", replacements, player);
             return true;
         }
 
@@ -70,31 +71,37 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 2) {
+            // users can be many players; target must be exactly one entity (allow @e)
             List<Entity> users = SelectorUtil.resolveSelector(player, args[0], true);
-            List<Entity> targets = SelectorUtil.resolveSelector(player, args[1], true);
+            List<Entity> targets = SelectorUtil.resolveSelector(player, args[1], false);
 
-            if (users.isEmpty() || targets.isEmpty()) {
+            if (users.isEmpty()) {
                 plugin.message.sendMessage(player, "player_not_found");
                 return true;
             }
+            if (targets.isEmpty()) {
+                plugin.message.sendMessage(player, "player_not_found");
+                return true;
+            }
+            if (targets.size() != 1) {
+                plugin.message.sendMessage(player, "selector_single_target_only");
+                return true;
+            }
+
+            Entity target = targets.get(0);
 
             for (Entity ue : users) {
                 if (!(ue instanceof Player)) continue;
                 Player user = (Player) ue;
 
-                for (Entity te : targets) {
-                    if (!(te instanceof Player)) continue;
-                    Player target = (Player) te;
+                user.teleport(target);
 
-                    user.teleport(target);
+                Replacements replacements = new Replacements.Builder()
+                        .add("<USER>", getDisplayName(user))
+                        .add("<TARGET>", target instanceof Player ? getDisplayName((Player) target) : target.getName())
+                        .build();
 
-                    Replacements replacements = new Replacements.Builder()
-                            .add("<USER>", getDisplayName(user))
-                            .add("<TARGET>", getDisplayName(target))
-                            .build();
-
-                    plugin.message.sendMessage(player, "atp_user", replacements, player);
-                }
+                plugin.message.sendMessage(player, "atp_user", replacements, player);
             }
             return true;
         }
@@ -105,6 +112,7 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 4) {
+            // users can be many players for coordinate teleport
             List<Entity> users = SelectorUtil.resolveSelector(player, args[0], true);
             if (users.isEmpty()) {
                 plugin.message.sendMessage(player, "player_not_found");
@@ -134,8 +142,12 @@ public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] arguments) {
-        if (arguments.length == 1 || arguments.length == 2) {
-            return SelectorUtil.selectorCompletions(arguments[arguments.length - 1]);
+        if (arguments.length == 1) {
+            return SelectorUtil.selectorCompletions(arguments[0]);
+        }
+        if (arguments.length == 2) {
+            // Second arg must be single-target; hide obvious multi-target selectors
+            return SelectorUtil.selectorCompletions(arguments[1], true);
         }
         return List.of();
     }

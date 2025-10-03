@@ -1,14 +1,15 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
-import com.lyttledev.lyttleessentials.utils.SelectorUtil.SelectorUtil;
 import com.lyttledev.lyttleessentials.types.Bill;
+import com.lyttledev.lyttleessentials.utils.SelectorUtil.SelectorUtil;
 import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -59,7 +60,8 @@ public class SpawnCommand implements CommandExecutor, TabCompleter {
 
         Location spawn = (Location) plugin.config.locations.get("spawn");
 
-        if (args.length == 0) {
+        // /spawn (self)
+        if (label.equalsIgnoreCase("spawn") && args.length == 0) {
             Bill bill = plugin.invoice.teleportToSpawn(player);
             if (bill.total < 0) {
                 plugin.message.sendMessage(player, "tokens_missing");
@@ -75,40 +77,47 @@ public class SpawnCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (!sender.hasPermission("lyttleessentials.spawn.other")) {
-            plugin.message.sendMessage(sender, "no_permission");
-            return true;
-        }
-
-        List<org.bukkit.entity.Entity> targets = SelectorUtil.resolveSelector(sender, args[0], true);
-        if (targets.isEmpty()) {
-            plugin.message.sendMessage(sender, "player_not_found");
-            return true;
-        }
-
-        for (org.bukkit.entity.Entity e : targets) {
-            if (!(e instanceof Player)) continue;
-            Player target = (Player) e;
-
-            Bill bill = plugin.invoice.teleportToSpawn(target);
-            if (bill.total < 0) {
-                plugin.message.sendMessage(target, "tokens_missing");
-                continue;
+        // /spawn <selector>  (executor pays)
+        if (label.equalsIgnoreCase("spawn") && args.length == 1) {
+            List<Entity> targets = SelectorUtil.resolveSelector(player, args[0], true);
+            if (targets.isEmpty()) {
+                plugin.message.sendMessage(player, "player_not_found");
+                return true;
             }
 
-            target.teleport(spawn);
-            Replacements replacements = new Replacements.Builder()
-                    .add("<PRICE>", String.valueOf(bill.total))
-                    .build();
+            for (Entity e : targets) {
+                if (!(e instanceof Player)) continue;
+                Player t = (Player) e;
 
-            plugin.message.sendMessage(target, "spawn_teleported", replacements);
+                Bill bill = plugin.invoice.teleportToSpawn(player);
+                if (bill.total < 0) {
+                    plugin.message.sendMessage(player, "tokens_missing");
+                    return true;
+                }
+
+                t.teleport(spawn);
+
+                Replacements rSender = new Replacements.Builder()
+                        .add("<TARGET>", t.getName())
+                        .add("<PRICE>", String.valueOf(bill.total))
+                        .build();
+                Replacements rTarget = new Replacements.Builder()
+                        .add("<PLAYER>", player.getName())
+                        .build();
+
+                plugin.message.sendMessage(player, "spawn_teleported_other_sender", rSender);
+                plugin.message.sendMessage(t, "spawn_teleported_target", rTarget);
+            }
+            return true;
         }
+
+        plugin.message.sendMessage(player, "spawn_usage");
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] arguments) {
-        if (command.getName().equalsIgnoreCase("spawn") && arguments.length == 1) {
+        if (arguments.length == 1) {
             return SelectorUtil.selectorCompletions(arguments[0]);
         }
         return List.of();

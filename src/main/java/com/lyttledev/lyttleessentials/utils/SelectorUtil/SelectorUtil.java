@@ -5,9 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -72,15 +70,38 @@ public class SelectorUtil {
         return result;
     }
 
-
-
     public static List<String> selectorCompletions(String current) {
-        List<String> base = new ArrayList<>(Arrays.asList("@a", "@p", "@r", "@s", "*", "**"));
+        List<String> base = new ArrayList<>(Arrays.asList("@a", "@p", "@r", "@s", "*", "**", "@e"));
         for (Player p : Bukkit.getOnlinePlayers()) base.add(p.getName());
         String pref = current == null ? "" : current.toLowerCase();
         List<String> out = new ArrayList<>();
         for (String opt : base) if (opt.toLowerCase().startsWith(pref)) out.add(opt);
         return out;
     }
-}
 
+    /**
+     * Selector completions with filtering for second-argument scenarios.
+     * When singleTargetOnly is true, we hide common multi-target selectors like "@a", "*", "**".
+     * Note: We keep "@p", "@s", "@r" (random selects a single), and explicit player names.
+     */
+    public static List<String> selectorCompletions(String current, boolean singleTargetOnly) {
+        if (!singleTargetOnly) return selectorCompletions(current);
+        Set<String> disallow = new HashSet<>(Arrays.asList("@a", "*", "**", "@e"));
+        return selectorCompletions(current, disallow);
+    }
+
+    /**
+     * Selector completions with a disallow list for fine-grained control per command/argument.
+     */
+    public static List<String> selectorCompletions(String current, Set<String> disallow) {
+        List<String> base = new ArrayList<>(Arrays.asList("@a", "@p", "@r", "@s", "*", "**", "@e"));
+        for (Player p : Bukkit.getOnlinePlayers()) base.add(p.getName());
+        String pref = current == null ? "" : current.toLowerCase();
+        List<String> out = new ArrayList<>();
+        for (String opt : base) {
+            if (disallow != null && disallow.contains(opt)) continue;
+            if (opt.toLowerCase().startsWith(pref)) out.add(opt);
+        }
+        return out;
+    }
+}

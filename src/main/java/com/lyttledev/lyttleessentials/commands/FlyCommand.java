@@ -29,17 +29,12 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (!(sender instanceof Player) && args.length != 1) {
-            plugin.message.sendMessage(sender, "fly_usage");
-            return true;
-        }
-
-        if (args.length > 1) {
-            plugin.message.sendMessage(sender, "fly_usage");
-            return true;
-        }
-
+        // /fly
         if (args.length == 0) {
+            if (!(sender instanceof Player)) {
+                plugin.message.sendMessage(sender, "fly_usage");
+                return true;
+            }
             if (!sender.hasPermission("lyttleessentials.fly.self")) {
                 plugin.message.sendMessage(sender, "no_permission");
                 return true;
@@ -49,6 +44,30 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        // /fly true|false (self)
+        if (args.length == 1 && (args[0].equalsIgnoreCase("true") || args[0].equalsIgnoreCase("false"))) {
+            if (!(sender instanceof Player)) {
+                plugin.message.sendMessage(sender, "fly_usage");
+                return true;
+            }
+            if (!sender.hasPermission("lyttleessentials.fly.self")) {
+                plugin.message.sendMessage(sender, "no_permission");
+                return true;
+            }
+            boolean enable = Boolean.parseBoolean(args[0]);
+            Player self = (Player) sender;
+
+            // No-op if already in requested state (avoid spam)
+            if (self.getAllowFlight() == enable) {
+                return true;
+            }
+
+            boolean active = setFly(self, enable);
+            flySelfMessage(self, active);
+            return true;
+        }
+
+        // /fly <selector> [true|false]
         if (!sender.hasPermission("lyttleessentials.fly.other")) {
             plugin.message.sendMessage(sender, "no_permission");
             return true;
@@ -60,10 +79,33 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        Boolean setValue = null;
+        if (args.length >= 2) {
+            if (!(args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("false"))) {
+                plugin.message.sendMessage(sender, "fly_usage");
+                return true;
+            }
+            setValue = Boolean.parseBoolean(args[1]);
+        } else if (args.length > 2) {
+            plugin.message.sendMessage(sender, "fly_usage");
+            return true;
+        }
+
         for (Entity e : targets) {
             if (!(e instanceof Player)) continue;
             Player player = (Player) e;
-            boolean active = toggleFly(player);
+
+            // Toggle if no explicit value, else set if different (avoid spam if same)
+            boolean active;
+            if (setValue == null) {
+                active = toggleFly(player);
+            } else {
+                if (player.getAllowFlight() == setValue) {
+                    // Already in requested state; skip messaging
+                    continue;
+                }
+                active = setFly(player, setValue);
+            }
 
             if (sender == player) {
                 flySelfMessage((Player) sender, active);
@@ -109,6 +151,11 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    public boolean setFly(Player player, boolean enable) {
+        player.setAllowFlight(enable);
+        return enable;
+    }
+
     public void flySelfMessage(Player receiver, boolean active) {
         if (active) {
             plugin.message.sendMessage(receiver, "fly_activate");
@@ -121,6 +168,9 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] arguments) {
         if (arguments.length == 1) {
             return SelectorUtil.selectorCompletions(arguments[0]);
+        }
+        if (arguments.length == 2) {
+            return List.of("true", "false");
         }
         return List.of();
     }
