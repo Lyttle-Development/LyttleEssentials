@@ -1,12 +1,13 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleessentials.utils.SelectorUtil.SelectorUtil;
 import com.lyttledev.lyttleutils.types.Message.Replacements;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -53,45 +54,49 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if ((Bukkit.getPlayerExact(args[0]) == null)) {
+        List<Entity> targets = SelectorUtil.resolveSelector(sender, args[0], true);
+        if (targets.isEmpty()) {
             plugin.message.sendMessage(sender, "player_not_found");
             return true;
         }
 
-        Player player = Bukkit.getPlayer(args[0]);
-        boolean active = toggleFly(player);
+        for (Entity e : targets) {
+            if (!(e instanceof Player)) continue;
+            Player player = (Player) e;
+            boolean active = toggleFly(player);
 
-        if (sender == Bukkit.getPlayerExact(args[0])) {
-            flySelfMessage((Player) sender, active);
-            return true;
-        }
+            if (sender == player) {
+                flySelfMessage((Player) sender, active);
+                continue;
+            }
 
-        Replacements replacementsSender = new Replacements.Builder()
-            .add("<PLAYER>", getDisplayName(player))
-            .build();
-
-        if (sender instanceof Player) {
-            Replacements replacementsPlayer = new Replacements.Builder()
-                    .add("<PLAYER>", getDisplayName((Player) sender))
+            Replacements replacementsSender = new Replacements.Builder()
+                    .add("<PLAYER>", getDisplayName(player))
                     .build();
+
+            if (sender instanceof Player) {
+                Replacements replacementsPlayer = new Replacements.Builder()
+                        .add("<PLAYER>", getDisplayName((Player) sender))
+                        .build();
+
+                if (active) {
+                    plugin.message.sendMessage(sender, "fly_activate_other_sender", replacementsSender);
+                    plugin.message.sendMessage(player, "fly_activate_other_target", replacementsPlayer);
+                    continue;
+                }
+                plugin.message.sendMessage(sender, "fly_deactivate_other_sender", replacementsSender);
+                plugin.message.sendMessage(player, "fly_deactivate_other_target", replacementsPlayer);
+                continue;
+            }
 
             if (active) {
                 plugin.message.sendMessage(sender, "fly_activate_other_sender", replacementsSender);
-                plugin.message.sendMessage(player, "fly_activate_other_target", replacementsPlayer);
-                return true;
+                plugin.message.sendMessage(player, "fly_activate_console");
+                continue;
             }
             plugin.message.sendMessage(sender, "fly_deactivate_other_sender", replacementsSender);
-            plugin.message.sendMessage(player, "fly_deactivate_other_target", replacementsPlayer);
-            return true;
+            plugin.message.sendMessage(player, "fly_deactivate_console");
         }
-
-        if (active) {
-            plugin.message.sendMessage(sender, "fly_activate_other_sender", replacementsSender);
-            plugin.message.sendMessage(player, "fly_activate_console");
-            return true;
-        }
-        plugin.message.sendMessage(sender, "fly_deactivate_other_sender", replacementsSender);
-        plugin.message.sendMessage(player, "fly_deactivate_console");
         return true;
     }
 
@@ -115,7 +120,7 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] arguments) {
         if (arguments.length == 1) {
-            return null;
+            return SelectorUtil.selectorCompletions(arguments[0]);
         }
         return List.of();
     }

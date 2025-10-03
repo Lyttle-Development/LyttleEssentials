@@ -1,16 +1,18 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleessentials.utils.SelectorUtil.SelectorUtil;
 import com.lyttledev.lyttleessentials.types.Bill;
 import com.lyttledev.lyttleutils.types.Message.Replacements;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -19,7 +21,7 @@ import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
 public class TeleportCommand implements CommandExecutor, TabCompleter {
     private final LyttleEssentials plugin;
 
-    static HashMap<UUID, UUID> targetMap = new HashMap<>();
+    static Map<UUID, Set<UUID>> targetMap = new HashMap<>();
 
     public TeleportCommand(LyttleEssentials plugin) {
         plugin.getCommand("tp").setExecutor(this);
@@ -58,24 +60,9 @@ public class TeleportCommand implements CommandExecutor, TabCompleter {
     public boolean tpCommand(CommandSender sender, Command command, String label, String[] args) {
         Player player = (Player) sender;
 
-        // Check if target player is online and found
-        if (Bukkit.getPlayerExact(args[0]) == null) {
+        List<Entity> targets = SelectorUtil.resolveSelector(player, args[0], true);
+        if (targets.isEmpty()) {
             plugin.message.sendMessage(player, "player_not_found");
-            return true;
-        }
-
-        // Stores some crucial info
-        Player playerTarget = Bukkit.getPlayer(args[0]);
-
-        // Checks for a TP to the player himself
-        if (player == playerTarget) {
-            plugin.message.sendMessage(player, "tp_self");
-            return true;
-        }
-
-        // Check if the player already has a /tp request
-        if (targetMap.containsKey(player.getUniqueId())) {
-            plugin.message.sendMessage(player, "tp_already_requested");
             return true;
         }
 
@@ -90,59 +77,90 @@ public class TeleportCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        Replacements replacements = new Replacements.Builder()
-            .add("<PLAYER>", getDisplayName(player))
-            .build();
+        for (Entity e : targets) {
+            if (!(e instanceof Player)) continue;
+            Player playerTarget = (Player) e;
 
-        plugin.message.sendMessage(playerTarget, "tp_ask_target", replacements);
+            // Checks for a TP to the player himself
+            if (player == playerTarget) {
+                plugin.message.sendMessage(player, "tp_self");
+                continue;
+            }
 
-        targetMap.put(player.getUniqueId(), playerTarget.getUniqueId());
+            // Initialize requester set
+            targetMap.computeIfAbsent(player.getUniqueId(), k -> new HashSet<>());
 
-        Replacements replacements2 = new Replacements.Builder()
-            .add("<TARGET>", getDisplayName(playerTarget))
-            .build();
+            // Skip duplicate requests to same target
+            if (targetMap.get(player.getUniqueId()).contains(playerTarget.getUniqueId())) {
+                plugin.message.sendMessage(player, "tp_already_requested");
+                continue;
+            }
 
-        plugin.message.sendMessage(player, "tp_requested", replacements2);
+            Replacements replacements = new Replacements.Builder()
+                    .add("<PLAYER>", getDisplayName(player))
+                    .build();
 
-        // Wait 5 minutes to remove the teleport request
+            plugin.message.sendMessage(playerTarget, "tp_ask_target", replacements);
+
+            targetMap.get(player.getUniqueId()).add(playerTarget.getUniqueId());
+
+            Replacements replacements2 = new Replacements.Builder()
+                    .add("<TARGET>", getDisplayName(playerTarget))
+                    .build();
+
+            plugin.message.sendMessage(player, "tp_requested", replacements2);
+        }
+
+        // Wait 5 minutes to remove the teleport requests for this requester
         (new BukkitRunnable() {
             public void run() {
                 targetMap.remove(player.getUniqueId());
             }
-        }).runTaskLaterAsynchronously((Plugin)this.plugin, 6000L);
+        }).runTaskLaterAsynchronously((Plugin) TeleportCommand.this.plugin, 6000L);
         return true;
     }
 
     public boolean tpAcceptCommand(CommandSender sender, Command command, String label, String[] args) {
         final Player player = (Player) sender;
-        if (targetMap.containsValue(player.getUniqueId())) {
-            for (Map.Entry<UUID, UUID> entry : targetMap.entrySet()) {
-                if ((entry.getValue()).equals(player.getUniqueId())) {
-                    Player requester = Bukkit.getPlayer(entry.getKey());
-                    if (requester == null) {
-                        targetMap.remove(entry.getKey());
-                        plugin.message.sendMessage(player, "player_not_found");
-                        return true;
+        boolean handled = false;
+
+        for (Map.Entry<UUID, Set<UUID>> entry : new ArrayList<>(targetMap.entrySet())) {
+            UUID requesterId = entry.getKey();
+            Set<UUID> requestedTargets = entry.getValue();
+            if (requestedTargets.contains(player.getUniqueId())) {
+                Player requester = Bukkit.getPlayer(requesterId);
+                if (requester == null) {
+                    requestedTargets.remove(player.getUniqueId());
+                    if (requestedTargets.isEmpty()) {
+                        targetMap.remove(requesterId);
                     }
+                    plugin.message.sendMessage(player, "player_not_found");
+                    return true;
+                }
 
-                    Bill bill = plugin.invoice.teleportToPlayer(requester);
+                Bill bill = plugin.invoice.teleportToPlayer(requester);
 
-                    //send message with info to the player
-                    int costNextTime = bill.next;
-                    Replacements replacements = new Replacements.Builder()
+                //send message with info to the player
+                int costNextTime = bill.next;
+                Replacements replacements = new Replacements.Builder()
                         .add("<CostNow>", String.valueOf(bill.total))
                         .add("<CostNextTime>", String.valueOf(costNextTime))
                         .build();
 
-                    plugin.message.sendMessage(player, "tpaccept_accept");
-                    plugin.message.sendMessage(requester, "tp_teleporting", replacements);
+                plugin.message.sendMessage(player, "tpaccept_accept");
+                plugin.message.sendMessage(requester, "tp_teleporting", replacements);
 
-                    requester.teleport(player);
-                    targetMap.remove(entry.getKey());
-                    break;
+                requester.teleport(player);
+                requestedTargets.remove(player.getUniqueId());
+                if (requestedTargets.isEmpty()) {
+                    targetMap.remove(requesterId);
                 }
+                handled = true;
+                break;
             }
-        } else {
+        }
+
+        if (!handled) {
             plugin.message.sendMessage(player, "tpaccept_no_request");
         }
         return true;
@@ -150,24 +168,35 @@ public class TeleportCommand implements CommandExecutor, TabCompleter {
 
     public boolean tpDenyCommand(CommandSender sender, Command command, String label, String[] args) {
         final Player player = (Player) sender;
-        if (targetMap.containsValue(player.getUniqueId())) {
-            for (Map.Entry<UUID, UUID> entry : targetMap.entrySet()) {
-                if ((entry.getValue()).equals(player.getUniqueId())) {
-                    targetMap.remove(entry.getKey());
-                    Player playerSender = Bukkit.getPlayer(entry.getKey());
+        boolean handled = false;
 
-                    Replacements replacements = new Replacements.Builder()
+        for (Map.Entry<UUID, Set<UUID>> entry : new ArrayList<>(targetMap.entrySet())) {
+            UUID requesterId = entry.getKey();
+            Set<UUID> requestedTargets = entry.getValue();
+
+            if (requestedTargets.contains(player.getUniqueId())) {
+                requestedTargets.remove(player.getUniqueId());
+                Player playerSender = Bukkit.getPlayer(requesterId);
+
+                Replacements replacements = new Replacements.Builder()
                         .add("<TARGET>", getDisplayName(player))
                         .build();
 
+                if (playerSender != null) {
                     plugin.message.sendMessage(playerSender, "tpdeny_denied_player", replacements);
-
                     plugin.message.sendMessage(playerSender, "tpdeny_denied_player", replacements);
-                    plugin.message.sendMessage(player, "tpdeny_denied_target");
-                    break;
                 }
+                plugin.message.sendMessage(player, "tpdeny_denied_target");
+
+                if (requestedTargets.isEmpty()) {
+                    targetMap.remove(requesterId);
+                }
+                handled = true;
+                break;
             }
-        } else {
+        }
+
+        if (!handled) {
             plugin.message.sendMessage(player, "tpaccept_no_request");
         }
         return true;
@@ -175,10 +204,10 @@ public class TeleportCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] arguments) {
-        if (arguments.length == 1) {
-            return null;
+        String name = command.getName().toLowerCase();
+        if (name.equals("tp") && arguments.length == 1) {
+            return SelectorUtil.selectorCompletions(arguments[0]);
         }
-
         return List.of();
     }
 }

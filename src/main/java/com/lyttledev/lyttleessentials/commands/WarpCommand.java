@@ -4,6 +4,7 @@ import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleessentials.types.Bill;
 import com.lyttledev.lyttleessentials.types.Warp;
 import com.lyttledev.lyttleessentials.utils.MessageCleaner;
+import com.lyttledev.lyttleessentials.utils.SelectorUtil.SelectorUtil;
 import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -12,6 +13,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -73,15 +75,15 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
 
                     plugin.config.warps.set(warpName, warp);
                     Replacements replacements = new Replacements.Builder()
-                        .add("<NAME>", warpName)
-                        .add("<PRICE>", String.valueOf(bill.total))
-                        .build();
+                            .add("<NAME>", warpName)
+                            .add("<PRICE>", String.valueOf(bill.total))
+                            .build();
 
                     plugin.message.sendMessage(player, "setwarp_success", replacements);
                 } else {
                     Replacements replacements = new Replacements.Builder()
-                        .add("<NAME>", warpName)
-                        .build();
+                            .add("<NAME>", warpName)
+                            .build();
 
                     plugin.message.sendMessage(player, "setwarp_already_exists", replacements);
                 }
@@ -95,18 +97,27 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 String warpName = args[0];
-                Player target = Bukkit.getPlayer(args[1]);
-                Warp warp = new Warp(target, warpName);
-                Replacements replacements = new Replacements.Builder()
-                    .add("<NAME>", warpName)
-                    .add("<PLAYER>", getDisplayName(target))
-                    .build();
+                List<Entity> targets = SelectorUtil.resolveSelector(sender, args[1], true);
+                if (targets.isEmpty()) {
+                    plugin.message.sendMessage(sender, "player_not_found");
+                    return true;
+                }
+                for (Entity e : targets) {
+                    if (!(e instanceof Player)) continue;
+                    Player target = (Player) e;
 
-                if (!plugin.config.warps.containsLowercase(warpName)) {
-                    plugin.config.warps.set(warpName, warp);
-                    plugin.message.sendMessage(player, "setwarp_success_other", replacements);
-                } else {
-                    plugin.message.sendMessage(player, "setwarp_already_exists_other", replacements);
+                    Warp warp = new Warp(target, warpName);
+                    Replacements replacements = new Replacements.Builder()
+                            .add("<NAME>", warpName)
+                            .add("<PLAYER>", getDisplayName(target))
+                            .build();
+
+                    if (!plugin.config.warps.containsLowercase(warpName)) {
+                        plugin.config.warps.set(warpName, warp);
+                        plugin.message.sendMessage(player, "setwarp_success_other", replacements);
+                    } else {
+                        plugin.message.sendMessage(player, "setwarp_already_exists_other", replacements);
+                    }
                 }
                 return true;
             }
@@ -132,9 +143,9 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                     Player target = Bukkit.getPlayer(args[1]);
 
                     Replacements replacements = new Replacements.Builder()
-                        .add("<NAME>", warpName)
-                        .add("<PLAYER>", getDisplayName(target))
-                        .build();
+                            .add("<NAME>", warpName)
+                            .add("<PLAYER>", getDisplayName(target))
+                            .build();
 
                     if (plugin.config.warps.contains(warpName)) {
                         plugin.config.warps.remove(warpName);
@@ -151,8 +162,8 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
 
                 String warpName = args[0];
                 Replacements replacements = new Replacements.Builder()
-                    .add("<NAME>", warpName)
-                    .build();
+                        .add("<NAME>", warpName)
+                        .build();
 
                 if (plugin.config.warps.contains(warpName)) {
                     ConfigurationSection warpSection = plugin.config.warps.getSection(warpName);
@@ -229,15 +240,32 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] arguments) {
-        if (arguments.length == 1) {
-            String[] warps = plugin.config.warps.getKeys("");
-            return Arrays.asList(warps);
+        String name = command.getName().toLowerCase();
+        if (name.equals("warp")) {
+            if (arguments.length == 1) {
+                String[] warps = plugin.config.warps.getKeys("");
+                return Arrays.asList(warps);
+            }
+            return List.of();
         }
 
-        if (sender.hasPermission("lyttleessentials.warp.others")) {
-            if (arguments.length == 2) {
-                return null;
+        if (name.equals("setwarp")) {
+            if (arguments.length == 1) {
+                return List.of(); // warp name free text
             }
+            if (arguments.length == 2) {
+                return SelectorUtil.selectorCompletions(arguments[1]);
+            }
+            return List.of();
+        }
+
+        if (name.equals("delwarp")) {
+            if (arguments.length == 1) {
+                String[] warps = plugin.config.warps.getKeys("");
+                return Arrays.asList(warps);
+            }
+            // Optional other-player arg not selector-enabled here (legacy path)
+            return List.of();
         }
 
         return List.of();

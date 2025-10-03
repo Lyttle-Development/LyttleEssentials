@@ -1,6 +1,7 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleessentials.utils.SelectorUtil.SelectorUtil;
 import com.lyttledev.lyttleessentials.types.Bill;
 import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Location;
@@ -56,24 +57,60 @@ public class SpawnCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        Bill bill = plugin.invoice.teleportToSpawn(player);
-        if (bill.total < 0) {
-            plugin.message.sendMessage(player, "tokens_missing");
+        Location spawn = (Location) plugin.config.locations.get("spawn");
+
+        if (args.length == 0) {
+            Bill bill = plugin.invoice.teleportToSpawn(player);
+            if (bill.total < 0) {
+                plugin.message.sendMessage(player, "tokens_missing");
+                return true;
+            }
+
+            player.teleport(spawn);
+            Replacements replacements = new Replacements.Builder()
+                    .add("<PRICE>", String.valueOf(bill.total))
+                    .build();
+
+            plugin.message.sendMessage(player, "spawn_teleported", replacements);
             return true;
         }
 
-        Location spawn = (Location) plugin.config.locations.get("spawn");
-        player.teleport(spawn);
-        Replacements replacements = new Replacements.Builder()
-            .add("<PRICE>", String.valueOf(bill.total))
-            .build();
+        if (!sender.hasPermission("lyttleessentials.spawn.other")) {
+            plugin.message.sendMessage(sender, "no_permission");
+            return true;
+        }
 
-        plugin.message.sendMessage(player, "spawn_teleported", replacements);
+        List<org.bukkit.entity.Entity> targets = SelectorUtil.resolveSelector(sender, args[0], true);
+        if (targets.isEmpty()) {
+            plugin.message.sendMessage(sender, "player_not_found");
+            return true;
+        }
+
+        for (org.bukkit.entity.Entity e : targets) {
+            if (!(e instanceof Player)) continue;
+            Player target = (Player) e;
+
+            Bill bill = plugin.invoice.teleportToSpawn(target);
+            if (bill.total < 0) {
+                plugin.message.sendMessage(target, "tokens_missing");
+                continue;
+            }
+
+            target.teleport(spawn);
+            Replacements replacements = new Replacements.Builder()
+                    .add("<PRICE>", String.valueOf(bill.total))
+                    .build();
+
+            plugin.message.sendMessage(target, "spawn_teleported", replacements);
+        }
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] arguments) {
+        if (command.getName().equalsIgnoreCase("spawn") && arguments.length == 1) {
+            return SelectorUtil.selectorCompletions(arguments[0]);
+        }
         return List.of();
     }
 }

@@ -1,12 +1,13 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleessentials.utils.SelectorUtil.SelectorUtil;
 import com.lyttledev.lyttleutils.types.Message.Replacements;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -69,40 +70,44 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (Bukkit.getPlayerExact(args[1]) == null) {
+        List<Entity> targets = SelectorUtil.resolveSelector(sender, args[1], true);
+        if (targets.isEmpty()) {
             plugin.message.sendMessage(sender,"player_not_found");
             return true;
         }
 
-        Player player = Bukkit.getPlayerExact(args[1]);
+        for (Entity e : targets) {
+            if (!(e instanceof Player)) continue;
+            Player player = (Player) e;
 
-        Replacements replacementsSender = new Replacements.Builder()
-            .add("<PLAYER>", getDisplayName(player))
-            .build();
+            Replacements replacementsSender = new Replacements.Builder()
+                    .add("<PLAYER>", getDisplayName(player))
+                    .build();
 
-        Replacements replacementsPlayer = new Replacements.Builder()
-            .add("<PLAYER>", getDisplayName((Player) sender))
-            .build();
+            Replacements replacementsPlayer = new Replacements.Builder()
+                    .add("<PLAYER>", sender instanceof Player ? getDisplayName((Player) sender) : sender.getName())
+                    .build();
 
-        if (args[0].equalsIgnoreCase("HeldItem")) {
-            _repairItem(player.getInventory().getItemInMainHand());
-            if (sender instanceof Player) {
-                plugin.message.sendMessage(player, "repair_helditem_other_player", replacementsPlayer);
-                plugin.message.sendMessage(sender, "repair_helditem_other_sender", replacementsSender);
-                return true;
+            if (args[0].equalsIgnoreCase("HeldItem")) {
+                _repairItem(player.getInventory().getItemInMainHand());
+                if (sender instanceof Player) {
+                    plugin.message.sendMessage(player, "repair_helditem_other_player", replacementsPlayer);
+                    plugin.message.sendMessage(sender, "repair_helditem_other_sender", replacementsSender);
+                } else {
+                    plugin.message.sendMessage(player, "repair_helditem_other_console");
+                    plugin.message.sendMessage(sender,"repair_helditem_other_sender", replacementsSender);
+                }
+                continue;
             }
-            plugin.message.sendMessage(player, "repair_helditem_other_console");
-            plugin.message.sendMessage(sender,"repair_helditem_other_sender", replacementsSender);
-            return true;
+            _repairInventory(player.getInventory());
+            if (sender instanceof Player) {
+                plugin.message.sendMessage(player, "repair_all_other_player", replacementsPlayer);
+                plugin.message.sendMessage(sender, "repair_all_other_sender", replacementsSender);
+            } else {
+                plugin.message.sendMessage(player, "repair_all_other_console");
+                plugin.message.sendMessage(sender,"repair_all_other_sender", replacementsSender);
+            }
         }
-        _repairInventory(player.getInventory());
-        if (sender instanceof Player) {
-            plugin.message.sendMessage(player, "repair_all_other_player", replacementsPlayer);
-            plugin.message.sendMessage(sender, "repair_all_other_sender", replacementsSender);
-            return true;
-        }
-        plugin.message.sendMessage(player, "repair_all_other_console");
-        plugin.message.sendMessage(sender,"repair_all_other_sender", replacementsSender);
         return true;
     }
 
@@ -135,7 +140,9 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
             return result;
         }
 
-        if (args.length == 2) { return null; }
+        if (args.length == 2) {
+            return SelectorUtil.selectorCompletions(args[1]);
+        }
 
         return List.of();
     }

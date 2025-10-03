@@ -2,12 +2,15 @@ package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleessentials.utils.MemoryClass;
+import com.lyttledev.lyttleessentials.utils.SelectorUtil.SelectorUtil;
 import com.lyttledev.lyttleutils.types.Message.Replacements;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class VanishCommand implements CommandExecutor, TabCompleter {
@@ -54,18 +57,30 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
                 setVanish(target, bool, sender);
                 return true;
             }
-            Player target = Bukkit.getPlayerExact(args[0]);
-            if (target == null) {
+            List<Entity> targets = SelectorUtil.resolveSelector(sender, args[0], true);
+            if (targets.isEmpty()) {
                 plugin.message.sendMessage(sender, "player_not_found");
                 return true;
             }
-            toggleVanish(target, sender);
+            for (Entity e : targets) {
+                if (!(e instanceof Player)) continue;
+                Player target = (Player) e;
+                toggleVanish(target, sender);
+            }
             return true;
         }
 
-        Player target = Bukkit.getPlayer(args[0]);
+        List<Entity> targets = SelectorUtil.resolveSelector(sender, args[0], true);
+        if (targets.isEmpty()) {
+            plugin.message.sendMessage(sender, "player_not_found");
+            return true;
+        }
         boolean bool = Boolean.parseBoolean(args[1]);
-        setVanish(target, bool, sender);
+        for (Entity e : targets) {
+            if (!(e instanceof Player)) continue;
+            Player target = (Player) e;
+            setVanish(target, bool, sender);
+        }
         return true;
     }
 
@@ -146,25 +161,21 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
         plugin.message.sendMessage(sender, "vanish_disable_other_sender", replacementsSender);
     }
 
-    private List<String> getOptionList() {
-        List<String> optionList = new ArrayList<>();
-        optionList.add("true");
-        optionList.add("false");
-        Bukkit.getOnlinePlayers().forEach(player -> optionList.add(player.getName()));
-        return optionList;
-    }
-
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] arguments) {
         if (arguments.length == 1) {
-            return getOptionList();
+            return SelectorUtil.selectorCompletions(arguments[0]);
         }
 
         if (arguments.length == 2) {
             if (arguments[0].equalsIgnoreCase("true") || arguments[0].equalsIgnoreCase("false")) {
                 return List.of();
             }
-            return List.of("true", "false");
+            String pref = arguments[1].toLowerCase();
+            List<String> bools = Arrays.asList("true", "false");
+            List<String> res = new ArrayList<>();
+            for (String b : bools) if (b.startsWith(pref)) res.add(b);
+            return res;
         }
 
         return List.of();

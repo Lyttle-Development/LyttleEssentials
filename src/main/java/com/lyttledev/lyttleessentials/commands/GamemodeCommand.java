@@ -1,10 +1,11 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.lyttledev.lyttleessentials.utils.SelectorUtil.SelectorUtil;
 import com.lyttledev.lyttleutils.types.Message.Replacements;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.command.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -70,7 +71,8 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            if ((Bukkit.getPlayerExact(args[1]) == null)) {
+            List<Entity> targets = SelectorUtil.resolveSelector(sender, args[1], true);
+            if (targets.isEmpty()) {
                 if (sender instanceof Player) {
                     plugin.message.sendMessage(sender, "player_not_found");
                     return true;
@@ -79,42 +81,45 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            Player player = Bukkit.getPlayerExact(args[1]);
-            String mode = _gamemode(player, args[0]);
+            for (Entity e : targets) {
+                if (!(e instanceof Player)) continue;
+                Player player = (Player) e;
+                String mode = _gamemode(player, args[0]);
 
-            if (mode.equals("ERROR-GAMEMODE-METHOD")) {
-                if (sender instanceof Player) {
-                    plugin.message.sendMessage(sender, "gamemode_usage");
-                    return true;
+                if (mode.equals("ERROR-GAMEMODE-METHOD")) {
+                    if (sender instanceof Player) {
+                        plugin.message.sendMessage(sender, "gamemode_usage");
+                        continue;
+                    }
+                    plugin.message.sendMessage(sender,"gamemode_usage");
+                    continue;
                 }
-                plugin.message.sendMessage(sender,"gamemode_usage");
-                return true;
-            }
 
-            Replacements replacementsSender = new Replacements.Builder()
-                    .add("<MODE>", mode)
-                    .add("<PLAYER>", getDisplayName(player))
-                    .build();
-
-            if (sender instanceof Player) {
-                plugin.message.sendMessage(sender, "gamemode_other_sender", replacementsSender);
-
-                Replacements replacementsPlayer = new Replacements.Builder()
+                Replacements replacementsSender = new Replacements.Builder()
                         .add("<MODE>", mode)
-                        .add("<PLAYER>", getDisplayName((Player) sender))
+                        .add("<PLAYER>", getDisplayName(player))
                         .build();
 
-                plugin.message.sendMessage(player, "gamemode_other_target", replacementsPlayer);
-                return true;
+                if (sender instanceof Player) {
+                    plugin.message.sendMessage(sender, "gamemode_other_sender", replacementsSender);
+
+                    Replacements replacementsPlayer = new Replacements.Builder()
+                            .add("<MODE>", mode)
+                            .add("<PLAYER>", getDisplayName((Player) sender))
+                            .build();
+
+                    plugin.message.sendMessage(player, "gamemode_other_target", replacementsPlayer);
+                    continue;
+                }
+
+                plugin.message.sendMessage(sender,"gamemode_other_sender", replacementsSender);
+
+                Replacements replacementsConsole = new Replacements.Builder()
+                        .add("<MODE>", mode)
+                        .build();
+
+                plugin.message.sendMessage(player, "gamemode_console", replacementsConsole);
             }
-
-            plugin.message.sendMessage(sender,"gamemode_other_sender", replacementsSender);
-
-            Replacements replacementsConsole = new Replacements.Builder()
-                    .add("<MODE>", mode)
-                    .build();
-
-            plugin.message.sendMessage(player, "gamemode_console", replacementsConsole);
             return true;
         }
 
@@ -155,43 +160,47 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if ((Bukkit.getPlayerExact(args[0]) == null)) {
+        List<Entity> targets = SelectorUtil.resolveSelector(sender, args[0], true);
+        if (targets.isEmpty()) {
             plugin.message.sendMessage(sender,"player_not_found");
             return true;
         }
 
-        Player player = Bukkit.getPlayerExact(args[0]);
-        String mode = _gamemode(player, label);
+        for (Entity e : targets) {
+            if (!(e instanceof Player)) continue;
+            Player player = (Player) e;
+            String mode = _gamemode(player, label);
 
-        if (mode.equals("ERROR-GAMEMODE-METHOD")) {
-            plugin.message.sendMessage(sender, "gmx_usage");
-            return true;
-        }
+            if (mode.equals("ERROR-GAMEMODE-METHOD")) {
+                plugin.message.sendMessage(sender, "gmx_usage");
+                continue;
+            }
 
-        Replacements replacementsSender = new Replacements.Builder()
-                .add("<MODE>", mode)
-                .add("<PLAYER>", getDisplayName(player))
-                .build();
-
-        if (sender instanceof Player) {
-            plugin.message.sendMessage(sender, "gamemode_other_sender", replacementsSender);
-
-            Replacements replacementsPlayer = new Replacements.Builder()
+            Replacements replacementsSender = new Replacements.Builder()
                     .add("<MODE>", mode)
-                    .add("<PLAYER>", getDisplayName((Player) sender))
+                    .add("<PLAYER>", getDisplayName(player))
                     .build();
 
-            plugin.message.sendMessage(player, "gamemode_other_target", replacementsPlayer);
-            return true;
+            if (sender instanceof Player) {
+                plugin.message.sendMessage(sender, "gamemode_other_sender", replacementsSender);
+
+                Replacements replacementsPlayer = new Replacements.Builder()
+                        .add("<MODE>", mode)
+                        .add("<PLAYER>", getDisplayName((Player) sender))
+                        .build();
+
+                plugin.message.sendMessage(player, "gamemode_other_target", replacementsPlayer);
+                continue;
+            }
+
+            plugin.message.sendMessage(sender,"gamemode_other_sender", replacementsSender);
+
+            Replacements replacementsConsole = new Replacements.Builder()
+                    .add("<MODE>", mode)
+                    .build();
+
+            plugin.message.sendMessage(player, "gamemode_console", replacementsConsole);
         }
-
-        plugin.message.sendMessage(sender,"gamemode_other_sender", replacementsSender);
-
-        Replacements replacementsConsole = new Replacements.Builder()
-                .add("<MODE>", mode)
-                .build();
-
-        plugin.message.sendMessage(player, "gamemode_console", replacementsConsole);
         return true;
     }
 
@@ -224,21 +233,27 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
 
-        if (!label.equalsIgnoreCase("gamemode")) { return null; }
-
-        if (args.length == 1) {
-            List<String> options = Arrays.asList("survival", "creative", "spectator", "adventure");
-            List<String> result = new ArrayList<>(Collections.emptyList());
-            for (String option : options) {
-                if (option.toLowerCase().startsWith(args[0].toLowerCase())) {
-                    result.add(option);
+        if (label.equalsIgnoreCase("gamemode")) {
+            if (args.length == 1) {
+                List<String> options = Arrays.asList("survival", "creative", "spectator", "adventure");
+                List<String> result = new ArrayList<>(Collections.emptyList());
+                for (String option : options) {
+                    if (option.toLowerCase().startsWith(args[0].toLowerCase())) {
+                        result.add(option);
+                    }
                 }
+                return result;
             }
-            return result;
+
+            if (args.length == 2) {
+                return SelectorUtil.selectorCompletions(args[1]);
+            }
+            return List.of();
         }
 
-        if (args.length == 2) {
-            return null;
+        // gmc/gms/gma/gmsp
+        if (args.length == 1) {
+            return SelectorUtil.selectorCompletions(args[0]);
         }
 
         return List.of();

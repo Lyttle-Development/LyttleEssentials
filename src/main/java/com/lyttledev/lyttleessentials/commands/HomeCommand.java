@@ -2,13 +2,14 @@ package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleessentials.types.Bill;
+import com.lyttledev.lyttleessentials.utils.SelectorUtil.SelectorUtil;
 import com.lyttledev.lyttleutils.types.Message.Replacements;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -67,26 +68,30 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            Player target = Bukkit.getPlayer(args[0]);
+            List<Entity> targets = SelectorUtil.resolveSelector(player, args[0], true);
 
-            if (target == null) {
+            if (targets.isEmpty()) {
                 Replacements replacements = new Replacements.Builder()
-                    .add("%player%", args[0])
-                    .build();
+                        .add("%player%", args[0])
+                        .build();
 
                 plugin.message.sendMessage(player, "player_not_found", replacements);
                 return true;
             }
 
-            String homeName = args[0];
             Location location = player.getLocation();
-            plugin.config.homes.set(player.getUniqueId().toString(), location);
+            for (Entity e : targets) {
+                if (!(e instanceof Player)) continue;
+                Player target = (Player) e;
 
-            Replacements replacements = new Replacements.Builder()
-                .add("<PLAYER>", homeName)
-                .build();
+                plugin.config.homes.set(target.getUniqueId().toString(), location);
 
-            plugin.message.sendMessage(player, "sethome_other_success", replacements);
+                Replacements replacements = new Replacements.Builder()
+                        .add("<PLAYER>", getDisplayName(target))
+                        .build();
+
+                plugin.message.sendMessage(player, "sethome_other_success", replacements);
+            }
             return true;
         }
 
@@ -116,21 +121,25 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            Player target = Bukkit.getPlayer(args[0]);
+            List<Entity> targets = SelectorUtil.resolveSelector(player, args[0], true);
 
-            if (target == null) {
+            if (targets.isEmpty()) {
                 plugin.message.sendMessage(player, "player_not_found");
                 return true;
             }
 
-            String homeName = args[0];
-            plugin.config.homes.set(getDisplayName(player), null);
+            for (Entity e : targets) {
+                if (!(e instanceof Player)) continue;
+                Player target = (Player) e;
 
-            Replacements replacements = new Replacements.Builder()
-                    .add("<PLAYER>", homeName)
-                    .build();
+                plugin.config.homes.set(target.getUniqueId().toString(), null);
 
-            plugin.message.sendMessage(player, "delhome_other_success", replacements);
+                Replacements replacements = new Replacements.Builder()
+                        .add("<PLAYER>", getDisplayName(target))
+                        .build();
+
+                plugin.message.sendMessage(player, "delhome_other_success", replacements);
+            }
             return true;
         }
 
@@ -160,8 +169,8 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
 
             player.teleport(location);
             Replacements replacements = new Replacements.Builder()
-                .add("<PRICE>", String.valueOf(bill.total))
-                .build();
+                    .add("<PRICE>", String.valueOf(bill.total))
+                    .build();
 
             plugin.message.sendMessage(player, "home_success", replacements);
             return true;
@@ -172,6 +181,10 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] arguments) {
+        String name = command.getName().toLowerCase();
+        if ((name.equals("sethome") || name.equals("delhome")) && arguments.length == 1) {
+            return SelectorUtil.selectorCompletions(arguments[0]);
+        }
         return List.of();
     }
 }
