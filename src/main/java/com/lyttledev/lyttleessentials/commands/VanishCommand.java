@@ -71,40 +71,38 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
 
     private void toggleVanish(Player target, CommandSender sender) {
         if (MemoryClass.isVanished(target)) {
-            showPlayer(target);
+            hidePlayer(target, false);
             MemoryClass.showPlayer(target);
             messageHandler(target, sender, false);
             return;
         }
-        hidePlayer(target);
+        hidePlayer(target, true);
         MemoryClass.hidePlayer(target);
         messageHandler(target, sender, true);
     }
 
     private void setVanish(Player target, boolean bool, CommandSender sender) {
         if (bool) {
-            hidePlayer(target);
+            hidePlayer(target, true);
             if (MemoryClass.isVanished(target)) { return; }
             MemoryClass.hidePlayer(target);
             messageHandler(target, sender, true);
             return;
         }
-        showPlayer(target);
+        hidePlayer(target, false);
         if (!MemoryClass.isVanished(target)) { return; }
         MemoryClass.showPlayer(target);
         messageHandler(target, sender, false);
     }
 
 
-    private void hidePlayer(Player player) {
+    private void hidePlayer(Player player, Boolean bool) {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            onlinePlayer.hidePlayer(plugin, player);
-        }
-    }
-
-    private void showPlayer(Player player) {
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            onlinePlayer.showPlayer(plugin, player);
+            if (bool) {
+                onlinePlayer.hidePlayer(plugin, player);
+            } else {
+                onlinePlayer.showPlayer(plugin, player);
+            }
         }
     }
 
