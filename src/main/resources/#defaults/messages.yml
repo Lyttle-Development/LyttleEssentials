@@ -20,6 +20,7 @@ no_permission: <red>You do not have permission to do that!
 player_not_found: <dark_red>Player not found
 must_be_player: <red>You must be a player to use this command!
 message_not_found: <red>Oh... I can't react to that. (Contact the Administrators)
+selector_single_target_only: <red>Multiple targets are not allowed here. Please specify a single target.
 
 #################
 # Chat Formatting
@@ -43,6 +44,9 @@ atp_target: <PLAYER> teleported to you using AdminTeleport!
 atp_user_other: You have teleported <TARGET> to <PLAYER>
 atp_target_other: <USER> teleported <PLAYER> to you using AdminTeleport!
 atp_player_other: <USER> has used AdminTeleport to teleport you to <TARGET>
+atp_cancel_self: You cancelled AdminTeleport.
+atp_cancel_other_sender: You cancelled AdminTeleport for <TARGET>.
+atp_cancel_other_target: <PLAYER> cancelled AdminTeleport for you.
 
 #########################
 # Player Teleportation
@@ -54,6 +58,7 @@ tpdeny_denied_target: Denied TPA request.
 tp_self: You can't teleport to yourself — that would be a waste of tokens.
 tp_already_requested: You already have a pending request!
 tp_teleporting: Subtracting <CostNow> from your balance, next time this will be <CostNextTime>!
+tp_teleporting_requester: Your teleport to <TARGET> is being processed.
 tp_ask_target: |
   <PLAYER> wants to teleport to you.
   Type "/tpaccept" to accept this request.
@@ -61,6 +66,10 @@ tp_ask_target: |
   You have 5 minutes to respond.
 tp_requested: Sent TPA request to <TARGET>
 tp_usage: Please try using /tp <PLAYERNAME>
+tp_many_to_many_not_allowed: <red>You cannot teleport multiple players to multiple players. Use one-to-many or many-to-one.
+tp_cancel_self: You cancelled your pending teleport requests.
+tp_cancel_other_sender: You cancelled pending teleport requests for <TARGET>.
+tp_cancel_other_target: <PLAYER> cancelled your pending teleport requests.
 
 ###################
 # Spawn Messages
@@ -70,6 +79,8 @@ spawn_deleted: You have successfully deleted the spawn!
 spawn_set: You have successfully set the spawn!
 spawn_teleported: You teleported to spawn! That costed <PRICE> tokens...
 spawn_usage: Please use /spawn
+spawn_teleported_other_sender: You teleported <TARGET> to spawn. That costed <PRICE> tokens...
+spawn_teleported_target: <PLAYER> teleported you to spawn.
 
 ##################
 # Home Commands
@@ -85,6 +96,8 @@ home_other_success: You teleported to <PLAYER>'s home! That costed <PRICE> token
 home_not_set: You have not set your home yet!
 home_other_not_set: <PLAYER> has not set their home yet!
 home_usage: Please use /home
+home_other_sender: You teleported <TARGET> to <OWNER>'s home. That costed <PRICE> tokens...
+home_other_target: <PLAYER> teleported you to <OWNER>'s home.
 
 ##################
 # Warp Commands
@@ -103,6 +116,8 @@ delwarp_not_owner: You are not the owner of this warp!
 warp_no_name: Please use /warp <name>
 warp_success: You teleported to <NAME>! That costed <PRICE> tokens...
 warp_doesnt_exist: This warp doesn't exist!
+warp_teleported_other_sender: You teleported <TARGET> to <NAME>. That costed <PRICE> tokens...
+warp_teleported_target: <PLAYER> teleported you to <NAME>.
 
 ##################
 # Fly Commands
@@ -176,15 +191,25 @@ ptime_set_other_sender: You have set <PLAYER>'s ptime to <PTIME>.
 ptime_set_console: The console has set your ptime to <PTIME>.
 
 #######################
+# Pweather Command
+#######################
+pweather_usage: Please use /pweather <rain / clear / reset> [player]
+pweather_console: Please specify a user you would like to set the pweather for!
+pweather_set_self: You have set your pweather to <PWEATHER>.
+pweather_set_other_target: <PLAYER> has set your pweather to <PWEATHER>.
+pweather_set_other_sender: You have set <PLAYER>'s pweather to <PWEATHER>.
+pweather_set_console: The console has set your pweather to <PWEATHER>.
+
+#######################
 # Vanish Command
 #######################
-vanish_usage: Please use /vanish [playername | true | false] [true | false]
-vanish_console: Please specify a user you would like to toggle or set the vanish for!
-vanish_enable_self: You have enabled your vanish.
-vanish_disable_self: You have disabled your vanish.
-vanish_enable_other_target: <PLAYER> has enabled your vanish.
-vanish_disable_other_target: <PLAYER> has disabled your vanish.
-vanish_enable_other_sender: You have enable <TARGET>'s vanish.
-vanish_disable_other_sender: You have disabled <TARGET>'s vanish.
-vanish_enable_console: The console has enabled your vanish.
-vanish_disable_console: The console has disabled your vanish.
+vanish_usage: Please use /vanish [playername]
+vanish_console: You must specify a player when using this command from the console!
+vanish_enable_console: The console enabled vanish on you.
+vanish_enable_other_sender: You enabled vanish on <PLAYER>.
+vanish_disable_console: The console disabled vanish on you.
+vanish_disable_other_sender: You disabled vanish on <PLAYER>.
+vanish_enable_self: You enabled vanish on yourself.
+vanish_disable_self: You disabled vanish on yourself.
+vanish_enable_other_target: <PLAYER> enabled vanish on you.
+vanish_disable_other_target: <PLAYER> disabled vanish on you.
