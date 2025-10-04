@@ -15,6 +15,7 @@ public class Configs {
     public YamlConfig invoices;
 
     // Default configs
+    public YamlConfig defaultGeneral;
     public YamlConfig defaultMessages;
     public YamlConfig defaultLocations;
     public YamlConfig defaultHomes;
@@ -34,6 +35,7 @@ public class Configs {
         invoices = new YamlConfig(plugin, "data/invoices.yml");
 
         // Default configs
+        defaultGeneral = new YamlConfig(plugin, "#defaults/config.yml");
         defaultMessages = new YamlConfig(plugin, "#defaults/messages.yml");
         defaultLocations = new YamlConfig(plugin, "#defaults/data/locations.yml");
         defaultHomes = new YamlConfig(plugin, "#defaults/data/homes.yml");
