@@ -54,6 +54,9 @@ public final class LyttleEssentials extends JavaPlugin {
         new TopCommand(this);
         new RepairCommand(this);
         new GamemodeCommand(this);
+        new PtimeCommand(this);
+        new VanishCommand(this);
+        new PweatherCommand(this);
 
         // Listeners
         new onPlayerChatListener(this);
@@ -205,6 +208,69 @@ public final class LyttleEssentials extends JavaPlugin {
 
                 // Update config version.
                 config.general.set("config_version", 3);
+
+                // Recheck if the config is fully migrated.
+                migrateConfig();
+                break;
+            case "3":
+                // Migrate config entries.
+                // Generic/Error
+                config.messages.set("selector_single_target_only", config.defaultMessages.get("selector_single_target_only"));
+
+                // AdminTeleport
+                config.messages.set("atp_cancel_self", config.defaultMessages.get("atp_cancel_self"));
+                config.messages.set("atp_cancel_other_sender", config.defaultMessages.get("atp_cancel_other_sender"));
+                config.messages.set("atp_cancel_other_target", config.defaultMessages.get("atp_cancel_other_target"));
+
+                // Player Teleportation
+                config.messages.set("tp_teleporting_requester", config.defaultMessages.get("tp_teleporting_requester"));
+                config.messages.set("tp_many_to_many_not_allowed", config.defaultMessages.get("tp_many_to_many_not_allowed"));
+                config.messages.set("tp_cancel_self", config.defaultMessages.get("tp_cancel_self"));
+                config.messages.set("tp_cancel_other_sender", config.defaultMessages.get("tp_cancel_other_sender"));
+                config.messages.set("tp_cancel_other_target", config.defaultMessages.get("tp_cancel_other_target"));
+
+                // Spawn
+                config.messages.set("spawn_teleported_other_sender", config.defaultMessages.get("spawn_teleported_other_sender"));
+                config.messages.set("spawn_teleported_target", config.defaultMessages.get("spawn_teleported_target"));
+
+                // Home
+                config.messages.set("home_other_sender", config.defaultMessages.get("home_other_sender"));
+                config.messages.set("home_other_target", config.defaultMessages.get("home_other_target"));
+
+                // Warp
+                config.messages.set("warp_teleported_other_sender", config.defaultMessages.get("warp_teleported_other_sender"));
+                config.messages.set("warp_teleported_target", config.defaultMessages.get("warp_teleported_target"));
+
+                // Ptime
+                config.messages.set("ptime_usage", config.defaultMessages.get("ptime_usage"));
+                config.messages.set("ptime_console", config.defaultMessages.get("ptime_console"));
+                config.messages.set("ptime_set_self", config.defaultMessages.get("ptime_set_self"));
+                config.messages.set("ptime_set_other_target", config.defaultMessages.get("ptime_set_other_target"));
+                config.messages.set("ptime_set_other_sender", config.defaultMessages.get("ptime_set_other_sender"));
+                config.messages.set("ptime_set_console", config.defaultMessages.get("ptime_set_console"));
+
+                // Pweather
+                config.messages.set("pweather_usage", config.defaultMessages.get("pweather_usage"));
+                config.messages.set("pweather_console", config.defaultMessages.get("pweather_console"));
+                config.messages.set("pweather_set_self", config.defaultMessages.get("pweather_set_self"));
+                config.messages.set("pweather_set_other_target", config.defaultMessages.get("pweather_set_other_target"));
+                config.messages.set("pweather_set_other_sender", config.defaultMessages.get("pweather_set_other_sender"));
+                config.messages.set("pweather_set_console", config.defaultMessages.get("pweather_set_console"));
+
+                // Vanish
+                config.messages.set("vanish_usage", config.defaultMessages.get("vanish_usage"));
+                config.messages.set("vanish_console", config.defaultMessages.get("vanish_console"));
+                config.messages.set("vanish_enable_console", config.defaultMessages.get("vanish_enable_console"));
+                config.messages.set("vanish_enable_other_sender", config.defaultMessages.get("vanish_enable_other_sender"));
+                config.messages.set("vanish_disable_console", config.defaultMessages.get("vanish_disable_console"));
+                config.messages.set("vanish_disable_other_sender", config.defaultMessages.get("vanish_disable_other_sender"));
+                config.messages.set("vanish_enable_self", config.defaultMessages.get("vanish_enable_self"));
+                config.messages.set("vanish_disable_self", config.defaultMessages.get("vanish_disable_self"));
+                config.messages.set("vanish_enable_other_target", config.defaultMessages.get("vanish_enable_other_target"));
+                config.messages.set("vanish_disable_other_target", config.defaultMessages.get("vanish_disable_other_target"));
+
+                // Update config version.
+                config.general.set("config_version", 4);
 
                 // Recheck if the config is fully migrated.
                 migrateConfig();

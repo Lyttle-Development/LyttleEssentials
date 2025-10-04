@@ -95,5 +95,14 @@ commands:
     permission: lyttleessentials.gamemode
 
   gmsp:
-    description: Shor command for gamemode spectator
+    description: Short command for gamemode spectator
     permission: lyttleessentials.gamemode
+  ptime:
+    description: Set a specific time for a specific player
+    permission: lyttleessentials.ptime
+  vanish:
+    description: Vanish for staff purposes
+    permission: lyttleessentials.vanish
+  pweather:
+    description: Set a specific type of weather for a specific player
+    permission: lyttleessentials.pweather
