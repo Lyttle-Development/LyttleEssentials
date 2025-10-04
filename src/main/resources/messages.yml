@@ -199,3 +199,17 @@ pweather_set_self: You have set your pweather to <PWEATHER>.
 pweather_set_other_target: <PLAYER> has set your pweather to <PWEATHER>.
 pweather_set_other_sender: You have set <PLAYER>'s pweather to <PWEATHER>.
 pweather_set_console: The console has set your pweather to <PWEATHER>.
+
+#######################
+# Vanish Command
+#######################
+vanish_usage: Please use /vanish [playername]
+vanish_console: You must specify a player when using this command from the console!
+vanish_enable_console: The console enabled vanish on you.
+vanish_enable_other_sender: You enabled vanish on <PLAYER>.
+vanish_disable_console: The console disabled vanish on you.
+vanish_disable_other_sender: You disabled vanish on <PLAYER>.
+vanish_enable_self: You enabled vanish on yourself.
+vanish_disable_self: You disabled vanish on yourself.
+vanish_enable_other_target: <PLAYER> enabled vanish on you.
+vanish_disable_other_target: <PLAYER> disabled vanish on you.

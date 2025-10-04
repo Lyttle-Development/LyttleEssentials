@@ -257,6 +257,17 @@ public final class LyttleEssentials extends JavaPlugin {
                 config.messages.set("pweather_set_other_sender", config.defaultMessages.get("pweather_set_other_sender"));
                 config.messages.set("pweather_set_console", config.defaultMessages.get("pweather_set_console"));
 
+                // Vanish
+                config.messages.set("vanish_usage", config.defaultMessages.get("vanish_usage"));
+                config.messages.set("vanish_console", config.defaultMessages.get("vanish_console"));
+                config.messages.set("vanish_enable_console", config.defaultMessages.get("vanish_enable_console"));
+                config.messages.set("vanish_enable_other_sender", config.defaultMessages.get("vanish_enable_other_sender"));
+                config.messages.set("vanish_disable_console", config.defaultMessages.get("vanish_disable_console"));
+                config.messages.set("vanish_disable_other_sender", config.defaultMessages.get("vanish_disable_other_sender"));
+                config.messages.set("vanish_enable_self", config.defaultMessages.get("vanish_enable_self"));
+                config.messages.set("vanish_disable_self", config.defaultMessages.get("vanish_disable_self"));
+                config.messages.set("vanish_enable_other_target", config.defaultMessages.get("vanish_enable_other_target"));
+                config.messages.set("vanish_disable_other_target", config.defaultMessages.get("vanish_disable_other_target"));
 
                 // Update config version.
                 config.general.set("config_version", 4);
