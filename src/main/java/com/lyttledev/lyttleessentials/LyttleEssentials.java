@@ -61,7 +61,7 @@ public final class LyttleEssentials extends JavaPlugin {
     }
 
     public void registerCommands(Commands commands) {
-        Boolean tempBool = Boolean.TRUE;
+        LyttleEssentialsCommand.createCommand(this, commands);
         if ((Boolean) config.general.get("topCommand")) {
             TopCommand.createCommand(this, commands);
         }

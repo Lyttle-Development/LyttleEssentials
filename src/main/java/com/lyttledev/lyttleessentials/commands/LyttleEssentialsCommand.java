@@ -1,49 +1,53 @@
 package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
 import net.kyori.adventure.text.Component;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class LyttleEssentialsCommand implements CommandExecutor, TabCompleter {
-    private final LyttleEssentials plugin;
+public class LyttleEssentialsCommand {
+    private static LyttleEssentials plugin;
 
-    public LyttleEssentialsCommand(LyttleEssentials plugin) {
-        plugin.getCommand("lyttleessentials").setExecutor(this);
-        this.plugin = plugin;
+    public static void createCommand(LyttleEssentials lyttlePlugin, Commands commands) {
+        plugin = lyttlePlugin;
+
+        // Define the different nodes
+        LiteralArgumentBuilder<CommandSourceStack> top = Commands.literal("lyttleessentials")
+                .then(Commands.literal("reload")
+                        .requires(source -> source.getSender().hasPermission("lyttleessentials.lyttleessentials.reload"))
+                        .executes(LyttleEssentialsCommand::reloadNode));
+
+        // Defines root node functions
+        top.requires(source -> source.getSender().hasPermission("lyttleessentials.lyttleEssentials"));
+        top.executes(LyttleEssentialsCommand::rootNode);
+
+        // Finish the command
+        commands.register(
+                top.build(),
+                "Teleport to the top block at a location"
+        );
     }
 
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-
-        // Check for permission
-        if (!(sender.hasPermission("lyttleessentials.lyttleessentials"))) {
-            plugin.message.sendMessage(sender, "no_permission");
-            return true;
-        }
-
-        if (args.length == 0) {
-            sender.sendMessage("Plugin version: " + plugin.getDescription().getVersion());
-        }
-
-        if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("reload")) {
-                plugin.config.reload();
-                plugin.message.sendMessageRaw(sender, Component.text("The config has been reloaded"));
-            }
-        }
-        return true;
+    private static int rootNode(CommandContext<CommandSourceStack> context) {
+        CommandSender sender = context.getSource().getSender();
+        Component version = Component.text("Plugin version: " + plugin.getDescription().getVersion());
+        plugin.message.sendMessageRaw(sender, version);
+        return Command.SINGLE_SUCCESS;
     }
 
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
-        if (args.length == 1) {
-            return List.of("reload");
-        }
-
-        return List.of();
+    private static int reloadNode(CommandContext<CommandSourceStack> context) {
+        final CommandSender sender = context.getSource().getSender();
+        plugin.config.reload();
+        plugin.message.sendMessageRaw(sender, Component.text("The config has been reloaded"));
+        return Command.SINGLE_SUCCESS;
     }
 }
