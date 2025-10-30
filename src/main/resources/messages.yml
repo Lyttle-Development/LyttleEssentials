@@ -43,6 +43,8 @@ atp_target: <PLAYER> teleported to you using AdminTeleport!
 atp_user_other: You have teleported <TARGET> to <PLAYER>
 atp_target_other: <USER> teleported <PLAYER> to you using AdminTeleport!
 atp_player_other: <USER> has used AdminTeleport to teleport you to <TARGET>
+atp_console_target: The console teleported <PLAYER> to you using AdminTeleport!
+atp_console_player: The console has used AdminTeleport to teleport you to <TARGET>
 
 #########################
 # Player Teleportation

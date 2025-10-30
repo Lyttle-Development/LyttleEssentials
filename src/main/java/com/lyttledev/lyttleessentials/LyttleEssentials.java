@@ -71,6 +71,9 @@ public final class LyttleEssentials extends JavaPlugin {
         if ((Boolean) config.general.get("healCommand")) {
             HealCommand.createCommand(this, commands);
         }
+        if ((Boolean) config.general.get("adminTeleportCommand")) {
+            AdminTeleportCommand.createCommand(this, commands);
+        }
     }
 
     private boolean setupEconomy() {

@@ -2,122 +2,119 @@ package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleutils.types.Message.Replacements;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
+import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
 
-public class AdminTeleportCommand implements CommandExecutor, TabCompleter {
-    private final LyttleEssentials plugin;
+public class AdminTeleportCommand {
+    private static LyttleEssentials plugin;
 
-    public AdminTeleportCommand(LyttleEssentials plugin) {
-        plugin.getCommand("atp").setExecutor(this);
-        this.plugin = plugin;
+    public static void createCommand(LyttleEssentials lyttlePlugin, Commands commands) {
+        plugin = lyttlePlugin;
+
+        LiteralArgumentBuilder<CommandSourceStack> fly = Commands.literal("fly")
+            .requires(source -> source.getSender().hasPermission("lyttleessentials.admintp"))
+            .executes(AdminTeleportCommand::rootNode)
+            .then(Commands.argument("player", ArgumentTypes.player())
+                .requires(source -> source.getSender().hasPermission("lyttleessentials.admintp.self"))
+                .executes(AdminTeleportCommand::selfNode))
+                    .then(Commands.argument("player", ArgumentTypes.player())
+                        .requires(source -> source.getSender().hasPermission("lyttleessentials.admintp.other"))
+                        .executes(AdminTeleportCommand::otherNode));
+
+
+        // Finish the command
+        commands.register(
+                fly.build(),
+                "Toggle a player's fly"
+        );
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public static int rootNode(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSender sender = context.getSource().getSender();
+        plugin.message.sendMessage(sender, "atp_usage");
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public static int selfNode(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSender sender = context.getSource().getSender();
+
         if (!(sender instanceof Player)) {
-            plugin.message.sendMessage(sender,"must_be_player");
-            return true;
+            plugin.message.sendMessage(sender, "atp_usage");
+            return Command.SINGLE_SUCCESS;
         }
 
         Player player = (Player) sender;
+        PlayerSelectorArgumentResolver resolver = context.getArgument("player", PlayerSelectorArgumentResolver.class);
+        Player target = resolver.resolve(context.getSource()).getFirst();
+        player.teleport(target);
 
-        if (!player.hasPermission("lyttleessentials.admintp")) {
-            plugin.message.sendMessage(sender, "no_permission");
-            return true;
-        }
-
-        if (args.length == 1) {
-            if (!player.hasPermission("lyttleessentials.admintp.self")) {
-                plugin.message.sendMessage(sender, "no_permission");
-                return true;
-            }
-
-            Player target = plugin.getServer().getPlayer(args[0]);
-
-            if (target == null) {
-                plugin.message.sendMessage(player, "player_not_found");
-                return true;
-            }
-
-            player.teleport(target);
-
-            Replacements replacements = new Replacements.Builder()
-                .add("<USER>", getDisplayName(player))
+        Replacements replacementsPlayer = new Replacements.Builder()
                 .add("<TARGET>", getDisplayName(target))
                 .build();
 
-            plugin.message.sendMessage(player, "atp_user", replacements, player);
-            return true;
-        }
+        plugin.message.sendMessage(player, "atp_user", replacementsPlayer);
 
-        if (!player.hasPermission("lyttleessentials.admintp.other")) {
-            plugin.message.sendMessage(sender, "no_permission");
-            return true;
-        }
+        Replacements replacementsTarget = new Replacements.Builder()
+                .add("<PLAYER>", getDisplayName(player))
+                .build();
 
-        if (args.length == 2) {
-            Player user = plugin.getServer().getPlayer(args[0]);
-            Player target = plugin.getServer().getPlayer(args[1]);
+        plugin.message.sendMessage(target, "atp_target", replacementsTarget);
+        return Command.SINGLE_SUCCESS;
+    }
 
-            if (user == null || target == null) {
-                plugin.message.sendMessage(player, "player_not_found");
-                return true;
-            }
+    public static int otherNode(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSender sender = context.getSource().getSender();
+        PlayerSelectorArgumentResolver resolver = context.getArgument("player", PlayerSelectorArgumentResolver.class);
+        Player player = resolver.resolve(context.getSource()).getFirst();
+        Player target = resolver.resolve(context.getSource()).get(1);
+        player.teleport(target);
 
-            user.teleport(target);
-
-            Replacements replacements = new Replacements.Builder()
-                .add("<USER>", getDisplayName(user))
+        Replacements replacementsUser = new Replacements.Builder()
+                .add("<PLAYER>", getDisplayName(player))
                 .add("<TARGET>", getDisplayName(target))
                 .build();
 
-            plugin.message.sendMessage(player, "atp_user", replacements, player);
-            return true;
-        }
+        plugin.message.sendMessage(sender, "atp_user_other", replacementsUser);
 
-        if (args.length == 3) {
-            plugin.console.run(player, "minecraft:tp " + args[0] + " " + args[1] + " " + args[2]);
-            return true;
-        }
-
-        if (args.length == 4) {
-            Player user = plugin.getServer().getPlayer(args[0]);
-
-            if (user == null) {
-                plugin.message.sendMessage(player, "player_not_found");
-                return true;
-            }
-
-            plugin.console.run("minecraft:execute as " +  getDisplayName(user) + " at @s run tp " + args[1] + " " + args[2] + " " + args[3]);
-
-            Replacements replacements = new Replacements.Builder()
-                    .add("<USER>", getDisplayName(user))
-                    .add("<TARGET>", "Loc(" + args[1] + ", " + args[2] + ", " + args[3] + ")")
+        if (sender instanceof Player) {
+            Replacements replacementsTarget = new Replacements.Builder()
+                    .add("<USER>", getDisplayName((Player) sender))
+                    .add("<PLAYER>", getDisplayName(player))
                     .build();
 
-            plugin.message.sendMessage(player, "atp_user", replacements, player);
-            return true;
+            plugin.message.sendMessage(target, "atp_target_other", replacementsTarget);
+
+            Replacements replacementsPlayer = new Replacements.Builder()
+                    .add("<USER>", getDisplayName((Player) sender))
+                    .add("<TARGET>", getDisplayName(target))
+                    .build();
+
+            plugin.message.sendMessage(player, "atp_player_other", replacementsPlayer);
+        } else {
+            Replacements replacementsTarget = new Replacements.Builder()
+                    .add("<PLAYER>", getDisplayName(player))
+                    .build();
+
+            plugin.message.sendMessage(target, "atp_console_target", replacementsTarget);
+
+            Replacements replacementsPlayer = new Replacements.Builder()
+                    .add("<TARGET>", getDisplayName(target))
+                    .build();
+
+            plugin.message.sendMessage(player, "atp_console_player", replacementsPlayer);
         }
 
-        plugin.message.sendMessage(player, "atp_usage");
-
-        return true;
+        return Command.SINGLE_SUCCESS;
     }
 
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] arguments) {
-        if (arguments.length <= 2) {
-            return null;
-        }
-
-        return List.of();
-    }
 }
