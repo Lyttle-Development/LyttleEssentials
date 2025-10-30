@@ -2,100 +2,115 @@ package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleutils.types.Message.Replacements;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
+import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
 import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
 
-public class FlyCommand implements CommandExecutor, TabCompleter {
-    private final LyttleEssentials plugin;
+public class FlyCommand {
+    private static LyttleEssentials plugin;
 
-    public FlyCommand(LyttleEssentials plugin) {
-        this.plugin = plugin;
-        plugin.getCommand("fly").setExecutor(this);
+    public static void createCommand(LyttleEssentials lyttlePlugin, Commands commands) {
+        plugin = lyttlePlugin;
+
+        LiteralArgumentBuilder<CommandSourceStack> fly = Commands.literal("fly")
+            .requires(source -> source.getSender().hasPermission("lyttleessentials.fly.self"))
+            .executes(FlyCommand::rootNode)
+                .then(Commands.argument("flag", BoolArgumentType.bool())
+                    .requires(source -> source.getSender().hasPermission("lyttleessentials.fly.self"))
+                    .executes(FlyCommand::flagNode))
+                .then(Commands.argument("player", ArgumentTypes.player())
+                    .requires(source -> source.getSender().hasPermission("lyttleessentials.fly.other"))
+                    .executes(FlyCommand::targetNode)
+                    .then(Commands.argument("flag", BoolArgumentType.bool())
+                        .requires(source -> source.getSender().hasPermission("lyttleessentials.fly.other"))
+                        .executes(FlyCommand::targetFlagNode)));
+
+
+        // Finish the command
+        commands.register(
+            fly.build(),
+            "Teleport to the top block at a location"
+        );
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("lyttleessentials.fly")) {
-            plugin.message.sendMessage(sender, "no_permission");
-            return true;
+    private static int rootNode(CommandContext<CommandSourceStack> context) {
+        CommandSender sender = context.getSource().getSender();
+        if (!(sender instanceof Player)) {
+            plugin.message.sendMessage(sender,"fly_usage");
+            return Command.SINGLE_SUCCESS;
         }
-
-        if (!(sender instanceof Player) && args.length != 1) {
-            plugin.message.sendMessage(sender, "fly_usage");
-            return true;
-        }
-
-        if (args.length > 1) {
-            plugin.message.sendMessage(sender, "fly_usage");
-            return true;
-        }
-
-        if (args.length == 0) {
-            if (!sender.hasPermission("lyttleessentials.fly.self")) {
-                plugin.message.sendMessage(sender, "no_permission");
-                return true;
-            }
-            boolean active = toggleFly((Player) sender);
-            flySelfMessage((Player) sender, active);
-            return true;
-        }
-
-        if (!sender.hasPermission("lyttleessentials.fly.other")) {
-            plugin.message.sendMessage(sender, "no_permission");
-            return true;
-        }
-
-        if ((Bukkit.getPlayerExact(args[0]) == null)) {
-            plugin.message.sendMessage(sender, "player_not_found");
-            return true;
-        }
-
-        Player player = Bukkit.getPlayer(args[0]);
-        boolean active = toggleFly(player);
-
-        if (sender == Bukkit.getPlayerExact(args[0])) {
-            flySelfMessage((Player) sender, active);
-            return true;
-        }
-
-        Replacements replacementsSender = new Replacements.Builder()
-            .add("<PLAYER>", getDisplayName(player))
-            .build();
-
-        if (sender instanceof Player) {
-            Replacements replacementsPlayer = new Replacements.Builder()
-                    .add("<PLAYER>", getDisplayName((Player) sender))
-                    .build();
-
-            if (active) {
-                plugin.message.sendMessage(sender, "fly_activate_other_sender", replacementsSender);
-                plugin.message.sendMessage(player, "fly_activate_other_target", replacementsPlayer);
-                return true;
-            }
-            plugin.message.sendMessage(sender, "fly_deactivate_other_sender", replacementsSender);
-            plugin.message.sendMessage(player, "fly_deactivate_other_target", replacementsPlayer);
-            return true;
-        }
-
-        if (active) {
-            plugin.message.sendMessage(sender, "fly_activate_other_sender", replacementsSender);
-            plugin.message.sendMessage(player, "fly_activate_console");
-            return true;
-        }
-        plugin.message.sendMessage(sender, "fly_deactivate_other_sender", replacementsSender);
-        plugin.message.sendMessage(player, "fly_deactivate_console");
-        return true;
+        boolean active = toggleFly((Player) sender);
+        flySelfMessage((Player) sender, active);
+        return Command.SINGLE_SUCCESS;
     }
 
-    public boolean toggleFly(Player player) {
+    private static int flagNode(CommandContext<CommandSourceStack> context) {
+        boolean flag = context.getArgument("flag", boolean.class);
+        CommandSender sender = context.getSource().getSender();
+        if (!(sender instanceof Player)) {
+            plugin.message.sendMessage(sender,"fly_usage");
+            return Command.SINGLE_SUCCESS;
+        }
+        setFly((Player) sender, flag);
+        flySelfMessage((Player) sender, flag);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int targetNode(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        final PlayerSelectorArgumentResolver resolver = context.getArgument("player", PlayerSelectorArgumentResolver.class);
+        final List<Player> targets = resolver.resolve(context.getSource());
+        final CommandSender sender = context.getSource().getSender();
+
+        for (Player target : targets) {
+            if (target == sender) {
+                boolean active = toggleFly(target);
+                flySelfMessage(target, active);
+            } else  {
+                boolean active = toggleFly(target);
+                flyMessage(sender, target, active);
+                return Command.SINGLE_SUCCESS;
+            }
+        }
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public static int targetFlagNode(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        final PlayerSelectorArgumentResolver resolver = context.getArgument("player", PlayerSelectorArgumentResolver.class);
+        final List<Player> targets = resolver.resolve(context.getSource());
+        final CommandSender sender = context.getSource().getSender();
+        boolean flag = context.getArgument("flag", boolean.class);
+
+        for (Player target : targets) {
+            if (target == sender) {
+                setFly(target, flag);
+                flySelfMessage(target, flag);
+            } else {
+                setFly(target, flag);
+                flyMessage(sender, target, flag);
+                return Command.SINGLE_SUCCESS;
+            }
+        }
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static boolean toggleFly(Player player) {
         if (player.getAllowFlight()) {
             player.setAllowFlight(false);
             return false;
@@ -104,19 +119,46 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    public void flySelfMessage(Player receiver, boolean active) {
-        if (active) {
-            plugin.message.sendMessage(receiver, "fly_activate");
-            return;
-        }
-        plugin.message.sendMessage(receiver, "fly_deactivate");
+    private static void setFly(Player player,  boolean flag) {
+        player.setAllowFlight(flag);
     }
 
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] arguments) {
-        if (arguments.length == 1) {
-            return null;
+    private static void flySelfMessage(Player target, boolean active) {
+        if (active) {
+            plugin.message.sendMessage(target, "fly_activate");
+            return;
         }
-        return List.of();
+        plugin.message.sendMessage(target, "fly_deactivate");
     }
+
+    private static void flyMessage(CommandSender sender, Player target, boolean active) {
+        Replacements replacementsSender = new Replacements.Builder()
+                .add("<PLAYER>", getDisplayName(target))
+                .build();
+
+        if (sender instanceof Player) {
+            Replacements replacementsPlayer = new Replacements.Builder()
+                    .add("<PLAYER>", getDisplayName((Player) sender))
+                    .build();
+
+            if (active) {
+                plugin.message.sendMessage(sender, "fly_activate_other_sender", replacementsSender);
+                plugin.message.sendMessage(target, "fly_activate_other_target", replacementsPlayer);
+                return;
+            }
+            plugin.message.sendMessage(sender, "fly_deactivate_other_sender", replacementsSender);
+            plugin.message.sendMessage(target, "fly_deactivate_other_target", replacementsPlayer);
+            return;
+        }
+
+        if (active) {
+            plugin.message.sendMessage(sender, "fly_activate_other_sender", replacementsSender);
+            plugin.message.sendMessage(target, "fly_activate_console");
+            return;
+        }
+        plugin.message.sendMessage(sender, "fly_deactivate_other_sender", replacementsSender);
+        plugin.message.sendMessage(target, "fly_deactivate_console");
+    }
+
+
 }

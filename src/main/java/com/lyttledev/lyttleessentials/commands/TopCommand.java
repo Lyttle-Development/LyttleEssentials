@@ -32,7 +32,7 @@ public class TopCommand {
 
 
         // Defines root node functions
-        top.requires(source -> source.getSender().hasPermission("lyttleessentials.top"));
+        top.requires(source -> source.getSender().hasPermission("lyttleessentials.top.self"));
         top.executes(TopCommand::rootNode);
 
         // Finish the command
@@ -53,7 +53,6 @@ public class TopCommand {
     }
 
     private static int targetNode(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-
         final PlayerSelectorArgumentResolver resolver = context.getArgument("player", PlayerSelectorArgumentResolver.class);
         final List<Player> targets = resolver.resolve(context.getSource());
         final CommandSender sender = context.getSource().getSender();
