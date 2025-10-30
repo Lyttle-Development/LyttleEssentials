@@ -139,7 +139,7 @@ leave_message: <red>[-] <PLAYER>
 top_usage: Please use /top <playername>
 top_self: You teleported yourself to the top.
 top_other_sender: You teleported <PLAYER> to the top.
-top_other_player: <PLAYER> teleported you to the top.
+top_other_target: <PLAYER> teleported you to the top.
 top_console: The console teleported you to the top.
 
 #####################

@@ -1,0 +1,15 @@
+name: LyttleEssentials
+version: '${projectVersion}'
+main: com.lyttledev.lyttleessentials.LyttleEssentials
+api-version: '1.21'
+authors:
+  - LyttleDevelopment
+  - ThatsATim
+  - Stualyttle
+
+dependencies:
+  server:
+    Vault:
+      load: BEFORE
+      required: true
+      join-classpath: true

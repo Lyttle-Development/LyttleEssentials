@@ -8,6 +8,11 @@ import com.lyttledev.lyttleessentials.types.Invoice;
 import com.lyttledev.lyttleutils.utils.communication.Console;
 import com.lyttledev.lyttleutils.utils.communication.Message;
 import com.lyttledev.lyttleutils.utils.storage.GlobalConfig;
+import com.mojang.brigadier.Command;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -42,23 +47,25 @@ public final class LyttleEssentials extends JavaPlugin {
         this.console = new Console(this);
         this.message = new Message(this, config.messages, global);
 
-        // Commands
-        new AdminTeleportCommand(this);
-        new HomeCommand(this);
-        new LyttleEssentialsCommand(this);
-        new SpawnCommand(this);
-        new TeleportCommand(this);
-        new WarpCommand(this);
-        new FlyCommand(this);
-        new HealCommand(this);
-        new TopCommand(this);
-        new RepairCommand(this);
-        new GamemodeCommand(this);
+
+        // Register commands
+        LifecycleEventManager<Plugin> manager = this.getLifecycleManager();
+        manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
+            final Commands commands = event.registrar();
+            this.registerCommands(commands);
+        });
 
         // Listeners
         new onPlayerChatListener(this);
         new onPlayerJoinListener(this);
         new onPlayerLeaveListener(this);
+    }
+
+    public void registerCommands(Commands commands) {
+        Boolean tempBool = Boolean.TRUE;
+        if ((Boolean) config.general.get("topCommand")) {
+            TopCommand.createCommand(this, commands);
+        }
     }
 
     private boolean setupEconomy() {

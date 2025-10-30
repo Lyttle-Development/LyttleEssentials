@@ -9,6 +9,20 @@
 ####################################################
 
 ##########################
+#     Toggle commands     #
+##########################
+adminTeleportCommand: true
+flyCommand: true
+gamemodeCommand: true
+healCommand: true
+homeCommand: true
+repairCommand: true
+spawnCommand: true
+teleportCommand: true
+topCommand: true
+warpCommand: true
+
+##########################
 # Invoice / Economy Setup #
 ##########################
 
