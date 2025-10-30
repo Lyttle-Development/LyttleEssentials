@@ -68,6 +68,9 @@ public final class LyttleEssentials extends JavaPlugin {
         if ((Boolean) config.general.get("flyCommand")) {
             FlyCommand.createCommand(this, commands);
         }
+        if ((Boolean) config.general.get("healCommand")) {
+            HealCommand.createCommand(this, commands);
+        }
     }
 
     private boolean setupEconomy() {

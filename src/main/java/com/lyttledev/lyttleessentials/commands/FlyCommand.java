@@ -44,7 +44,7 @@ public class FlyCommand {
         // Finish the command
         commands.register(
             fly.build(),
-            "Teleport to the top block at a location"
+            "Toggle a player's fly"
         );
     }
 

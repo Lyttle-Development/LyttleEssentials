@@ -62,14 +62,6 @@ commands:
     description: Delete a warp
     permission: lyttleessentials.delwarp
 
-  fly:
-    description: Toggle fly
-    permission: lyttleessentials.fly
-
-  heal:
-    description: Heal someone
-    permission: lyttleessentials.heal
-
   repair:
     description: repairs items
     permission: lyttleessentials.repair

@@ -123,7 +123,7 @@ fly_deactivate_console: The console disabled flight on you.
 heal_usage: Please use /heal <playername>
 heal_self: You healed yourself!
 heal_other_sender: You healed <PLAYER>.
-heal_other_player: <PLAYER> healed you.
+heal_other_target: <PLAYER> healed you.
 heal_console: The console has healed you.
 
 #########################

@@ -2,105 +2,97 @@ package com.lyttledev.lyttleessentials.commands;
 
 import com.lyttledev.lyttleessentials.LyttleEssentials;
 import com.lyttledev.lyttleutils.types.Message.Replacements;
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
+import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.attribute.Attribute;
+
 import java.util.List;
 
 import static com.lyttledev.lyttleessentials.utils.DisplayName.getDisplayName;
 
-public class HealCommand implements CommandExecutor, TabCompleter {
-    private final LyttleEssentials plugin;
+public class HealCommand {
+    private static LyttleEssentials plugin;
 
-    public HealCommand(LyttleEssentials plugin) {
-        this.plugin = plugin;
-        plugin.getCommand("heal").setExecutor(this);
+    public static void createCommand(LyttleEssentials lyttlePlugin, Commands commands) {
+        plugin = lyttlePlugin;
+
+        // Define the different nodes
+        LiteralArgumentBuilder<CommandSourceStack> heal = Commands.literal("heal")
+                .then(Commands.argument("player", ArgumentTypes.players())
+                        .requires(source -> source.getSender().hasPermission("lyttleessentials.heal.other"))
+                        .executes(HealCommand::targetNode));
+
+        // Defines root node functions
+        heal.requires(source -> source.getSender().hasPermission("lyttleessentials.heal.self"));
+        heal.executes(HealCommand::rootNode);
+
+        // Finish the command
+        commands.register(
+                heal.build(),
+                "Heal someone"
+        );
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("lyttleessentials.heal")) {
-            plugin.message.sendMessage(sender, "no_permission");
-            return true;
-        }
-
-        if (args.length > 1) {
+    private static int rootNode(CommandContext<CommandSourceStack> context) {
+        CommandSender sender = context.getSource().getSender();
+        if (!(sender instanceof Player)) {
             plugin.message.sendMessage(sender,"heal_usage");
-            return true;
+            return Command.SINGLE_SUCCESS;
         }
-
-        if (args.length == 0) {
-            if (!(sender instanceof Player)) {
-                plugin.message.sendMessage(sender,"heal_usage");
-                return true;
-            }
-            if (!sender.hasPermission("lyttleessentials.heal.self")) {
-                plugin.message.sendMessage(sender, "no_permission");
-                return true;
-            }
-            plugin.message.sendMessage(sender, "heal_self");
-            heal((Player) sender);
-            return true;
-        }
-
-        if (!(sender.hasPermission("lyttleessentials.heal.other"))) {
-            plugin.message.sendMessage(sender, "no_permission");
-            return true;
-        }
-
-        if ((Bukkit.getPlayerExact(args[0]) == null)) {
-            plugin.message.sendMessage(sender,"player_not_found");
-            return true;
-        }
-
-        Player player = Bukkit.getPlayerExact(args[0]);
-        heal(player);
-
-        if (sender == Bukkit.getPlayerExact(args[0])) {
-            healSelfMessage((Player) sender);
-            return true;
-        }
-
-        Replacements replacementsSender = new Replacements.Builder()
-            .add("<PLAYER>", getDisplayName(player))
-            .build();
-
-        if (sender instanceof Player) {
-            Replacements replacementsPlayer = new Replacements.Builder()
-                .add("<PLAYER>", getDisplayName((Player) sender))
-                .build();
-
-            plugin.message.sendMessage(player, "heal_other_player", replacementsPlayer);
-            plugin.message.sendMessage(sender, "heal_other_sender", replacementsSender);
-            return true;
-        }
-
-        plugin.message.sendMessage(player, "heal_console");
-        plugin.message.sendMessage(sender,"heal_other_sender", replacementsSender);
-        return true;
+        healSelf((Player) sender);
+        return Command.SINGLE_SUCCESS;
     }
 
-    private void heal(Player player) {
+    private static int targetNode(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        final PlayerSelectorArgumentResolver resolver = context.getArgument("player", PlayerSelectorArgumentResolver.class);
+        final List<Player> targets = resolver.resolve(context.getSource());
+        final CommandSender sender = context.getSource().getSender();
+
+        for (Player target : targets) {
+            if (target == sender) {
+                healSelf(target);
+            } else  {
+                healOther(sender, target);
+            }
+        }
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static void healSelf(Player player) {
+        plugin.message.sendMessage(player,"heal_self");
+        heal(player);
+    }
+
+    private static void healOther(CommandSender sender, Player target) {
+        if (sender instanceof Player) {
+            Replacements replacementsTarget = new Replacements.Builder()
+                    .add("<PLAYER>", getDisplayName((Player) sender))
+                    .build();
+            plugin.message.sendMessage(target,"heal_other_target", replacementsTarget);
+        } else {
+            plugin.message.sendMessage(target,"heal_console");
+        }
+        Replacements replacementsSender = new Replacements.Builder()
+                .add("<PLAYER>", getDisplayName(target))
+                .build();
+        plugin.message.sendMessage(sender,"heal_other_sender", replacementsSender);
+        heal(target);
+    }
+
+    private static void heal(Player player) {
         player.setHealth(player.getAttribute(Attribute.MAX_HEALTH).getValue());
         player.setFoodLevel(20);
         player.setFireTicks(0);
         for (PotionEffect effect : player.getActivePotionEffects()) { player.removePotionEffect(effect.getType()); }
-    }
-
-    private void healSelfMessage(Player player) {
-        plugin.message.sendMessage(player, "heal_self");
-    }
-
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] arguments) {
-        if (arguments.length == 1) {
-            return null;
-        }
-        return List.of();
     }
 }
