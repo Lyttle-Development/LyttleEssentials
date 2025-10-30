@@ -100,6 +100,12 @@ tasks.named("processResources") {
     dependsOn(copyContents)
 }
 
+tasks.processResources {
+    filesMatching("paper-plugin.yml") {
+        expand(project.properties)
+    }
+}
+
 // --- Helper methods for Git integration ---
 fun executeGitCommand(vararg command: String): String {
     val byteOut = ByteArrayOutputStream()

@@ -1,5 +1,5 @@
 name: LyttleEssentials
-version: '${projectVersion}'
+version: ${version}
 main: com.lyttledev.lyttleessentials.LyttleEssentials
 api-version: '1.21'
 authors:
